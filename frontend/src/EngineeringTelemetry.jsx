@@ -11,7 +11,7 @@ const DIVISIONS=[
   {id:'radiation',title:'Radiation illustration',keys:['radiation_rate_usv_h','cumulative_dose_usv']},
   {id:'suit',title:'Suit reserve illustration',keys:['suit_o2_remaining_percent']}
 ];
-export default function EngineeringTelemetry({subjectId,personName}){
+export default function EngineeringTelemetry({subjectId,personName,training}){
   const [result,setResult]=useState(null),[issue,setIssue]=useState('');
   const [expanded,setExpanded]=useState(true);
   useEffect(()=>{
@@ -24,7 +24,7 @@ export default function EngineeringTelemetry({subjectId,personName}){
     const timer=setInterval(load,4200);
     return()=>{inactive=true;clearInterval(timer);};
   },[subjectId]);
-  const values=result?.values||{};
+  const values={...(result?.values||{}),...(training?.engineering_values||{})};
   const channels=result?.channels||{};
   const groups=useMemo(()=>DIVISIONS,[ ]);
   return <section className="hg-eng-panel" aria-label="Fictional engineering telemetry">
@@ -39,13 +39,13 @@ export default function EngineeringTelemetry({subjectId,personName}){
         <h3>{group.title}</h3>
         {group.keys.map(key=><div key={key} className="hg-eng-item">
           <span>{channels[key]?.label||key}</span>
-          <strong>{formatValue(values[key],key==='cumulative_dose_usv'?4:key==='radiation_rate_usv_h'?3:key==='cabin_o2_percent'||key==='suit_o2_remaining_percent'||key==='cabin_pressure_kpa'?2:1)} <small>{channels[key]?.unit||''}</small></strong>
+          <strong className={training?.engineering_flags?.[key]?'hg-eng-flagged':''}>{formatValue(values[key],key==='cumulative_dose_usv'?4:key==='radiation_rate_usv_h'?3:key==='cabin_o2_percent'||key==='suit_o2_remaining_percent'||key==='cabin_pressure_kpa'?2:1)} <small>{channels[key]?.unit||''}</small></strong>
         </div>)}
-        <div className="hg-eng-status">{result?'SYNTHETIC · NOT MEASURED':'WAITING FOR SIMULATOR'}</div>
+        <div className="hg-eng-status">{training?.engineering_values?.[group.keys[0]]!==undefined?'SCRIPTED SCENARIO · NOT MEASURED':result?'SYNTHETIC · NOT MEASURED':'WAITING FOR SIMULATOR'}</div>
       </article>)}
       </div>
       {issue&&<p className="hg-eng-issue">Engineering API not available: {issue}. No substitute readings shown.</p>}
-      <div className="hg-eng-footer"><Icon name="shield" size={15}/><p>All values in this section come from a separate deterministic engineering simulator, not from blood pressure cuffs, capnographs, a spacecraft atmosphere monitor, a dosimeter, or an actual suit. They are not fed into the frozen five-channel physiological AI. Radiation and accumulated-dose numbers are illustrative, not exposure estimates. Scenario lab alerts currently apply only to physiological training signals.</p></div>
+      <div className="hg-eng-footer"><Icon name="shield" size={15}/><p>All values in this section come from a separate deterministic engineering simulator, not from blood pressure cuffs, capnographs, a spacecraft atmosphere monitor, a dosimeter, or an actual suit. They are not fed into the frozen five-channel physiological AI. Radiation and accumulated-dose numbers are illustrative, not exposure estimates. Scenario lab can overlay separately scripted environmental disturbances while the source simulator continues independently. None of these channels feeds the frozen physiological AI.</p></div>
     </>}
   </section>;
 }
