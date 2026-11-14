@@ -1,6 +1,7 @@
 
 import React,{Suspense,useEffect,useMemo,useRef,useState} from 'react';
 import ScenarioConsole from './ScenarioConsole.jsx';
+import ScenarioPickerModal from './ScenarioPickerModal.jsx';
 import TelemetryBiomarkerHub from './TelemetryBiomarkerHub.jsx';
 import EngineeringTelemetry from './EngineeringTelemetry.jsx';
 import {SCENARIOS,SCENARIO_LENGTH,scenarioAt,scenarioHistory} from './scenarioSimulator.js';
@@ -256,17 +257,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const displayReview=training?null:review;
   const progress=getRoutine();
   const connected=connection==='connected'&&subjects.length>0;
-  useEffect(()=>{
-    setShowTelemetry(false);
-    setInfoProfile(null);
-    if(view!=='scenario'){
-      setScenarioRunning(false);
-      setScenarioId('');
-      setScenarioSecond(0);
-      alarmRef.current=false;
-      if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
-    }
-  },[view]);
+  useEffect(()=>{setShowTelemetry(false);setInfoProfile(null);},[view]);
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   const selectCrew=i=>{stopScenario();setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);setMetricKey(METRICS[0].key);};
   const scenarioConsole=<ScenarioConsole person={activeCrew} scenarioId={scenarioId} onSelectScenario={selectScenario}
@@ -285,7 +276,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
     {infoProfile?<CrewProfile person={infoProfile} latest={latest} training={training} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:
     showTelemetry?<CrewTelemetry person={activeCrew} selected={selected} latest={latest} samples={displaySamples} review={displayReview} cnn={training?null:cnn} comparison={training?null:comparison} training={training} onClose={()=>{setShowTelemetry(false);onDashboard();}} onBody={onBody}/>:
     <main className="hg6-main">
-      {view==='dashboard'?<>
+      {(view==='dashboard'||view==='scenario')?<>
         <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={hasTelemetry?review:null} progress={progress} subjects={subjects} hasTelemetry={Boolean(training)||hasTelemetry} training={training}/>
         {error&&<div className="hg6-network-error" role="status"><Icon name="alert" size={16}/>Telemetry connection issue: {error}. No missing measurements are filled in.</div>}
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
@@ -295,8 +286,8 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
           <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
         </div>
         <div className="hg6-dashboard-foot">
-          <div><span className="hg6-scope-eyebrow">SIMULATED MISSION HEALTH</span><p>Five physiological channels are available in the current demonstration. The 12 additional physiological channels are awaiting backend and model integration.</p></div>
-          <div className="hg6-dashboard-links"><button type="button" onClick={onTelemetryPage}>Explore telemetry <Icon name="arrow" size={15}/></button><button type="button" onClick={onAnalysisPage}>Anomaly details <Icon name="arrow" size={15}/></button><button type="button" onClick={onScenarioPage}>Scenario Lab <Icon name="arrow" size={15}/></button></div>
+          <div><span className="hg6-scope-eyebrow">SIMULATED MISSION HEALTH</span><p>{scenarioId?'Scripted training active: '+(SCENARIOS.find(item=>item.id===scenarioId)?.name||scenarioId)+'. These are not backend model predictions.':'Five simulated physiological channels are available. The 12 additional channels are awaiting model integration.'}</p></div>
+          <div className="hg6-dashboard-links"><button type="button" onClick={onTelemetryPage}>Crew telemetry <Icon name="arrow" size={15}/></button><button type="button" onClick={onAnalysisPage}>Anomaly details <Icon name="arrow" size={15}/></button><button type="button" onClick={onScenarioPage}>{scenarioId?'Manage scenario':'Scenario Lab'} <Icon name="arrow" size={15}/></button>{scenarioId&&<button type="button" onClick={stopScenario}>Return to live <Icon name="radio" size={15}/></button>}</div>
         </div>
       </>:null}
       {view==='telemetry'?<>
@@ -325,13 +316,13 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         </section>
         <p className="hg6-page-note">Experimental flags are not disease diagnoses. Scripted training alerts are separate from these backend detector outputs.</p>
       </>:null}
-      {view==='scenario'?<>
-        {pageHead('Scenario Lab','Replay fictional changes in physiology and spacecraft context without modifying the real backend stream.')}
-        <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
-        {scenarioConsole}
-        <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey}/><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/></div>
-        <EngineeringTelemetry subjectId={activeCrew.subjectId} personName={activeCrew.name} training={training}/>
-      </>:null}
+      {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
+        scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario}
+        onPause={()=>setScenarioRunning(false)}
+        onReset={()=>{setScenarioSecond(0);setScenarioRunning(false);alarmRef.current=false;}}
+        onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond} sample={training}
+        soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
+        onSpeak={speakScenario}/>}
     </main>}
   </div>;
 }
