@@ -1,5 +1,5 @@
-
-/* Approved mockup: transparent orbit logo, quiet top navigation, accessible sizing */
+/* Adjust demo mission title and maintain compact horizontal navigation */
+.hg6-hero-copy h1 small{display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#59e5df;vertical-align:middle;white-space:nowrap}
 .sidebar .brand-mark{background:transparent!important;border:none!important;padding:0!important;box-shadow:none!important;width:43px;height:43px}
 .sidebar .brand-mark img{width:43px;height:43px;object-fit:contain}
 .sidebar .side-logo strong{font-size:17px;font-weight:760;letter-spacing:-.5px;text-transform:none}

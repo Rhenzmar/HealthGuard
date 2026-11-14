@@ -33,8 +33,8 @@ function Hero({environment,onEnvironment,connected,review,progress,subjects}){
   return <section className="hg6-hero" aria-label="Mission overview">
     <div className="hg6-hero-copy">
       <p className="hg6-overline">MISSION OVERVIEW <span className="hg6-sim-note">· FICTIONAL SCENARIO</span></p>
-      <h1>{env.name}</h1>
-      <p>Spaceflight simulation <span aria-hidden="true">·</span> Crew health monitoring</p>
+      <h1>ARTEMIS IV <small>· DEMO</small></h1>
+      <p>{env.name} scenario <span aria-hidden="true">·</span> Simulated crew health monitoring</p>
     </div>
     <div className="hg6-hero-statbar">
       <div><Icon name="satellite" size={20}/><span>DATA SOURCE<strong>Simulator</strong></span></div>
@@ -49,7 +49,7 @@ function CrewStrip({activeStream,connected,onTelemetry,onManage,onProfile}){
   return <section className="hg6-strip">
     <div className="hg6-strip-heading">
       <div><Icon name="users" size={18}/><h2>Crew overview</h2><span className="hg6-outline-pill">1 available stream · 3 profiles without live data</span></div>
-      <button type="button" className="hg6-small-action" onClick={onManage}>Manage crew <Icon name="arrow" size={15}/></button>
+      <button type="button" className="hg6-small-action" onClick={onManage}>Mission Control <Icon name="arrow" size={15}/></button>
     </div>
     <div className="hg6-crew-grid">
       {CREW.map((person,i)=><button key={person.initials} type="button" className={'hg6-crew-card '+(i===0?'hg6-crew-selected':'')} onClick={i===0?onTelemetry:()=>onProfile(person)}>
