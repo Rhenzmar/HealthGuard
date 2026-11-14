@@ -91,3 +91,26 @@ def test_cannot_mix_subject_sequences_or_source_evidence():
     model={'subject_id':'SIM_CREW_01','sequence':1,'status':'MODEL_FLAG'}
     with pytest.raises(ValueError,match='Cross-subject'):
         combined_live_review('SIM_CREW_01',physiological,model,model,model,eng)
+
+
+def test_historical_cbc_cmp_and_proteins_are_screened_separately():
+    with TestClient(build_app()) as c:
+        for assay,count in (('CMP',19),('NULISA',203),('CBC',20)):
+            res=c.get('/api/research/biomarker-screening/C001',
+                      params={'assay':assay})
+            assert res.status_code==200
+            report=res.json()
+            assert report['total_biomarkers']==count
+            assert report['subject_id']=='C001'
+            assert report['assay']==assay
+            assert report['clinical_validation'] is False
+            assert len(report['biomarkers'])==count
+            assert all('baseline_n' in x and 'screening_status' in x for x in report['biomarkers'])
+            assert all(x['source_reference_interval_used_for_flag'] is False for x in report['biomarkers'])
+            assert all(x['screening_method'] in {
+                'ABSOLUTE_1_LOG2_NPQ_DIFFERENCE','ABSOLUTE_30_PERCENT_CHANGE'
+            } for x in report['biomarkers'])
+            if assay=='CBC':
+                assert report['source_kind']=='UNVERIFIED_THIRD_PARTY_CBC_MIRROR'
+        assert c.get('/api/research/biomarker-screening/SIM_CREW_01').status_code==422
+        assert c.get('/api/research/biomarker-screening/C001?assay=ECG').status_code==422
