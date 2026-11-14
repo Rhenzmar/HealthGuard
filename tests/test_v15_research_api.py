@@ -58,3 +58,37 @@ def test_method_report_does_not_call_sensitive_flags_false_positives():
         assert m['headline_exploratory_observation']['baseline_sensitive_of_these_flags']==68
         assert 'NOT established false positives' in m['headline_exploratory_observation']['interpretation']
         assert m['external_clinical_validation'] is False
+
+
+def test_nasa_source_catalog_does_not_claim_uningested_cbc_or_ocular_live_data():
+    with TestClient(build_app()) as c:
+        catalog=c.get('/api/research/source-catalog').json()
+        sources={x['id']:x for x in catalog['sources']}
+        assert sources['OSD-575']['availability']=='BUNDLED_HISTORICAL_OBSERVATIONS'
+        assert sources['OSD-569']['availability']=='SOURCE_IDENTIFIED_NOT_INGESTED'
+        assert sources['NASA-SANS']['availability']=='RESEARCH_CONTEXT_ONLY'
+        assert catalog['historical_cohort_is_fictional_crew'] is False
+
+
+def test_biomarker_panel_observations_are_historical_and_source_attributed():
+    with TestClient(build_app()) as c:
+        for assay,count in (('CMP',19),('NULISA',203)):
+            data=c.get('/api/research/biomarker-panel',params={
+                'subject_id':'C001','assay':assay}).json()
+            assert data['source_kind']=='HISTORICAL_DISCRETE_SAMPLES_NOT_LIVE'
+            assert data['classification']=='NOT_EVALUATED'
+            assert data['total_biomarkers']==count
+            for row in data['biomarkers']:
+                assert row['assay']==assay
+                assert row['observations']>=1
+                assert row['latest']['sample_id'].startswith('C001_serum_')
+                assert row['latest']['source'].startswith('NASA OSD-575')
+                assert row['latest']['phase'] in {'preflight','postflight'}
+        row=c.get('/api/research/biomarker-panel',params={
+            'subject_id':'C001','assay':'CMP','search':'GLUCOSE'}).json()
+        assert row['total_biomarkers']==1
+        assert row['biomarkers'][0]['name']=='GLUCOSE'
+        assert row['biomarkers'][0]['unit']=='mg/dL'
+        assert c.get('/api/research/biomarker-panel',params={'subject_id':'SIM_CREW_01'}).status_code==422
+        assert c.get('/api/research/biomarker-panel',params={'assay':'CBC'}).status_code==422
+        assert c.get('/api/research/biomarker-panel',params={'offset':999,'limit':10}).json()['biomarkers']==[]
