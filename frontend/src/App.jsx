@@ -142,7 +142,7 @@ function Dashboard({ loading, error, readiness, snapshot, selected, setSelected,
         </div>
       </div>
       <div className="console-review-column">
-        <StatusPanel review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} onSpeak={speak}/>
+        <StatusPanel review={review} cnn={cnn} comparison={comparison} unified={unified} voice={voice} speaking={speaking} onSpeak={speak}/>
       </div>
     </div>
     <div className="console-bottom-row">
@@ -201,13 +201,13 @@ export default function App() {
   const [tour,setTour]=useState(-1);
   const [readiness,setReadiness]=useState(null),[mission,setMission]=useState(null),[overview,setOverview]=useState(null),[method,setMethod]=useState(null);
   const [snapshot,setSnapshot]=useState(null),[selected,setSelected]=useState('SIM_CREW_01'),[samples,setSamples]=useState([]);
-  const [review,setReview]=useState(null),[cnn,setCnn]=useState(null),[comparison,setComparison]=useState(null),[voice,setVoice]=useState(null),[contextHistory,setContextHistory]=useState([]);
+  const [review,setReview]=useState(null),[cnn,setCnn]=useState(null),[comparison,setComparison]=useState(null),[unified,setUnified]=useState(null),[voice,setVoice]=useState(null),[contextHistory,setContextHistory]=useState([]);
   const [connection,setConnection]=useState('connecting'),[error,setError]=useState(''),[speaking,setSpeaking]=useState(false);
   const [selectedCrew,setSelectedCrew]=useState('C001'),[assay,setAssay]=useState('CMP'),[biomarker,setBiomarker]=useState('GLUCOSE');
   const [biomarkers,setBiomarkers]=useState([]),[measurements,setMeasurements]=useState(null),[reviews,setReviews]=useState(null),[researchBusy,setResearchBusy]=useState(false),[researchError,setResearchError]=useState('');
   const subjectRef=useRef(selected), wsRef=useRef(null);
   // Change the routing ref immediately so new websocket packets follow the selection.
-  const selectSubject=useCallback(id=>{subjectRef.current=id;setSelected(id);setSamples([]);setReview(null);setCnn(null);setComparison(null);setVoice(null);setContextHistory([]);},[]);
+  const selectSubject=useCallback(id=>{subjectRef.current=id;setSelected(id);setSamples([]);setReview(null);setCnn(null);setComparison(null);setUnified(null);setVoice(null);setContextHistory([]);},[]);
   useEffect(()=>{ subjectRef.current=selected; },[selected]);
 
   useEffect(()=>{
@@ -249,7 +249,7 @@ export default function App() {
           if(msg.type==='telemetry' && msg.packet){
             const packet=msg.packet;
             setSnapshot(prev=>({...(prev||{}),mode:'SIMULATION_ONLY',subjects:{...(prev?.subjects||{}),[packet.subject_id]:{latest:packet,retained:((prev?.subjects||{})[packet.subject_id]?.retained||0)+1}}}));
-            if(packet.subject_id===subjectRef.current){setSamples(prev=>lastSamples(prev.filter(x=>x.subject_id===packet.subject_id),packet));if(msg.context_review)setReview(msg.context_review);if(msg.deep_learning)setCnn(msg.deep_learning);if(msg.comparison)setComparison(msg.comparison);if(msg.context_review?.voice_ready_script)setVoice({text:msg.context_review.voice_ready_script,status:msg.context_review.status});}
+            if(packet.subject_id===subjectRef.current){setSamples(prev=>lastSamples(prev.filter(x=>x.subject_id===packet.subject_id),packet));if(msg.context_review)setReview(msg.context_review);if(msg.deep_learning)setCnn(msg.deep_learning);if(msg.comparison)setComparison(msg.comparison);if(msg.physioalert_unified)setUnified(msg.physioalert_unified);if(msg.physioalert_unified?.voice_ready_script)setVoice({text:msg.physioalert_unified.voice_ready_script,status:msg.physioalert_unified.status});else if(msg.context_review?.voice_ready_script)setVoice({text:msg.context_review.voice_ready_script,status:msg.context_review.status});}
           }
         };
         socket.onerror=()=>{if(!closed)setConnection('reconnecting')};
@@ -261,15 +261,15 @@ export default function App() {
 
   useEffect(()=>{
     let cancelled=false;
-    setSamples([]);setReview(null);setCnn(null);setComparison(null);setVoice(null);setContextHistory([]);
+    setSamples([]);setReview(null);setCnn(null);setComparison(null);setUnified(null);setVoice(null);setContextHistory([]);
     const load=async()=>{
-      const reqs=[`/api/live/history/${encodeURIComponent(selected)}?limit=160`,`/api/live/context-review/${encodeURIComponent(selected)}`,`/api/live/dl/${encodeURIComponent(selected)}`,`/api/live/comparison/${encodeURIComponent(selected)}`,`/api/live/voice/${encodeURIComponent(selected)}`,`/api/live/context-history/${encodeURIComponent(selected)}?limit=30`];
+      const reqs=[`/api/live/history/${encodeURIComponent(selected)}?limit=160`,`/api/live/context-review/${encodeURIComponent(selected)}`,`/api/live/dl/${encodeURIComponent(selected)}`,`/api/live/comparison/${encodeURIComponent(selected)}`,`/api/live/voice/${encodeURIComponent(selected)}`,`/api/live/context-history/${encodeURIComponent(selected)}?limit=30`,`/api/live/physioalert-unified/${encodeURIComponent(selected)}`];
       const results=await Promise.allSettled(reqs.map(x=>readApi(x)));
       if(cancelled)return;
       const setters=[r=>setSamples(prev=>{
         const merged=[...(r.samples||[]),...prev.filter(x=>x.subject_id===selected)].sort((a,b)=>a.sequence-b.sequence);
         return [...new Map(merged.map(x=>[x.sequence,x])).values()].sort((a,b)=>a.sequence-b.sequence).slice(-160);
-      }),setReview,setCnn,setComparison,setVoice,r=>setContextHistory(r.results||[])];
+      }),setReview,setCnn,setComparison,setVoice,r=>setContextHistory(r.results||[]),setUnified];
       results.forEach((r,i)=>{if(r.status==='fulfilled')setters[i](r.value)});
     };
     load();const id=setInterval(load,17000);return()=>{cancelled=true;clearInterval(id)};
