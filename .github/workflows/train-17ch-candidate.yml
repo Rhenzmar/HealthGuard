@@ -54,5 +54,15 @@ jobs:
             echo "Candidate model unchanged"
           else
             git commit -m "Store 17-channel synthetic anomaly model candidate and held-out evaluation"
-            git push origin HEAD:main
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then
+                echo "Candidate artifact committed"
+                exit 0
+              fi
+              echo "Concurrent main update; retrying synchronization"
+            done
+            echo "Failed to push verified candidate after five attempts"
+            exit 1
           fi
