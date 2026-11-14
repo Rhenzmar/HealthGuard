@@ -93,3 +93,13 @@
 .hg6-scenario-env-grid .flagged{background:#612531;border-color:#f57879}
 .hg6-scenario-env-grid .flagged strong,.hg6-scenario-env-grid .flagged em{color:#ffc1b5}
 @media(max-width:650px){.hg6-scenario-env-grid{grid-template-columns:1fr}}
+
+.hg6-scenario-backend-error,.hg6-scenario-backend-status{margin:9px 13px 0;padding:10px 12px;border-radius:9px;font-size:11px;line-height:1.4}
+.hg6-scenario-backend-error{background:#572c39;border:1px solid #ce6a79;color:#ffe9ed}
+.hg6-scenario-backend-status{background:#193e51;border:1px solid #427b99;color:#c5edf4}
+.hg6-scenario-backend-evidence{margin:12px 0;padding:13px 15px;background:#102e3f;border:1px solid #416375;border-radius:12px;color:#d7edf3;font-size:11px}
+.hg6-scenario-backend-evidence>strong{display:block;font-size:12px;margin-bottom:9px}
+.hg6-scenario-model-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}
+.hg6-scenario-model-details span{display:flex;flex-direction:column;gap:3px;color:#a7c6d4}
+.hg6-scenario-model-details b{font-weight:600;color:#e9f6fb;overflow-wrap:anywhere}
+.hg6-scenario-backend-evidence small{display:block;font-size:10px;line-height:1.5;margin-top:9px;color:#a2bbc7}
