@@ -1,0 +1,111 @@
+/* HealthGuard Mission Dashboard, crew-first concept v0.6 */
+.mh-page{position:relative;isolation:isolate;min-height:calc(100vh - 72px);background:#061424;color:#e9f6fb}
+.mh-backdrop{position:absolute;inset:0 0 auto;height:870px;pointer-events:none;z-index:-1;background:
+linear-gradient(90deg,#061424e8 0%,#061424a9 43%,#061424b5 70%,#061424e8 100%),
+linear-gradient(0deg,#061424 0%,transparent 35%),
+url("https://commons.wikimedia.org/wiki/Special:Redirect/file/ISS-64_Sunrise_through_Earth%27s_horizon.jpg?width=1920") center 40% / cover no-repeat;opacity:.95}
+.mh-page:after{content:"";position:absolute;z-index:-1;left:0;right:0;top:560px;height:380px;background:linear-gradient(transparent,#061424 95%);pointer-events:none}
+.mh-content{max-width:1780px;margin:0 auto;padding:30px clamp(18px,2.35vw,42px) 55px;position:relative}
+.mh-eyebrow{font-size:9px;color:#70dce1;font-weight:850;letter-spacing:1.3px}
+.mh-page-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:22px}
+.mh-page-heading .mh-eyebrow{display:block;margin:0 0 10px}
+.mh-page-heading h1{font-size:clamp(29px,3.15vw,45px);font-weight:760;margin:0;letter-spacing:-1.55px;line-height:1.08}
+.mh-page-heading p:last-child{font-size:12px;color:#b2c7d3;margin:11px 0 0;line-height:1.6}
+.mh-page-heading .hg-env{min-width:198px;background:#0b2034d9;border-color:#36617a;padding:10px 13px}
+.mh-page-heading .hg-env select{background:#112c3c;border-color:#41657a}
+.mh-page-heading .hg-env small{color:#9cc0cb}
+.mh-network-warning{border-radius:8px;padding:12px;margin-bottom:14px;border:1px solid #94674b;background:#2d2125;color:#f6cda6;font-size:11px;display:flex;align-items:center;gap:9px}
+.mh-dashboard-grid{display:grid;grid-template-columns:minmax(220px,.72fr) minmax(370px,1.76fr) minmax(305px,1.05fr);align-items:stretch;gap:15px}
+.mh-mission,.mh-hero,.mh-panel,.mh-routine{background:linear-gradient(140deg,#0e2738eb,#081728e9);border:1px solid #315169a8;border-radius:14px;box-shadow:0 15px 37px #0004;min-width:0}
+.mh-mission{overflow:hidden;display:flex;flex-direction:column}
+.mh-mission-picture{min-height:170px;position:relative;background:linear-gradient(0deg,#06132144,transparent 70%),url("https://commons.wikimedia.org/wiki/Special:Redirect/file/ISS-64_Sunrise_through_Earth%27s_horizon.jpg?width=640") center 55% / cover no-repeat}
+.mh-mission-picture span{position:absolute;bottom:12px;left:14px;color:#c9ecf1;letter-spacing:1.1px;font-weight:800;font-size:8px;text-shadow:0 1px 5px #000}
+.mh-mission-content{padding:18px 15px 20px;flex:1}
+.mh-mission-content h2{font-size:22px;margin:8px 0 12px;letter-spacing:-.6px;line-height:1.12}
+.mh-notice{display:inline-flex;align-items:center;gap:7px;border:1px solid #387a76;border-radius:20px;padding:6px 10px;color:#95e3ce;font-size:10px;background:#0d3435}
+.mh-notice i,.mh-live i,.mh-hero-status i{display:inline-block;height:7px;width:7px;border-radius:50%;background:#60dbb6;flex:none}
+.mh-divider{height:1px;margin:17px 0;background:#3450668a}
+.mh-quiet-detail{display:flex;justify-content:space-between;gap:10px;margin:12px 0;color:#95b1c2;font-size:10px}
+.mh-quiet-detail strong{color:#ebf7f8;font-size:10px}
+.mh-roster-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:11px}
+.mh-roster-head strong{font-size:12px}.mh-roster-head span{color:#91adbd;font-size:9px}
+.mh-roster{display:grid;gap:8px}
+.mh-crew{border:1px solid #34536b;border-radius:10px;background:#11283ad4;padding:12px 10px;display:flex;gap:10px;align-items:center;text-align:left;color:#dfecf5}
+.mh-crew.active{border-color:#4edbd4;background:#124355cb}
+.mh-crew:focus-visible{outline:2px solid #8af4e9;outline-offset:2px}
+.mh-crew-avatar{height:31px;width:31px;display:grid;place-items:center;background:#214d64;border-radius:100%;flex:none;color:#83e2e5}
+.mh-crew-name{min-width:0;flex:1}.mh-crew-name strong{font-size:11px;display:block;overflow:hidden;text-overflow:ellipsis}.mh-crew-name small{font-size:9px;display:block;color:#94b4c3;margin-top:5px}
+.mh-crew-active{height:7px;width:7px;flex:none;background:#54d9ae;border-radius:50%}
+.mh-mission-foot{font-size:9px;line-height:1.6;color:#8da8b8;margin:17px 0 0}
+.mh-hero{position:relative;min-height:620px;overflow:hidden;background:radial-gradient(ellipse at 58% 42%,#22577177,transparent 69%),linear-gradient(165deg,#0b2538a1,#071a2cdd 90%);display:flex;flex-direction:column}
+.mh-hero:before{content:"";pointer-events:none;position:absolute;inset:0;background:radial-gradient(circle at 50% 44%,transparent 0 32%,#071a2c16 68%,#071522bb 100%);z-index:0}
+.mh-hero-top{position:absolute;top:24px;left:24px;right:24px;z-index:3;pointer-events:none}
+.mh-hero-copy{max-width:56%}.mh-hero-copy h2{font-size:clamp(23px,2.6vw,37px);letter-spacing:-1px;line-height:1.15;margin:7px 0}
+.mh-hero-copy p{font-size:11px;color:#b7d2da;margin:8px 0 12px}
+.mh-hero-status{color:#a6e8ca;background:#14382ec4;border:1px solid #296f60;display:inline-flex;gap:7px;padding:6px 9px;border-radius:20px;font-size:9px;align-items:center}
+.mh-human{position:relative;z-index:1;flex:1;width:100%;height:100%;min-height:555px}
+.mh-human .oa3d-viewer,.mh-human .mh-human-model{width:100%;height:100%;min-height:555px;background:transparent;border:0;--oa3d-accent:#37cbd4;--oa3d-accent-deep:#16869a}
+.mh-human canvas{display:block}
+.mh-human-fallback{height:555px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:11px;color:#a2c1d1;font-size:12px}
+.mh-hero-bottom{position:relative;z-index:4;display:flex;flex-direction:column;gap:12px;align-items:center;padding:13px 15px 10px;border-top:1px solid #2f5360bb;background:#081a2ce6}
+.mh-hero-bottom>span{font-size:9px;letter-spacing:.3px;color:#9fc0ca}
+.mh-hero-buttons{display:flex;justify-content:center;flex-wrap:wrap;gap:7px}
+.mh-hero-buttons button{display:flex;align-items:center;gap:7px;border:1px solid #3a7383;border-radius:7px;color:#d7f8fa;background:#13465c;padding:9px 12px;font-size:10px;font-weight:700}
+.mh-hero-buttons button:hover{background:#1b5b73}
+.mh-model-credit{font-size:8px;color:#7192a5;display:block;text-align:center;position:relative;z-index:4;padding:0 12px 11px;background:#081a2ce6;line-height:1.4}
+.mh-right{display:flex;flex-direction:column;gap:15px}
+.mh-panel{padding:17px 18px}
+.mh-panel-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.mh-panel-heading h2{font-size:16px;font-weight:720;margin:0;display:flex;align-items:center;gap:8px}
+.mh-panel-heading h2 svg{color:#55cdd6}
+.mh-live{display:flex;align-items:center;gap:7px;color:#8ee5c3;font-size:9px;white-space:nowrap}
+.mh-live.no{color:#dfc28e}.mh-live.no i{background:#e7bc89}
+.mh-vital-rows{display:grid}
+.mh-vital{display:flex;align-items:center;gap:9px;width:100%;border:0;border-bottom:1px solid #35506588;padding:11px 4px;background:transparent;text-align:left;color:#ebf8fa}
+.mh-vital:last-child{border-bottom:0}.mh-vital.active,.mh-vital:hover{background:#1c3b4b87}
+.mh-vital-icon{width:23px;flex:none;display:grid;place-items:center}
+.mh-vital-name{font-size:10px;color:#c1d4db;flex:1}
+.mh-vital strong{font-size:19px;letter-spacing:-.3px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.mh-vital strong small{font-size:9px;font-weight:500;color:#a8c4d1}
+.mh-alert{padding-bottom:11px}
+.mh-alert-tag{font-size:8px;letter-spacing:.8px;color:#94bcc6}
+.mh-alert-reading{border-radius:10px;background:#17384b;border:1px solid #34647b;padding:12px;display:flex;gap:9px;align-items:flex-start}
+.mh-alert-reading.tone-mint{background:#123b33;border-color:#2a6859}
+.mh-alert-reading.tone-amber{background:#43372d;border-color:#8b6249}
+.mh-indicator{height:8px;width:8px;border-radius:50%;background:#65d6e0;flex:none;margin-top:5px}
+.mh-alert-reading.tone-mint .mh-indicator{background:#6fe6b5}
+.mh-alert-reading.tone-amber .mh-indicator{background:#edbe85}
+.mh-alert-reading strong{font-size:12px;color:#e8f7fa}
+.mh-alert-reading p{margin:7px 0 0;font-size:10px;line-height:1.5;color:#b8cdd3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.mh-alert-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 1px 0}
+.mh-alert-actions span{font-size:8px;color:#97adbb}
+.mh-alert-actions button{display:flex;align-items:center;gap:6px;background:transparent;border:0;color:#8fdee4;font-size:9px}
+.mh-trend{padding-bottom:12px}
+.mh-trend select{max-width:155px;min-width:0;background:#0f2e40;border:1px solid #3c6378;border-radius:8px;padding:7px;color:#d2eff1;font-size:10px}
+.mh-trend-plot{min-height:132px}
+.mh-trend-plot .vital-chart-wrap{padding:0}
+.mh-trend>p{font-size:9px;color:#91adbd;line-height:1.5;margin:8px 0 0}
+.mh-routine{margin-top:15px;padding:22px 25px;display:grid;grid-template-columns:1.1fr .75fr 1.3fr .8fr;align-items:center;gap:22px}
+.mh-routine-title{display:flex;gap:15px;align-items:center}
+.mh-routine-title>svg{color:#55d8da;width:32px;height:32px}
+.mh-routine-title strong{font-size:18px;display:block;white-space:nowrap}
+.mh-routine-title span{font-size:10px;color:#a4c0cc;margin-top:7px;display:block;line-height:1.4}
+.mh-routine-percent{display:flex;align-items:center;gap:7px;flex-direction:column;padding:0 18px;border-left:1px solid #33566f;border-right:1px solid #33566f}
+.mh-routine-percent strong{font-size:30px}
+.mh-progress-track{height:7px;min-width:110px;max-width:170px;width:100%;border-radius:6px;background:#21485c;overflow:hidden}
+.mh-progress-track i{height:100%;display:block;background:#45dac7;border-radius:6px;transition:width .2s}
+.mh-routine-percent small{font-size:9px;color:#99b4c1}
+.mh-routine-tasks{display:grid;gap:8px}
+.mh-routine-tasks span{display:flex;align-items:center;gap:8px;font-size:10px;color:#bad1db}
+.mh-routine-tasks svg{color:#54d7c1;flex:none}
+.mh-routine-action{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.mh-routine-action>span{font-size:22px;color:#a7f3e3;font-weight:750}
+.mh-routine-action small{font-size:9px;color:#9db5bf;font-weight:450;display:block;margin-top:4px}
+.mh-routine-action button{display:flex;gap:7px;align-items:center;white-space:nowrap;background:#16465a;border:1px solid #397188;color:#daf4f6;border-radius:8px;font-size:10px;padding:10px 11px}
+.mh-disclaimer{color:#9bb4c1;margin:17px 0 0;font-size:10px;line-height:1.65;display:flex;gap:8px;align-items:flex-start}
+.mh-disclaimer svg{flex:none}.mh-disclaimer a{color:#83d7de;text-decoration:underline}
+@media(max-width:1480px){.mh-content{padding-left:20px;padding-right:20px}.mh-dashboard-grid{grid-template-columns:minmax(205px,.77fr) minmax(340px,1.55fr) minmax(288px,1.1fr);gap:12px}.mh-panel{padding:14px}.mh-vital{padding:9px 3px}.mh-vital strong{font-size:17px}.mh-routine{gap:17px}}
+@media(max-width:1190px){.mh-dashboard-grid{grid-template-columns:minmax(215px,.65fr) minmax(350px,1.35fr)}.mh-right{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1.05fr}.mh-hero{min-height:600px}.mh-human{min-height:510px}.mh-human .oa3d-viewer,.mh-human .mh-human-model{min-height:510px}.mh-routine{grid-template-columns:1.1fr .8fr 1fr}.mh-routine-action{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;border-top:1px solid #34526b;padding-top:12px}}
+@media(max-width:800px){.mh-dashboard-grid{grid-template-columns:1fr}.mh-mission{display:grid;grid-template-columns:minmax(150px,.5fr) 1fr}.mh-mission-picture{min-height:100%}.mh-right{grid-column:auto;grid-template-columns:1fr 1fr}.mh-right>div{grid-column:1/-1}.mh-hero{min-height:530px}.mh-human{min-height:425px}.mh-human .oa3d-viewer,.mh-human .mh-human-model{min-height:425px}.mh-routine{grid-template-columns:1fr 1fr}.mh-routine-tasks{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:10px}.mh-routine-action{grid-column:1/-1}}
+@media(max-width:570px){.mh-content{padding:20px 12px 40px}.mh-page-heading{flex-direction:column;align-items:stretch}.mh-page-heading .hg-env{width:100%}.mh-mission{display:flex;flex-direction:column}.mh-mission-picture{min-height:145px}.mh-right{display:flex;flex-direction:column}.mh-hero{min-height:540px}.mh-hero-copy{max-width:74%}.mh-hero-top{top:16px;left:15px}.mh-hero-bottom>span{font-size:8px}.mh-hero-buttons{gap:5px}.mh-hero-buttons button{padding:9px;font-size:9px}.mh-routine{grid-template-columns:1fr;padding:20px 16px}.mh-routine-percent{border:0;border-top:1px solid #2c4c61;border-bottom:1px solid #2c4c61;padding:12px 0}.mh-routine-tasks{grid-column:auto}.mh-routine-action{grid-column:auto}.mh-disclaimer{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.mh-progress-track i{transition:none}}
