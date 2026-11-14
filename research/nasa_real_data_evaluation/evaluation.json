@@ -1,0 +1,434 @@
+{
+  "assay_specific_marker_types": 322,
+  "assays": {
+    "ALAMAR_NPQ": {
+      "excluded_review_flagged_rows": 0,
+      "groups_with_2_preflight": 203,
+      "groups_with_3plus_preflight": 609,
+      "groups_with_under_2_preflight": 0,
+      "missing_rows": 0,
+      "numeric_source_rows": 5481,
+      "participant_biomarker_groups": 812,
+      "postflight_numeric_rows": 3248,
+      "postflight_screening": {
+        "above_source_interval": 0,
+        "apdra_consistent_flags": 109,
+        "assessable_observations": 3248,
+        "baseline_sensitive_screens": 363,
+        "below_source_interval": 0,
+        "insufficient_reference_or_undefined": 0,
+        "loo_consistent_fraction_of_assessable": 0.03355911330049261,
+        "median_flag_fraction_of_assessable": 0.05233990147783251,
+        "median_flags_baseline_sensitive_fraction": 0.3588235294117647,
+        "median_flags_not_loo_consistent": 61,
+        "median_only_flags": 170,
+        "source_interval_present": 0
+      },
+      "preflight_placebo": {
+        "screening": {
+          "above_source_interval": 0,
+          "apdra_consistent_flags": 113,
+          "assessable_observations": 1827,
+          "baseline_sensitive_screens": 296,
+          "below_source_interval": 0,
+          "insufficient_reference_or_undefined": 406,
+          "loo_consistent_fraction_of_assessable": 0.061850027367268745,
+          "median_flag_fraction_of_assessable": 0.12205801860974275,
+          "median_flags_baseline_sensitive_fraction": 0.49327354260089684,
+          "median_flags_not_loo_consistent": 110,
+          "median_only_flags": 223,
+          "source_interval_present": 0
+        },
+        "withheld_preflight_observations": 2233
+      },
+      "source_rows": 5481,
+      "source_versions_and_hashes": {
+        "normalized_sha256": "82059cd4fc4d62b44353eea4d146ba7c51cb2b41e1727cb33a99f11addd427ba",
+        "original_sha256": "b53bcf9c325ae1d86e6d0d16df31ddd123423f449c7d550ac026ee01659241bc",
+        "study_id": "OSD-575"
+      }
+    },
+    "CBC": {
+      "excluded_review_flagged_rows": 19,
+      "groups_with_2_preflight": 21,
+      "groups_with_3plus_preflight": 58,
+      "groups_with_under_2_preflight": 1,
+      "missing_rows": 7,
+      "numeric_source_rows": 553,
+      "participant_biomarker_groups": 80,
+      "postflight_numeric_rows": 318,
+      "postflight_screening": {
+        "above_source_interval": 3,
+        "apdra_consistent_flags": 28,
+        "assessable_observations": 315,
+        "baseline_sensitive_screens": 42,
+        "below_source_interval": 2,
+        "insufficient_reference_or_undefined": 3,
+        "loo_consistent_fraction_of_assessable": 0.08888888888888889,
+        "median_flag_fraction_of_assessable": 0.1492063492063492,
+        "median_flags_baseline_sensitive_fraction": 0.40425531914893614,
+        "median_flags_not_loo_consistent": 19,
+        "median_only_flags": 47,
+        "source_interval_present": 315
+      },
+      "preflight_placebo": {
+        "screening": {
+          "above_source_interval": 1,
+          "apdra_consistent_flags": 11,
+          "assessable_observations": 174,
+          "baseline_sensitive_screens": 30,
+          "below_source_interval": 2,
+          "insufficient_reference_or_undefined": 42,
+          "loo_consistent_fraction_of_assessable": 0.06321839080459771,
+          "median_flag_fraction_of_assessable": 0.13793103448275862,
+          "median_flags_baseline_sensitive_fraction": 0.5416666666666666,
+          "median_flags_not_loo_consistent": 13,
+          "median_only_flags": 24,
+          "source_interval_present": 174
+        },
+        "withheld_preflight_observations": 216
+      },
+      "source_rows": 560,
+      "source_versions_and_hashes": {
+        "normalized_sha256": "50d070bf309b573ae4d13ec8f1a0bf0054494217526e5787d6f3467fd52460ea",
+        "original_sha256": "32e4f9c97d3b636b5d5c2e72dab8c4d3319dee64c437508b092dad04603b2b8f",
+        "study_id": "OSD-569"
+      }
+    },
+    "CMP": {
+      "excluded_review_flagged_rows": 0,
+      "groups_with_2_preflight": 0,
+      "groups_with_3plus_preflight": 72,
+      "groups_with_under_2_preflight": 3,
+      "missing_rows": 23,
+      "numeric_source_rows": 509,
+      "participant_biomarker_groups": 75,
+      "postflight_numeric_rows": 291,
+      "postflight_screening": {
+        "above_source_interval": 6,
+        "apdra_consistent_flags": 18,
+        "assessable_observations": 287,
+        "baseline_sensitive_screens": 17,
+        "below_source_interval": 6,
+        "insufficient_reference_or_undefined": 4,
+        "loo_consistent_fraction_of_assessable": 0.0627177700348432,
+        "median_flag_fraction_of_assessable": 0.08710801393728224,
+        "median_flags_baseline_sensitive_fraction": 0.28,
+        "median_flags_not_loo_consistent": 7,
+        "median_only_flags": 25,
+        "source_interval_present": 287
+      },
+      "preflight_placebo": {
+        "screening": {
+          "above_source_interval": 5,
+          "apdra_consistent_flags": 6,
+          "assessable_observations": 216,
+          "baseline_sensitive_screens": 22,
+          "below_source_interval": 5,
+          "insufficient_reference_or_undefined": 2,
+          "loo_consistent_fraction_of_assessable": 0.027777777777777776,
+          "median_flag_fraction_of_assessable": 0.05092592592592592,
+          "median_flags_baseline_sensitive_fraction": 0.45454545454545453,
+          "median_flags_not_loo_consistent": 5,
+          "median_only_flags": 11,
+          "source_interval_present": 216
+        },
+        "withheld_preflight_observations": 218
+      },
+      "source_rows": 532,
+      "source_versions_and_hashes": {
+        "normalized_sha256": "af2b8f2f6b04750e1e43a0b0db4338af8aa314072cf618fca5a3d47a260f1b2d",
+        "original_sha256": "5eb1e7f025dd8443a9e70111e62bc32afae3432753024489c5c013e401d709d9",
+        "study_id": "OSD-575"
+      }
+    },
+    "EVE_CARDIOVASCULAR": {
+      "excluded_review_flagged_rows": 0,
+      "groups_with_2_preflight": 0,
+      "groups_with_3plus_preflight": 36,
+      "groups_with_under_2_preflight": 0,
+      "missing_rows": 0,
+      "numeric_source_rows": 252,
+      "participant_biomarker_groups": 36,
+      "postflight_numeric_rows": 144,
+      "postflight_screening": {
+        "above_source_interval": 0,
+        "apdra_consistent_flags": 35,
+        "assessable_observations": 144,
+        "baseline_sensitive_screens": 70,
+        "below_source_interval": 0,
+        "insufficient_reference_or_undefined": 0,
+        "loo_consistent_fraction_of_assessable": 0.24305555555555555,
+        "median_flag_fraction_of_assessable": 0.3472222222222222,
+        "median_flags_baseline_sensitive_fraction": 0.3,
+        "median_flags_not_loo_consistent": 15,
+        "median_only_flags": 50,
+        "source_interval_present": 0
+      },
+      "preflight_placebo": {
+        "screening": {
+          "above_source_interval": 0,
+          "apdra_consistent_flags": 35,
+          "assessable_observations": 108,
+          "baseline_sensitive_screens": 62,
+          "below_source_interval": 0,
+          "insufficient_reference_or_undefined": 0,
+          "loo_consistent_fraction_of_assessable": 0.32407407407407407,
+          "median_flag_fraction_of_assessable": 0.6481481481481481,
+          "median_flags_baseline_sensitive_fraction": 0.5,
+          "median_flags_not_loo_consistent": 35,
+          "median_only_flags": 70,
+          "source_interval_present": 0
+        },
+        "withheld_preflight_observations": 108
+      },
+      "source_rows": 252,
+      "source_versions_and_hashes": {
+        "normalized_sha256": "9f318fc6405971d7ab85ea1eafa0ee2c22a81c2d8890d1e146db9e3fea3a5f36",
+        "original_sha256": "fdba6c3ce45401c12ca9b699fa375303793959aa0391e2f3c722f354d9cfc75c",
+        "study_id": "OSD-575"
+      }
+    },
+    "EVE_IMMUNE": {
+      "excluded_review_flagged_rows": 0,
+      "groups_with_2_preflight": 0,
+      "groups_with_3plus_preflight": 284,
+      "groups_with_under_2_preflight": 0,
+      "missing_rows": 0,
+      "numeric_source_rows": 1988,
+      "participant_biomarker_groups": 284,
+      "postflight_numeric_rows": 1136,
+      "postflight_screening": {
+        "above_source_interval": 0,
+        "apdra_consistent_flags": 367,
+        "assessable_observations": 1136,
+        "baseline_sensitive_screens": 432,
+        "below_source_interval": 0,
+        "insufficient_reference_or_undefined": 0,
+        "loo_consistent_fraction_of_assessable": 0.3230633802816901,
+        "median_flag_fraction_of_assessable": 0.4727112676056338,
+        "median_flags_baseline_sensitive_fraction": 0.3165735567970205,
+        "median_flags_not_loo_consistent": 170,
+        "median_only_flags": 537,
+        "source_interval_present": 0
+      },
+      "preflight_placebo": {
+        "screening": {
+          "above_source_interval": 0,
+          "apdra_consistent_flags": 221,
+          "assessable_observations": 852,
+          "baseline_sensitive_screens": 384,
+          "below_source_interval": 0,
+          "insufficient_reference_or_undefined": 0,
+          "loo_consistent_fraction_of_assessable": 0.25938967136150237,
+          "median_flag_fraction_of_assessable": 0.4800469483568075,
+          "median_flags_baseline_sensitive_fraction": 0.45965770171149145,
+          "median_flags_not_loo_consistent": 188,
+          "median_only_flags": 409,
+          "source_interval_present": 0
+        },
+        "withheld_preflight_observations": 852
+      },
+      "source_rows": 1988,
+      "source_versions_and_hashes": {
+        "normalized_sha256": "e6a74de2500c53b37fdaa9433896a9debfe40c86c9129cba47f2f480f493fe41",
+        "original_sha256": "efa8fb807e3b7e363df47f64f48d03c57d2397daf8fd22afc0ea4335d5d3d53e",
+        "study_id": "OSD-575"
+      }
+    }
+  },
+  "biological_independent_participants": 4,
+  "causal_spaceflight_attribution": false,
+  "clinical_validation": false,
+  "dataset_sources": [
+    "OSD-569 (CBC)",
+    "OSD-575 (CMP, Eve immune, Eve cardiovascular, Alamar NPQ)"
+  ],
+  "evaluation_kind": "REAL_NASA_HISTORICAL_OBSERVATIONAL_DATA",
+  "evaluation_name": "NASA OSDR OSD-569 / OSD-575 retrospective nonclinical biomarker screening audit",
+  "excluded_unverified_phenotype_or_qc_rows": 19,
+  "generalizability_to_future_astronauts": false,
+  "ground_truth_illness_labels_available": false,
+  "interpretation": "Counts are observations across correlated assays and four people, not independent events or diagnoses. Preflight holdouts measure method behavior on genuine preflight samples, NOT an empirical false-positive rate.",
+  "method": {
+    "apdra": "FROZEN_LEAVE_ONE_OUT_ALL_SAME_SIGN_SCREEN",
+    "inflight_data_interpolated": false,
+    "median_only": "ABSOLUTE_CHANGE_FROM_PERSONAL_PREFLIGHT_MEDIAN",
+    "missing_values_imputed": false,
+    "npq_screen_threshold_abs_log2": 1.0,
+    "percent_screen_threshold": 30.0,
+    "postflight_reference_period": "PREFLIGHT_ONLY",
+    "preflight_placebo_reference_period": "OTHER_PREFLIGHT_ONLY",
+    "qc_review_sample_excluded_from_reference": "C003_whole-blood_L-92_cbc",
+    "synthetic_records_used": false,
+    "test_measurement_in_its_own_reference": false,
+    "thresholds_fit_on_nasa_data": false
+  },
+  "notes": [
+    "CMP and CBC reference intervals are contextual lab metadata, not clinical outcomes.",
+    "Alamar NPQ is relative log2-scale; no percent difference is calculated for this assay.",
+    "Eve panels are concentration assays and the 30-percent screening threshold is an arbitrary frozen research heuristic.",
+    "A baseline-sensitive flag is not evidence of a false alarm or a wrong diagnosis.",
+    "All original source values and missingness remain unchanged."
+  ],
+  "numeric_source_rows_after_qc": 8764,
+  "original_missing_source_rows": 30,
+  "original_numeric_source_rows": 8783,
+  "overall_postflight_screening": {
+    "above_source_interval": 9,
+    "apdra_consistent_flags": 557,
+    "assessable_observations": 5130,
+    "baseline_sensitive_screens": 924,
+    "below_source_interval": 8,
+    "insufficient_reference_or_undefined": 7,
+    "loo_consistent_fraction_of_assessable": 0.10857699805068226,
+    "median_flag_fraction_of_assessable": 0.16159844054580896,
+    "median_flags_baseline_sensitive_fraction": 0.3281061519903498,
+    "median_flags_not_loo_consistent": 272,
+    "median_only_flags": 829,
+    "source_interval_present": 602
+  },
+  "overall_preflight_placebo": {
+    "screening": {
+      "above_source_interval": 6,
+      "apdra_consistent_flags": 386,
+      "assessable_observations": 3177,
+      "baseline_sensitive_screens": 794,
+      "below_source_interval": 7,
+      "insufficient_reference_or_undefined": 450,
+      "loo_consistent_fraction_of_assessable": 0.12149826880705068,
+      "median_flag_fraction_of_assessable": 0.23197985520931697,
+      "median_flags_baseline_sensitive_fraction": 0.4762550881953867,
+      "median_flags_not_loo_consistent": 351,
+      "median_only_flags": 737,
+      "source_interval_present": 390
+    },
+    "withheld_preflight_observations": 3627
+  },
+  "participants": [
+    "C001",
+    "C002",
+    "C003",
+    "C004"
+  ],
+  "per_subject": {
+    "C001": {
+      "above_source_interval": 1,
+      "apdra_consistent_flags": 138,
+      "assessable_observations": 1283,
+      "baseline_sensitive_screens": 227,
+      "below_source_interval": 0,
+      "insufficient_reference_or_undefined": 1,
+      "loo_consistent_fraction_of_assessable": 0.10756040530007795,
+      "median_flag_fraction_of_assessable": 0.1597817614964926,
+      "median_flags_baseline_sensitive_fraction": 0.32682926829268294,
+      "median_flags_not_loo_consistent": 67,
+      "median_only_flags": 205,
+      "source_interval_present": 151
+    },
+    "C002": {
+      "above_source_interval": 0,
+      "apdra_consistent_flags": 140,
+      "assessable_observations": 1279,
+      "baseline_sensitive_screens": 201,
+      "below_source_interval": 3,
+      "insufficient_reference_or_undefined": 3,
+      "loo_consistent_fraction_of_assessable": 0.10946051602814699,
+      "median_flag_fraction_of_assessable": 0.14464425332290853,
+      "median_flags_baseline_sensitive_fraction": 0.24324324324324326,
+      "median_flags_not_loo_consistent": 45,
+      "median_only_flags": 185,
+      "source_interval_present": 147
+    },
+    "C003": {
+      "above_source_interval": 2,
+      "apdra_consistent_flags": 167,
+      "assessable_observations": 1284,
+      "baseline_sensitive_screens": 229,
+      "below_source_interval": 3,
+      "insufficient_reference_or_undefined": 1,
+      "loo_consistent_fraction_of_assessable": 0.13006230529595014,
+      "median_flag_fraction_of_assessable": 0.19626168224299065,
+      "median_flags_baseline_sensitive_fraction": 0.3373015873015873,
+      "median_flags_not_loo_consistent": 85,
+      "median_only_flags": 252,
+      "source_interval_present": 152
+    },
+    "C004": {
+      "above_source_interval": 6,
+      "apdra_consistent_flags": 112,
+      "assessable_observations": 1284,
+      "baseline_sensitive_screens": 267,
+      "below_source_interval": 2,
+      "insufficient_reference_or_undefined": 2,
+      "loo_consistent_fraction_of_assessable": 0.08722741433021806,
+      "median_flag_fraction_of_assessable": 0.14563862928348908,
+      "median_flags_baseline_sensitive_fraction": 0.40106951871657753,
+      "median_flags_not_loo_consistent": 75,
+      "median_only_flags": 187,
+      "source_interval_present": 152
+    }
+  },
+  "per_timepoint": {
+    "R+1": {
+      "above_source_interval": 3,
+      "apdra_consistent_flags": 72,
+      "assessable_observations": 1283,
+      "baseline_sensitive_screens": 254,
+      "below_source_interval": 1,
+      "insufficient_reference_or_undefined": 1,
+      "loo_consistent_fraction_of_assessable": 0.05611847233047545,
+      "median_flag_fraction_of_assessable": 0.11379579111457522,
+      "median_flags_baseline_sensitive_fraction": 0.5068493150684932,
+      "median_flags_not_loo_consistent": 74,
+      "median_only_flags": 146,
+      "source_interval_present": 151
+    },
+    "R+194": {
+      "above_source_interval": 4,
+      "apdra_consistent_flags": 160,
+      "assessable_observations": 1282,
+      "baseline_sensitive_screens": 225,
+      "below_source_interval": 1,
+      "insufficient_reference_or_undefined": 4,
+      "loo_consistent_fraction_of_assessable": 0.12480499219968799,
+      "median_flag_fraction_of_assessable": 0.17394695787831513,
+      "median_flags_baseline_sensitive_fraction": 0.2825112107623318,
+      "median_flags_not_loo_consistent": 63,
+      "median_only_flags": 223,
+      "source_interval_present": 150
+    },
+    "R+45": {
+      "above_source_interval": 2,
+      "apdra_consistent_flags": 121,
+      "assessable_observations": 1282,
+      "baseline_sensitive_screens": 235,
+      "below_source_interval": 4,
+      "insufficient_reference_or_undefined": 1,
+      "loo_consistent_fraction_of_assessable": 0.09438377535101404,
+      "median_flag_fraction_of_assessable": 0.1372854914196568,
+      "median_flags_baseline_sensitive_fraction": 0.3125,
+      "median_flags_not_loo_consistent": 55,
+      "median_only_flags": 176,
+      "source_interval_present": 150
+    },
+    "R+82": {
+      "above_source_interval": 0,
+      "apdra_consistent_flags": 204,
+      "assessable_observations": 1283,
+      "baseline_sensitive_screens": 210,
+      "below_source_interval": 2,
+      "insufficient_reference_or_undefined": 1,
+      "loo_consistent_fraction_of_assessable": 0.15900233826968044,
+      "median_flag_fraction_of_assessable": 0.22135619641465315,
+      "median_flags_baseline_sensitive_fraction": 0.28169014084507044,
+      "median_flags_not_loo_consistent": 80,
+      "median_only_flags": 284,
+      "source_interval_present": 151
+    }
+  },
+  "real_nasa_training_of_continuous_17ch_cnn": false,
+  "real_nasa_validation_of_continuous_17ch_cnn": false,
+  "sensitivity_specificity_roc_auc_estimable": false,
+  "source_manifest_sha256": "265b9471f32204d324fa156bc33396af6782421c61bc019772db9ea1e69e3766"
+}
