@@ -26,6 +26,7 @@ from physiograph.live_review import build_live_review
 from physiograph.research_api import router as research_router
 from physiograph.engineering_sim import engineering_snapshot, SIGNALS as ENGINEERING_SIGNALS, CREW_IDS as ENGINEERING_CREW_IDS
 from physiograph.biomarker_detection import evaluate_engineering, combined_live_review, scripted_environment_review
+from physiograph.candidate_17ch_numpy import load_candidate_monitor
 from physiograph.context_monitor import LiveQualityMonitor, ContextReviewMonitor, CHECK_INTERVAL_S
 from physiograph.live_telemetry import (
     LiveStore, METRICS, SOURCE, TelemetryError, ConflictError, validate_sample,
@@ -96,6 +97,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
     api.state.store = LiveStore(max_per_subject=max_per_subject)
     api.state.hub = BroadcastHub()
     api.state.deep_learning = load_monitor(DEFAULT_CHECKPOINT if checkpoint_path is None else checkpoint_path)
+    api.state.candidate_17 = load_candidate_monitor()
     api.state.comparison = load_baseline(DEFAULT_BASELINE if baseline_path is None else baseline_path)
     api.state.latest_review: dict[str, dict] = {}
     api.state.multisystem_latest: dict[str, dict] = {}
@@ -118,6 +120,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         return {"service": "PHYSIOGRAPH_LIVE", "status": "READY",
                 "mode": "SIMULATION_ONLY", "analysis_status": "NOT_EVALUATED",
                 "deep_learning":api.state.deep_learning.model_status(),
+                 "candidate_17ch": api.state.candidate_17.model_status(),
                 "comparison": api.state.comparison.model_status(),
                 "context_monitor": 'ENABLED',
                 "auto_demo": auto_demo,
@@ -191,6 +194,15 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         if latest is None:
             raise HTTPException(404,"This fictional crew has not received a physiological simulator packet")
         return engineering_snapshot(subject_id,latest["sequence"])
+
+    @api.get("/api/live/candidate17/{subject_id}")
+    def candidate_17_latest(subject_id: str):
+        if subject_id not in ENGINEERING_CREW_IDS:
+            raise HTTPException(404, "Unknown fictional astronaut")
+        result=api.state.candidate_17.latest(subject_id)
+        if result is None:
+            raise HTTPException(404,"No 17-channel candidate analysis received")
+        return result
 
     @api.get("/api/live/multisystem/{subject_id}")
     def multisystem(subject_id: str):
@@ -307,6 +319,18 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                                           analysis,comparison,context_review,engineering)
             api.state.multisystem_latest[sample.subject_id]=combined
             result["multisystem"]=combined
+        try:
+            candidate17=api.state.candidate_17.process(sample)
+        except Exception as exc:
+            candidate17={
+                "subject_id":sample.subject_id,"sequence":sample.sequence,
+                "status":"MODEL_ERROR","clinical_validation":False,
+                "model_role":"PARALLEL_CANDIDATE_NOT_CLINICAL_TRIAGE",
+                "reason":type(exc).__name__
+            }
+        result["candidate_17ch"]=candidate17
+        if result.get("multisystem") is not None:
+            result["multisystem"]["candidate_17ch"]=candidate17
         result["deep_learning"]=analysis
         result["comparison"]=comparison
         result["live_review"]=review
@@ -315,7 +339,8 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                                      "deep_learning":analysis,
                                      "comparison":comparison,"live_review":review,
                                      'context_review':context_review,
-                                      'multisystem':result.get('multisystem')})
+                                      'multisystem':result.get('multisystem'),
+                                      'candidate_17ch':result.get('candidate_17ch')})
         return result
 
     @api.post("/api/live/ingest", status_code=201)
