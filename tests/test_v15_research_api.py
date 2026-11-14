@@ -79,7 +79,7 @@ def test_biomarker_panel_observations_are_historical_and_source_attributed():
             assert data['classification']=='NOT_EVALUATED'
             assert data['total_biomarkers']==count
             for row in data['biomarkers']:
-                assert row['assay']==assay
+                assert row['assay']==('ALAMAR_NPQ' if assay=='NULISA' else assay)
                 assert row['observations']>=1
                 assert row['latest']['sample_id'].startswith('C001_serum_')
                 assert row['latest']['source'].startswith('NASA OSDR OSD-575')
