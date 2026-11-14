@@ -42,3 +42,12 @@ test('Histories have ordered, unique indices and distinct astronaut baselines',(
 test('Invalid scenario identifiers cannot generate invented outputs',()=>{
   assert.throws(()=>scenarioAt('SIM_CREW_01','malicious',0),/Unknown training scenario/);
 });
+
+test('Four-tier scripted status progresses and recovers without classifying labs',()=>{
+  const levels=[0,14,22,35,64].map(t=>scenarioAt('SIM_CREW_01','oxygenation',t).severity);
+  assert.deepEqual(levels,['OPTIMAL','CHECK','WARNING','CRITICAL','OPTIMAL']);
+  const peak=scenarioAt('SIM_CREW_01','oxygenation',35);
+  assert.equal(peak.metric_levels.spo2_percent,'CRITICAL');
+  assert.equal(peak.metric_levels.core_temp_c,'OPTIMAL');
+  assert.equal(peak.source,'SCRIPTED_TRAINING_SCENARIO');
+});
