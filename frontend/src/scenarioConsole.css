@@ -1,0 +1,63 @@
+/* Interactive, explicitly scripted mission-health training playback. */
+.hg6-scenario-console{position:relative;z-index:1;border:1px solid #32728a;background:linear-gradient(115deg,#102a42,#091a30);border-radius:15px;padding:16px 18px;margin:0 0 15px;color:#eaf9fc;box-shadow:0 12px 28px #0003}
+.hg6-scenario-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.hg6-scenario-heading-title{display:flex;align-items:center;gap:11px}
+.hg6-scenario-heading-title>svg{color:#3bd7d1}
+.hg6-scenario-heading h2{margin:0;font-size:15px;font-weight:750}
+.hg6-scenario-heading p{margin:4px 0 0;font-size:10px;color:#9bb8c7}
+.hg6-scenario-mode{font-size:9px;color:#a3d6da;border:1px solid #376581;background:#0e263c;padding:7px 10px;border-radius:16px;letter-spacing:.4px}
+.hg6-scenario-mode-active{color:#ffe0a0;border-color:#8e7245;background:#3b3027}
+.hg6-scenario-controls{display:flex;gap:14px;justify-content:space-between;align-items:end;flex-wrap:wrap}
+.hg6-scenario-chooser{display:flex;flex-direction:column;gap:5px;min-width:min(100%,280px);flex:1}
+.hg6-scenario-chooser>span{font-size:10px;color:#acd3df}
+.hg6-scenario-chooser select{background:#102e45;border:1px solid #477b93;border-radius:8px;padding:10px;color:#ecfbff;width:100%;font-size:12px}
+.hg6-scenario-actions{display:flex;flex-wrap:wrap;gap:8px}
+.hg6-scenario-actions button,.hg6-scenario-guidance button{display:flex;align-items:center;justify-content:center;gap:6px;border-radius:8px;padding:10px 12px;color:#e8faff;font-size:11px;font-weight:650;border:1px solid #40728b;cursor:pointer}
+.hg6-scenario-actions button:disabled{opacity:.4;cursor:not-allowed}
+.hg6-scenario-primary{background:#086b75!important;border-color:#27c9cb!important}
+.hg6-scenario-secondary{background:#14324b}
+.hg6-scenario-running{margin-top:16px;display:grid;gap:13px}
+.hg6-scenario-timeline{background:#0c2236;border:1px solid #2c536f;border-radius:11px;padding:13px}
+.hg6-scenario-timeline-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.hg6-scenario-timeline-top strong{font-size:13px}
+.hg6-scenario-timeline-top p{font-size:10px;color:#a8c5d3;margin:4px 0 0}
+.hg6-scenario-timer{font-variant-numeric:tabular-nums;color:#6ee1d7;font-size:12px;white-space:nowrap;font-weight:750}
+.hg6-scenario-track{height:8px;border-radius:8px;background:#294559;overflow:hidden;margin:13px 0 8px}
+.hg6-scenario-track>span{display:block;height:100%;background:#36d2ca;transition:width .4s linear}
+.hg6-scenario-stages{display:flex;justify-content:space-between;gap:5px;color:#708d9e;font-size:9px}
+.hg6-scenario-stages .passed{color:#73ddd7}
+.hg6-scenario-trigger{color:#8fb2c2;font-size:10px;margin:10px 0 0;line-height:1.5}
+.hg6-scenario-event{display:flex;align-items:center;gap:12px;padding:15px;border-radius:11px;border:1px solid #2a6676;background:#104044}
+.hg6-scenario-event-icon{width:43px;height:43px;display:grid;place-items:center;flex:none;border:1px solid #38b5b3;border-radius:50%;color:#b5f8ec}
+.hg6-scenario-event span{font-size:9px;letter-spacing:.6px;color:#80e4d4;font-weight:700}
+.hg6-scenario-event h3{font-size:15px;margin:5px 0}
+.hg6-scenario-event p{font-size:11px;color:#c1e4e2;line-height:1.55;margin:0}
+.hg6-scenario-event-alert{border-color:#f16e68;background:linear-gradient(110deg,#733034,#3f1b2b)}
+.hg6-scenario-event-alert .hg6-scenario-event-icon{color:#fff0ec;border-color:#ff9384;background:#a33b3b}
+.hg6-scenario-event-alert span{color:#ffbaa8}
+.hg6-scenario-live-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:9px}
+.hg6-scenario-metric{background:#0b263c;border:1px solid #355971;border-radius:9px;padding:12px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.hg6-scenario-metric span{font-size:10px;color:#bbd0da}
+.hg6-scenario-metric strong{font-size:clamp(15px,1.5vw,22px);font-variant-numeric:tabular-nums;color:#f6fdff;white-space:nowrap}
+.hg6-scenario-metric small{font-size:9px;color:#a6c0cf;font-weight:500}
+.hg6-scenario-metric em{font-size:9px;font-style:normal;color:#82bfbe}
+.hg6-scenario-metric-alert{border-color:#f8756a;background:#5b222e;box-shadow:0 0 20px #f03b4329}
+.hg6-scenario-metric-alert strong,.hg6-scenario-metric-alert em{color:#ffb8a4}
+.hg6-scenario-guidance{display:flex;align-items:center;justify-content:space-between;gap:14px;background:#0b293d;border-radius:11px;border:1px solid #32617d;padding:14px}
+.hg6-scenario-guidance strong{font-size:12px;display:flex;align-items:center;gap:8px;color:#b2f3e9}
+.hg6-scenario-guidance p{color:#b6cfda;font-size:11px;line-height:1.6;margin:6px 0 0}
+.hg6-scenario-guidance button{flex:none;background:#165c70}
+.hg6-scenario-idle{display:flex;align-items:center;gap:10px;color:#afcbd7;padding:13px 0 0}
+.hg6-scenario-idle svg{flex:none;color:#66d9cf}
+.hg6-scenario-idle p{font-size:11px;line-height:1.5;margin:0}
+.hg6-scenario-alarm{border-color:#ff7771;box-shadow:0 0 0 1px #de5f554a,0 10px 40px #932f3b3b}
+.hg6-scenario-alarm .hg6-scenario-mode{background:#65292d;border-color:#ff7468;color:#ffe0d9}
+.hg6-alert-training{border-color:#ed7972!important;background:linear-gradient(125deg,#87363e,#481f2e)!important}
+.hg6-alert-training .hg6-alert-symbol{background:#9a373e;border-color:#f89c8c}
+.hg6-selected-training .hg6-summary-row strong{transition:color .15s}
+.hg6-selected-training .hg6-summary-row strong.hg6-flagged{color:#ffaaa0}
+.hg6-vital-lines button.hg6-vital-flagged{background:#4c2130;border-bottom-color:#91535a}
+.hg6-vital-lines button.hg6-vital-flagged strong{color:#ffaaa0}
+@media(max-width:1050px){.hg6-scenario-live-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.hg6-scenario-console{padding:13px}.hg6-scenario-heading,.hg6-scenario-timeline-top{align-items:flex-start;flex-direction:column}.hg6-scenario-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hg6-scenario-guidance{align-items:stretch;flex-direction:column}.hg6-scenario-actions button{flex:1}}
+@media(prefers-reduced-motion:reduce){.hg6-scenario-track>span{transition:none}}
