@@ -120,6 +120,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                 "auto_demo": auto_demo,
                 "auto_demo_error":getattr(api.state,"auto_demo_error",None),
                 "auto_demo_speed": auto_speed if auto_demo else None,
+                "demo_crew_subjects": ["SIM_CREW_01", "SIM_CREW_02", "SIM_CREW_03", "SIM_CREW_04"] if auto_demo else [],
                 "public_mode": public_mode,
                 "public_ingest": 'API_KEY_REQUIRED' if public_mode and ingest_key else
                                  'DISABLED' if public_mode else 'LOCAL_DEVELOPMENT_ONLY'}
@@ -283,27 +284,44 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         return await process_packet(packet)
 
     async def run_internal_demo():
-        from tools.replay_live_demo import generate_packets
+        """Four independent fictional sources, each with its own sequence and clock.
+
+        Keep total simulation throughput at auto_speed packets/second rather
+        than multiplying CPU-heavy model inference by four. Each astronaut gets
+        an update every 4/auto_speed seconds, with one simulated second elapsed.
+        """
+        from tools.replay_live_demo import CREW_PROFILES, generate_packets
+
         origin = datetime.now(timezone.utc).replace(microsecond=0)
+        crew_ids = tuple(CREW_PROFILES)
+        scenario_modes = (
+            ("normal", "activity", "excursion", "artifact"),
+            ("normal", "normal", "activity", "excursion"),
+            ("normal", "excursion", "activity", "normal"),
+            ("normal", "artifact", "excursion", "activity"),
+        )
         tick = 0
-        modes = ("normal", "activity", "excursion", "artifact")
-        cycle = 0
         try:
             while True:
-                mode = modes[cycle % len(modes)]
-                for p in generate_packets(subject="SIM_CREW_01", count=180,
-                                          start=origin + timedelta(seconds=tick), mode=mode):
-                    p["sequence"] += tick
-                    # No external authentication bypass: this task is created
-                    # inside this server and publishes simulation-only packets.
-                    await process_packet(PacketIn.model_validate(p))
+                for crew_index, subject_id in enumerate(crew_ids):
+                    # Every stream has distinct baseline/phase, declared
+                    # activity scenario, ordering and model history.
+                    cycle, segment = divmod(tick, 180)
+                    mode = scenario_modes[crew_index][cycle % len(scenario_modes[crew_index])]
+                    # Generate just this sequence's sample deterministically by
+                    # using the same 180-point scenario as the legacy replay.
+                    packet = next(p for i, p in enumerate(generate_packets(
+                        subject=subject_id, count=180,
+                        start=origin + timedelta(seconds=cycle * 180),
+                        mode=mode,
+                    )) if i == segment)
+                    packet["sequence"] = tick
+                    await process_packet(PacketIn.model_validate(packet))
                     await asyncio.sleep(1.0 / auto_speed)
-                tick += 180
-                cycle += 1
+                tick += 1
         except asyncio.CancelledError:
             raise
         except Exception:
-            # Fail closed rather than falsely reporting a healthy auto-demo.
             api.state.auto_demo_error = "INTERNAL_DEMO_STOPPED"
             raise
 
