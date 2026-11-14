@@ -6,17 +6,19 @@ import './scenarioConsole.css';
 
 export default function ScenarioConsole({
   person, scenarioId, onSelectScenario, onStart, onPause, onReset, onExit,
-  running, elapsed, sample, soundEnabled, onToggleSound, onSpeak
+  running, elapsed, sample, scenarioPending=false, scenarioError='', soundEnabled, onToggleSound, onSpeak
 }){
   const scenario=SCENARIOS.find(s=>s.id===scenarioId);
   const active=Boolean(scenario);
   const alert=Boolean(sample?.alert);
   const tier=sample?.severity||'OPTIMAL';
+  const detector=sample?.model_evidence?.candidate_17ch;
+  const review=sample?.model_evidence?.unified;
   return <section className={'hg6-scenario-console '+(alert?'hg6-scenario-alarm':'')} aria-label="Interactive simulated emergency training">
     <div className="hg6-scenario-heading">
       <div className="hg6-scenario-heading-title">
         <Icon name="activity" size={19}/>
-        <div><h2>Interactive Scenario Lab</h2><p>Scripted training playback · {person.name} · not a medical system</p></div>
+        <div><h2>Interactive Scenario Lab</h2><p>Server-generated training playback and AI evidence · {person.name} · not a medical system</p></div>
       </div>
       <span className={'hg6-scenario-mode '+(active?'hg6-scenario-mode-active':'')}>{active?'TRAINING SIMULATION':'LIVE SIMULATOR VIEW'}</span>
     </div>
@@ -32,6 +34,8 @@ export default function ScenarioConsole({
         <button type="button" onClick={onToggleSound} aria-pressed={soundEnabled} className="hg6-scenario-secondary"><Icon name={soundEnabled?'volume':'mute'} size={15}/>{soundEnabled?'Audio on':'Audio off'}</button>
       </div>
     </div>
+    {active&&scenarioError&&<p role="alert" className="hg6-scenario-backend-error">Backend scenario unavailable: {scenarioError}. No local data or AI results are substituted.</p>}
+    {active&&scenarioPending&&<p role="status" className="hg6-scenario-backend-status">Evaluating scenario measurements with the trained backend CNN…</p>}
     {active?<div className="hg6-scenario-running">
       <div className="hg6-scenario-tier"><strong>Scripted training status</strong><div>{['OPTIMAL','CHECK','WARNING','CRITICAL'].map(level=><span key={level} className={'hg6-tier-'+level.toLowerCase()+(level===tier?' active':'')}>{level}</span>)}</div><small>Illustrative progression only. No medically validated severity thresholds.</small></div>
       <div className="hg6-scenario-timeline">
@@ -42,7 +46,7 @@ export default function ScenarioConsole({
       </div>
       <div className={'hg6-scenario-event '+(alert?'hg6-scenario-event-alert':'')}>
         <div className="hg6-scenario-event-icon"><Icon name={alert?'alert':'shield'} size={22}/></div>
-        <div><span>{alert?'SIMULATED ALERT · ACTION REVIEW':elapsed>=SCENARIO_LENGTH?'SCENARIO COMPLETE':'SCRIPTED MONITORING'}</span><h3>{alert?'Physiological pattern deviation':sample?.stage||'Baseline'}</h3><p>{sample?.reason||'The fictional telemetry will change once playback begins.'}</p></div>
+        <div><span>{alert?'SIMULATED ALERT · ACTION REVIEW':elapsed>=SCENARIO_LENGTH?'SCENARIO COMPLETE':'SCRIPTED MONITORING'}</span><h3>{alert?'Scripted training deviation':sample?.stage||'Awaiting backend data'}</h3><p>{sample?.reason||'The fictional telemetry will change once playback begins.'}</p></div>
       </div>
       <div className="hg6-scenario-live-grid">
         {METRICS.map(metric=><div key={metric.key} className={'hg6-scenario-metric hg6-scenario-metric-'+(sample?.metric_levels?.[metric.key]||'OPTIMAL').toLowerCase()}>
@@ -61,10 +65,22 @@ export default function ScenarioConsole({
           <em>{sample.engineering_flags?.[key]?'SCRIPTED DEVIATION':'ILLUSTRATIVE'}</em>
         </div>)}</div>
       </div>}
+      <div className="hg6-scenario-backend-evidence">
+        <strong>Backend anomaly detector · 17 synchronized synthetic channels</strong>
+        {detector?<div className="hg6-scenario-model-details">
+          <span>17-channel CNN: <b>{detector.status==='MODEL_FLAG'?'Anomalous pattern flagged':detector.status==='NO_MODEL_FLAG'?'No novelty flag':detector.status}</b></span>
+          <span>5-channel CNN: <b>{sample.model_evidence?.five_channel_cnn?.status||'Unavailable'}</b></span>
+          <span>Covariance detector: <b>{sample.model_evidence?.statistical_comparator?.status||'Unavailable'}</b></span>
+          <span>Unified PhysioAlert: <b>{review?.status||'Not evaluated'} (training attention)</b></span>
+          {typeof detector.reconstruction_error==='number'&&<span>CNN reconstruction error: <b>{detector.reconstruction_error.toFixed(5)}</b></span>}
+          {detector.largest_reconstruction_errors?.length>0&&<span>Largest reconstruction residual: <b>{detector.largest_reconstruction_errors[0].channel.replaceAll('_',' ')}</b></span>}
+        </div>:<p>Awaiting a source-matched backend model evaluation.</p>}
+        <small>The current scripted alarm clears when its triggering readings recover. The CNN's 60-second window may retain earlier abnormal samples.</small>
+      </div>
       <div className="hg6-scenario-guidance"><div><strong><Icon name="shield" size={16}/> Training response guidance</strong><p>{scenario.guidance}</p></div><button type="button" onClick={onSpeak}><Icon name="volume" size={16}/> Speak guidance</button></div>
     </div>:<div className="hg6-scenario-idle">
       <Icon name="shield" size={20}/>
-      <p>Select a scenario to replay a developing change in the selected astronaut’s vital signs. The scenario runs locally and does not overwrite backend sensor packets or PhysioAlert model results.</p>
+      <p>Select a scenario to replay a developing change in the selected astronaut’s vital signs. Scenario readings and model evidence come from an isolated server replay. It does not overwrite normal crew telemetry or model histories.</p>
     </div>}
   </section>;
 }
