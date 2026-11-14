@@ -13,6 +13,14 @@ export const ENVIRONMENTS = [
   { id:'mars_base', name:'Mars habitat', detail:'Mars surface base', summary:'Extended-duration isolation and remote support' }
 ];
 
+const CREW_NAMES = {
+  SIM_CREW_01:'Cmdr. Elena Park',
+  SIM_CREW_02:'Dr. Marcus Reed',
+  SIM_CREW_03:'Lt. Aisha Khan',
+  SIM_CREW_04:'Spc. Daniel Cho'
+};
+const crewNumber = id => String(Object.keys(CREW_NAMES).indexOf(id)+1).padStart(2,'0');
+
 const ZONES = [
   { id:'cardiac', name:'Cardiovascular', tag:'Heart', keys:['heart_rate_bpm','hrv_rmssd_ms'], description:'Heart rate and HRV are the two monitored signals most directly relevant to this region. They do not assess cardiac disease or determine cardiovascular fitness.', guidance:'Confirm the wearable has a stable signal, review trends, and compare with the stated activity context.' },
   { id:'respiratory', name:'Respiratory', tag:'Lungs', keys:['spo2_percent','respiratory_rate_bpm'], description:'Oxygen saturation and respiratory rate are available as simulated physiological measurements. These alone cannot diagnose a respiratory disorder.', guidance:'Verify sensor placement and review the trend over time before drawing any conclusion.' },
@@ -86,10 +94,10 @@ export function BodyExplorer({samples=[],snapshot,selected='SIM_CREW_01',review,
   useEffect(()=>{setGraphKey(zone.keys[0]||'')},[zoneId]);
   const graphMetric=METRICS.find(m=>m.key===graphKey);
   return <div className="hg-page">
-    <div className="hg-heading"><div><p className="hg-overline">HEALTHGUARD / INTERACTIVE ANATOMY</p><h1>Explore the body<span className="accent-punct">.</span></h1><p>Explore related physiological signals without inferring organ health from unvalidated models.</p></div><EnvironmentPicker value={environment} onChange={onEnvironment} compact/></div>
+    <div className="hg-heading"><div><p className="hg-overline">HEALTHGUARD / INTERACTIVE ANATOMY</p><h1>Explore the body<span className="accent-punct">.</span></h1><p>Selected fictional astronaut: <strong>{CREW_NAMES[selected]||selected}</strong>. Explore related physiological signals without inferring organ health from unvalidated models.</p></div><EnvironmentPicker value={environment} onChange={onEnvironment} compact/></div>
     <div className="hg-anatomy-grid">
       <section className="hg-surface hg-3d-panel">
-        <div className="hg-panel-top"><div><span className="hg-eyebrow">INTERACTIVE CREW MODEL</span><h2>Human systems explorer</h2></div><span className="hg-pill">3D EDUCATIONAL MODEL</span></div>
+        <div className="hg-panel-top"><div><span className="hg-eyebrow">INTERACTIVE CREW MODEL</span><h2>Human systems explorer · Crew {crewNumber(selected)}</h2></div><span className="hg-pill">3D EDUCATIONAL MODEL</span></div>
         <AnatomyScene selected={zoneId} onSelect={setZoneId}/>
         <div className="hg-zone-tabs" aria-label="Anatomical regions">{ZONES.map(z=><button key={z.id} type="button" aria-pressed={zoneId===z.id} className={zoneId===z.id?'active':''} onClick={()=>setZoneId(z.id)}>{z.tag}</button>)}</div>
       </section>
@@ -149,8 +157,8 @@ export function MissionHUD({snapshot,selected,samples,review,connection,environm
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const metric=METRICS.find(x=>x.key===metricKey)||METRICS[0];
   return <div className="hg-hud hg-page">
-    <div className="hg-hud-top"><div><p className="hg-overline">HEALTHGUARD / FULL-SCREEN DISPLAY</p><h1>Mission HUD</h1><p>{env.name} · Crew telemetry simulation</p></div><div className="hg-hud-actions"><EnvironmentPicker value={environment} onChange={onEnvironment} compact/><button className="hg-ghost-btn" type="button" onClick={onExit}>Back to dashboard</button></div></div>
-    <div className="hg-hud-grid"><div className="hg-surface hg-hud-body"><div className="hg-panel-top"><h2>CREW / 01</h2><span className="hg-pill">SIMULATED SUBJECT</span></div><AnatomyScene selected="cardiac" onSelect={()=>{}}/><div className="hg-hud-label">ROTATABLE EDUCATIONAL MODEL · NOT A MEDICAL SCAN</div></div><div className="hg-hud-right"><div className="hg-hud-vitals">{METRICS.map(m=><button type="button" key={m.key} className={metricKey===m.key?'active':''} onClick={()=>setMetricKey(m.key)}><span>{m.short}</span><strong>{formatValue(last?.values?.[m.key],m.digits)} <small>{m.unit}</small></strong></button>)}</div><div className="hg-surface hg-hud-chart"><div className="hg-panel-top"><h2>{metric.label}</h2><span className="hg-pill">{connection==='connected'?'STREAM CONNECTED':'RECONNECTING'}</span></div><VitalChart data={samples} metric={metric}/></div><div className="hg-surface hg-hud-review"><span className="hg-eyebrow">PHYSIOALERT / CURRENT REVIEW</span><h2>{friendlyStatus(review?.status)}</h2><p>{review?.reason||'Collecting simulated evidence.'}</p></div></div></div>
+    <div className="hg-hud-top"><div><p className="hg-overline">HEALTHGUARD / FULL-SCREEN DISPLAY</p><h1>Mission HUD</h1><p>{env.name} · {CREW_NAMES[selected]||selected} · Fictional crew telemetry simulation</p></div><div className="hg-hud-actions"><EnvironmentPicker value={environment} onChange={onEnvironment} compact/><button className="hg-ghost-btn" type="button" onClick={onExit}>Back to dashboard</button></div></div>
+    <div className="hg-hud-grid"><div className="hg-surface hg-hud-body"><div className="hg-panel-top"><h2>CREW / {crewNumber(selected)}</h2><span className="hg-pill">{CREW_NAMES[selected]||selected} · SIMULATED SUBJECT</span></div><AnatomyScene selected="cardiac" onSelect={()=>{}}/><div className="hg-hud-label">ROTATABLE EDUCATIONAL MODEL · NOT A MEDICAL SCAN</div></div><div className="hg-hud-right"><div className="hg-hud-vitals">{METRICS.map(m=><button type="button" key={m.key} className={metricKey===m.key?'active':''} onClick={()=>setMetricKey(m.key)}><span>{m.short}</span><strong>{formatValue(last?.values?.[m.key],m.digits)} <small>{m.unit}</small></strong></button>)}</div><div className="hg-surface hg-hud-chart"><div className="hg-panel-top"><h2>{metric.label}</h2><span className="hg-pill">{connection==='connected'?'STREAM CONNECTED':'RECONNECTING'}</span></div><VitalChart data={samples} metric={metric}/></div><div className="hg-surface hg-hud-review"><span className="hg-eyebrow">PHYSIOALERT / CURRENT REVIEW</span><h2>{friendlyStatus(review?.status)}</h2><p>{review?.reason||'Collecting simulated evidence.'}</p></div></div></div>
     <p className="hg-boundary">HUD demonstration only. No spacesuit, rover navigation, radiation or environmental sensor connection exists.</p>
   </div>;
 }
