@@ -1,0 +1,43 @@
+{
+  "osd575_cmp_long": {
+    "records": 509,
+    "subjects": 4,
+    "distinct_biomarkers": 19,
+    "postflight_measurements": 291,
+    "reference_groups_with_2_samples": 0,
+    "reference_groups_with_3_samples": 72,
+    "median_only_flagged": 25,
+    "median_only_not_consistently_loo_flagged": 7,
+    "median_only_unstable_fraction": 0.28,
+    "apdra_status_counts": {
+      "No consistent screening deviation": 252,
+      "Baseline-sensitive screen": 17,
+      "Consistent screening deviation (higher)": 10,
+      "Consistent screening deviation (lower)": 8,
+      "Insufficient baseline for stability check": 4
+    },
+    "threshold_percent_cmp": 30.0,
+    "threshold_log2_npq": 1.0,
+    "description": "Observational case counts, not independent subjects; no clinical labels."
+  },
+  "osd575_alamar_npq_long": {
+    "records": 5481,
+    "subjects": 4,
+    "distinct_biomarkers": 203,
+    "postflight_measurements": 3248,
+    "reference_groups_with_2_samples": 203,
+    "reference_groups_with_3_samples": 609,
+    "median_only_flagged": 170,
+    "median_only_not_consistently_loo_flagged": 61,
+    "median_only_unstable_fraction": 0.3588235294117647,
+    "apdra_status_counts": {
+      "No consistent screening deviation": 2776,
+      "Baseline-sensitive screen": 363,
+      "Consistent screening deviation (lower)": 83,
+      "Consistent screening deviation (higher)": 26
+    },
+    "threshold_percent_cmp": 30.0,
+    "threshold_log2_npq": 1.0,
+    "description": "Observational case counts, not independent subjects; no clinical labels."
+  }
+}

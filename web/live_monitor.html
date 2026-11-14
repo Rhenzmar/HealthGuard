@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PhysioGraph | Live Neural Monitor</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;background:#061018;color:#e5f2f6}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 10% 0%,#11334788,transparent 40%),linear-gradient(120deg,#07141e,#07121b 65%,#0c1922)}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;border-bottom:1px solid #21404b;padding:20px max(26px,calc((100vw - 1250px)/2))}
+.logo{display:flex;align-items:center;gap:13px;font-size:19px;font-weight:800;letter-spacing:2px}.brandmark{font-size:26px;color:#4ce1d5}
+.subtitle{color:#819fac;font-size:12px;font-weight:500;letter-spacing:0}.tag{display:inline-block;border:1px solid #34717b;color:#5cdbd0;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:.05em}
+main{max-width:1250px;margin:0 auto;padding:25px 26px 50px}.top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+h1{font-size:23px;margin:0 0 6px}p{margin:0;color:#a8c0c8;line-height:1.55}.panel{background:#0a1c28ed;border:1px solid #244452;border-radius:14px;padding:18px;min-width:0}
+.controls{display:flex;align-items:center;gap:9px;flex-wrap:wrap}select,button{background:#102a39;color:#e5f5f7;border:1px solid #326074;border-radius:8px;padding:9px 12px;font-size:13px;cursor:pointer}button:hover,select:hover{border-color:#65d7d6}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-bottom:15px}.stat{background:#102430;border:1px solid #2a4b58;border-radius:12px;padding:15px}.stat .name{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#91b2bf}.stat .value{font-size:29px;font-weight:750;margin-top:7px}.stat .unit{font-size:12px;color:#a5bcc5;margin-left:3px}.stat .small{color:#6caeac;font-size:11px;margin-top:6px}
+.columns{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:15px}.stack{display:grid;gap:15px}.panel h2{margin:0 0 7px;font-size:15px}.minor{font-size:12px;color:#91a9b2}.visual{height:230px;width:100%;display:block;margin:13px 0}.narrow{height:142px}
+.cardtop{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.state{font-size:13px;display:inline-block;background:#103a35;border:1px solid #256e63;color:#8ae8c5;border-radius:8px;padding:6px 10px;font-weight:700}
+.state.warning{background:#492b21;border:1px solid #bb743b;color:#ffc486}.state.wait{background:#2c3440;color:#b2c7d3;border-color:#536374}
+.details{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}.details strong{display:block;font-size:16px;color:#f5fbfc}.details span{display:block;color:#93b0bc;font-size:11px;margin-bottom:4px}
+.notice{margin-top:15px;border:1px solid #3b5660;background:#15262f;border-radius:10px;padding:12px;font-size:12px;color:#b4cbd0}.footer{color:#8da7b0;font-size:11px;margin-top:18px}.warn{color:#ffce88}
+@media(max-width:840px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}.stat .value{font-size:23px}header{padding:18px 25px}}@media(max-width:440px){main{padding:16px}.stats{grid-template-columns:1fr 1fr}.logo{font-size:15px}}
+</style></head><body>
+<header><div class="logo"><span class="brandmark">◈</span><div>PHYSIOGRAPH<div class="subtitle">AI-assisted physiological pattern monitoring</div></div></div><span class="tag">SIMULATION ONLY · EXPERIMENTAL CNN</span></header>
+<main><div class="top"><div><h1>Live Neural Monitor</h1><p>Five-channel telemetry and learned sequence novelty, updated from the running local API.</p></div><div class="controls"><label class="minor" for="subject">Crew profile</label><select id="subject"><option value="">No simulation received</option></select><span id="connection" class="tag">Connecting...</span></div></div>
+<div class="stats" id="stats"></div>
+<div class="columns"><div class="stack"><section class="panel"><div class="cardtop"><div><h2>Physiological trend</h2><div class="minor">Measured simulation values, not historical NASA telemetry</div></div><select id="metric"><option value="heart_rate_bpm">Heart rate</option><option value="spo2_percent">Oxygen saturation</option><option value="respiratory_rate_bpm">Respiratory rate</option><option value="core_temp_c">Core temperature</option><option value="hrv_rmssd_ms">HRV (RMSSD)</option></select></div><svg class="visual" id="trend" viewBox="0 0 680 230" role="img" aria-label="Selected vital sign trend"></svg><div class="minor" id="range">No packets received yet</div></section>
+<section class="panel"><div class="cardtop"><div><h2>CNN reconstruction error</h2><div class="minor">Experimental model score across evaluated 60-second windows</div></div><span class="tag">1D CNN AUTOENCODER</span></div><svg class="visual narrow" id="modelchart" viewBox="0 0 680 142" role="img" aria-label="Model error and threshold"></svg><div class="minor" id="threshold">No evaluated sequence yet</div></section></div>
+<div class="stack"><section class="panel"><h2>Deep-learning assessment</h2><div class="minor">A model flag means only unusual reconstruction relative to synthetic training patterns.</div><div style="margin-top:16px"><span class="state wait" id="state">AWAITING DATA</span></div><p id="explanation" style="margin-top:13px;font-size:13px">Start the simulation replay to populate this monitor.</p><div class="details"><div><span>Reconstruction error</span><strong id="error">—</strong></div><div><span>Calibration threshold</span><strong id="limit">—</strong></div><div><span>Baseline</span><strong>45 samples</strong></div><div><span>Evaluation window</span><strong>60 samples</strong></div></div><div class="notice"><strong>Important:</strong> This is a software research demo. No disease, health status, emergency level, or treatment can be inferred from these scores.</div></section>
+<section class="panel"><h2>PhysioAlert Live Review</h2><div class="minor">Deterministic comparison of the experimental CNN and non-neural baseline. Not APDRA or clinical triage.</div><div style="margin-top:14px"><span class="state wait" id="reviewstatus">AWAITING DATA</span></div><p id="reviewreason" style="font-size:13px;margin-top:12px">Start telemetry replay to generate evidence.</p><div class="details"><div><span>Comparison score</span><strong id="baselineerror">—</strong></div><div><span>Comparison threshold</span><strong id="baselinethreshold">—</strong></div></div><p class="minor" id="reviewactions" style="margin-top:14px">No verification steps yet.</p></section>
+<section class="panel"><h2>Data and model provenance</h2><div class="details"><div><span>Data stream</span><strong>Simulated</strong></div><div><span>Sampling cadence</span><strong>1 Hz</strong></div><div><span>Training data</span><strong>Synthetic normal</strong></div><div><span>Clinical validation</span><strong class="warn">None</strong></div></div><p id="modelversion" style="font-size:12px;margin-top:14px">Checking local model status...</p></section></div></div>
+<div class="footer">NASA OSD-575 historical biomarker analysis remains in the separate APDRA research app. These two sources are never merged or mislabeled. The numerical novelty threshold is not a clinical reference interval.</div></main>
+<script>
+const feats={heart_rate_bpm:['HEART RATE','bpm',0],spo2_percent:['SpO₂','%',1],respiratory_rate_bpm:['RESP. RATE','br/min',1],core_temp_c:['CORE TEMP','°C',1],hrv_rmssd_ms:['HRV / RMSSD','ms',0]};
+const select=document.querySelector('#subject');const metric=document.querySelector('#metric');
+const $=id=>document.getElementById(id);
+const nfmt=(n,d=3)=>Number.isFinite(Number(n))?Number(n).toFixed(d):'—';
+const escapeText=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function get(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error(`${r.status}`);return r.json()}
+function draw(svgId,values,cutoff=null){let svg=$(svgId),w=680,h=svgId==='trend'?230:142,l=31,r=10,t=13,b=24;
+  if(!values.length){svg.innerHTML=`<text x="20" y="50" fill="#83a9b7" font-size="13">Awaiting readings</text>`;return}
+  const all=values.map(x=>x.v).concat(cutoff===null?[]:[cutoff]).filter(Number.isFinite),min=Math.min(...all),max=Math.max(...all),pad=Math.max((max-min)*.16,.002);
+  const ylo=Math.max(svgId==='modelchart'?0:-Infinity,min-pad),yhi=max+pad,x=i=>l+(i/Math.max(1,values.length-1))*(w-l-r),y=v=>t+(yhi-v)/(yhi-ylo)*(h-t-b);
+  let out='';for(let i=0;i<4;i++){let py=t+(h-t-b)*i/3;out+=`<line x1="${l}" x2="${w-r}" y1="${py}" y2="${py}" stroke="#2e4651" stroke-dasharray="3 6"/><text x="${l-6}" y="${py+4}" fill="#698d9d" text-anchor="end" font-size="10">${nfmt(yhi-(yhi-ylo)*i/3,svgId==='trend'?1:3)}</text>`}
+  if(cutoff!==null)out+=`<line x1="${l}" x2="${w-r}" y1="${y(cutoff)}" y2="${y(cutoff)}" stroke="#ffae63" stroke-dasharray="6 4" stroke-width="1.5"/>`;
+  let points=values.map((p,i)=>`${x(i).toFixed(2)},${y(p.v).toFixed(2)}`).join(' ');
+  out+=`<polyline points="${points}" fill="none" stroke="#48d4c8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><text x="${w-r}" y="${h-5}" fill="#7497a6" text-anchor="end" font-size="10">Newest →</text>`;
+  svg.innerHTML=out;
+}
+async function update(){try{
+ const snapshot=await get('/api/live/snapshot');const ids=Object.keys(snapshot.subjects||{});
+ const previous=select.value;select.innerHTML=ids.length?ids.map(id=>`<option value="${escapeText(id)}">${escapeText(id)}</option>`).join(''):'<option value="">No simulation received</option>';
+ if(ids.includes(previous))select.value=previous; const sid=select.value;
+ $('connection').textContent='API CONNECTED';$('connection').style.color='#64d9c6';
+ let model=await get('/api/live/dl/model');$('modelversion').textContent=model.status==='LOADED'?`Checkpoint: ${model.version} · threshold calibrated on held-out synthetic normal sequences`:`Model unavailable: ${model.reason||'Install PyTorch'}`;
+ if(!sid){$('stats').innerHTML=Object.entries(feats).map(([k,f])=>`<div class="stat"><div class="name">${f[0]}</div><div class="value">—</div><div class="small">Awaiting simulation</div></div>`).join('');draw('trend',[]);draw('modelchart',[]);return}
+ const h=await get('/api/live/history/'+encodeURIComponent(sid)+'?limit=150');const dh=await get('/api/live/dl/history/'+encodeURIComponent(sid)+'?limit=150');const review=await get('/api/live/review/'+encodeURIComponent(sid));const comparison=await get('/api/live/comparison/'+encodeURIComponent(sid));const latest=snapshot.subjects[sid].latest;
+ $('stats').innerHTML=Object.entries(feats).map(([key,f])=>`<div class="stat"><div class="name">${f[0]}</div><div class="value">${latest.values[key]===undefined?'—':nfmt(latest.values[key],f[2])}<span class="unit">${f[1]}</span></div><div class="small">${escapeText(latest.source)}</div></div>`).join('');
+ let k=metric.value;draw('trend',h.samples.filter(x=>x.values[k]!==undefined).map(x=>({v:Number(x.values[k])})));$('range').textContent=`${h.samples.length} retained samples · selected metric: ${feats[k][0]} · latest packet #${latest.sequence}`;
+ const results=dh.results||[];const evaluated=results.filter(x=>typeof x.reconstruction_error==='number');const last=results.at(-1);
+ $('reviewstatus').textContent=review.status.replaceAll('_',' ');
+ $('reviewstatus').className='state '+(['BOTH_MODELS_FLAG','MODELS_DISAGREE','CHECK_DATA_QUALITY'].includes(review.status)?'warning':review.status==='NO_MODEL_FLAG'?'':'wait');
+ $('reviewreason').textContent=review.reason;
+ $('reviewactions').textContent=(review.verification_actions||[]).map(x=>'• '+x).join('  ');
+ $('baselineerror').textContent=comparison.novelty_score===undefined?'—':nfmt(comparison.novelty_score,5);
+ $('baselinethreshold').textContent=comparison.calibration_threshold===undefined?'—':nfmt(comparison.calibration_threshold,5);
+ draw('modelchart',evaluated.map(x=>({v:x.reconstruction_error})),model.threshold??null);
+ $('threshold').textContent=`${evaluated.length} evaluated windows · orange dashed line: synthetic calibration cutoff`;
+ if(last){let flagged=last.status==='MODEL_FLAG';$('state').className='state '+(flagged?'warning':last.status==='NO_MODEL_FLAG'?'':'wait');$('state').textContent=last.status.replaceAll('_',' ');$('error').textContent=last.reconstruction_error===undefined?'—':nfmt(last.reconstruction_error,5);$('limit').textContent=last.calibration_threshold===undefined?'—':nfmt(last.calibration_threshold,5);
+ $('explanation').textContent=flagged?'Model reconstruction novelty flagged. Review the source measurements and data quality; this is not an emergency or diagnosis.':last.status==='NO_MODEL_FLAG'?'No pattern novelty flag at this moment. This does not establish that the astronaut is healthy.':last.reason||`Collection in progress (${last.progress||0}/${last.required||60}). No inference yet.`}
+}catch(e){$('connection').textContent='API DISCONNECTED';$('connection').style.color='#f8b17f';$('explanation').textContent='Unable to load current data: '+e.message}}
+metric.addEventListener('change',update);select.addEventListener('change',update);update();setInterval(update,1200);
+</script></body></html>

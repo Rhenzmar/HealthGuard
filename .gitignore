@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.streamlit/secrets.toml
+data/raw/
+data/private/
+*.sqlite
+*.db
+
+# External ICU recordings are downloaded locally for research, never committed.
+data/external/
+research/external_bidmc_v13/cnn3_research.pt
+research/external_bidmc_v13/cov3_research.npz

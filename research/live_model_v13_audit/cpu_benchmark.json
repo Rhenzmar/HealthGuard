@@ -1,0 +1,14 @@
+{
+  "measurement": "local CPU process only, not Railway/Render production",
+  "torch_version": "2.10.0+cpu",
+  "torch_initialization_and_load_ms": 5.30820699987089,
+  "rss_before_model_load_mib": 252.2265625,
+  "rss_after_warmup_mib": 255.08984375,
+  "cnn_inference_p50_ms": 0.18447050024406053,
+  "cnn_inference_p95_ms": 0.30878729999130844,
+  "covariance_p50_ms": 0.05352000016500824,
+  "covariance_p95_ms": 0.10042560052170299,
+  "checkpoint_bytes": 18841,
+  "statistical_artifact_bytes": 3523,
+  "caveat": "Memory and latency change with hosting, Python version, concurrency and traffic."
+}

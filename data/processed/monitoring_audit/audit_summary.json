@@ -1,0 +1,16 @@
+{
+  "app": "PHYSIOGRAPH v0.9",
+  "input": "data/templates/measurements_template.csv",
+  "subject_codes": 1,
+  "measurements": 8,
+  "biomarker_assay_series": 2,
+  "latest_nonbaseline_observations": 2,
+  "observations_for_verification": 1,
+  "review_events_loaded": 0,
+  "review_reasons": {
+    "Review observed deviation": 1,
+    "No current verification prompt": 1
+  },
+  "algorithm": "Frozen APDRA baseline-omission screening + nonclinical PhysioAlert",
+  "warning": "No disease diagnoses or NASA-certified medical protocols. Unflagged is not proof of normal health."
+}

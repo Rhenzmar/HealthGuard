@@ -1,0 +1,19 @@
+{
+  "model": "shrinkage-covariance novelty baseline",
+  "seed": 271828,
+  "calibration_threshold": 0.6256486147035225,
+  "train_normal_episodes": 1800,
+  "validation_normal_episodes": 400,
+  "held_out_normal_episodes": 400,
+  "held_out_normal_false_flag_rate": 0.0525,
+  "held_out_injected_flag_rate": {
+    "MULTISIGNAL_SHIFT": 1.0,
+    "OXYGEN_RESPIRATION": 1.0,
+    "SUSTAINED_TEMPERATURE": 1.0,
+    "AUTONOMIC_PATTERN": 1.0,
+    "SHORT_TRANSIENT": 1.0,
+    "SUBTLE_DRIFT": 0.71,
+    "LOW_MAGNITUDE_TRANSIENT": 0.75
+  },
+  "note": "Generated synthetic profiles only; generator-family sharing limits generalization and makes this comparison exploratory. No clinical accuracy is inferred."
+}

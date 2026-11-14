@@ -1,0 +1,92 @@
+{
+  "version": "APDRA v0.7 retrospective final methods audit",
+  "status": "Exploratory/post-hoc robustness evaluation. Not preregistered; no clinical labels.",
+  "n_seed_replicates": 24,
+  "seed_first": 1729,
+  "seed_last": 1752,
+  "n_calibration_cases_each_run": 3000,
+  "n_heldout_cases_each_run": 3000,
+  "null_target_fpr": 0.05,
+  "shift_magnitude_AU": 45.0,
+  "baseline_sample_counts": [
+    2,
+    3
+  ],
+  "scenarios": {
+    "low_noise": [
+      5.0,
+      5.0,
+      0.0
+    ],
+    "moderate_noise": [
+      10.0,
+      10.0,
+      0.0
+    ],
+    "baseline_outliers": [
+      10.0,
+      10.0,
+      0.15
+    ],
+    "high_noise": [
+      20.0,
+      20.0,
+      0.1
+    ]
+  },
+  "methods": {
+    "median_only": "Deviation vs full baseline median",
+    "loo_any": "Maximum deviation magnitude over LOO references (flag if any)",
+    "loo_consistent": "Minimum LOO deviation if direction consistent; else 0 (flag only if all)"
+  },
+  "confidence_intervals": "Student-t 95% intervals across independent seed-level runs, not patient or clinical CIs; 24 replicates are synthetic.",
+  "test_set_guard": "Each method calibrated on separate synthetic no-change cases; no test labels used for threshold.",
+  "not_evaluated": [
+    "RCV: no externally validated per-analyte CVi/CVa supplied",
+    "Biological recovery: no verified clinical recovery ground truth",
+    "Generalizable astronaut health outcomes or disease diagnosis"
+  ],
+  "nasa_observational_summary": {
+    "osd575_cmp_long": {
+      "records": 509,
+      "subjects": 4,
+      "distinct_biomarkers": 19,
+      "postflight_measurements": 291,
+      "reference_groups_with_2_samples": 0,
+      "reference_groups_with_3_samples": 72,
+      "median_only_flagged": 25,
+      "median_only_not_consistently_loo_flagged": 7,
+      "median_only_unstable_fraction": 0.28,
+      "apdra_status_counts": {
+        "No consistent screening deviation": 252,
+        "Baseline-sensitive screen": 17,
+        "Consistent screening deviation (higher)": 10,
+        "Consistent screening deviation (lower)": 8,
+        "Insufficient baseline for stability check": 4
+      },
+      "threshold_percent_cmp": 30.0,
+      "threshold_log2_npq": 1.0,
+      "description": "Observational case counts, not independent subjects; no clinical labels."
+    },
+    "osd575_alamar_npq_long": {
+      "records": 5481,
+      "subjects": 4,
+      "distinct_biomarkers": 203,
+      "postflight_measurements": 3248,
+      "reference_groups_with_2_samples": 203,
+      "reference_groups_with_3_samples": 609,
+      "median_only_flagged": 170,
+      "median_only_not_consistently_loo_flagged": 61,
+      "median_only_unstable_fraction": 0.3588235294117647,
+      "apdra_status_counts": {
+        "No consistent screening deviation": 2776,
+        "Baseline-sensitive screen": 363,
+        "Consistent screening deviation (lower)": 83,
+        "Consistent screening deviation (higher)": 26
+      },
+      "threshold_percent_cmp": 30.0,
+      "threshold_log2_npq": 1.0,
+      "description": "Observational case counts, not independent subjects; no clinical labels."
+    }
+  }
+}

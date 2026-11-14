@@ -1,0 +1,95 @@
+{
+  "scope": "Authentic NASA OSD-575 assays; exploratory measurement-level descriptions only",
+  "thresholds": "CMP screening: 20%, 30%, 40% sensitivity; NPQ fixed at 1 log2 unit",
+  "reference_change_values": "Disabled: no verified biomarker-specific CVI/CVA were supplied with these NASA files",
+  "datasets": {
+    "osd575_cmp_long": {
+      "records": 509,
+      "subjects": 4,
+      "unique_biomarkers": 19,
+      "threshold_sensitivity": {
+        "20": {
+          "postflight_measurements": 291,
+          "class_counts": {
+            "No consistent screening deviation": 216,
+            "Baseline-sensitive screen": 41,
+            "Consistent screening deviation (higher)": 17,
+            "Consistent screening deviation (lower)": 13,
+            "Insufficient baseline for stability check": 4
+          }
+        },
+        "30": {
+          "postflight_measurements": 291,
+          "class_counts": {
+            "No consistent screening deviation": 252,
+            "Baseline-sensitive screen": 17,
+            "Consistent screening deviation (higher)": 10,
+            "Consistent screening deviation (lower)": 8,
+            "Insufficient baseline for stability check": 4
+          }
+        },
+        "40": {
+          "postflight_measurements": 291,
+          "class_counts": {
+            "No consistent screening deviation": 265,
+            "Baseline-sensitive screen": 16,
+            "Consistent screening deviation (higher)": 5,
+            "Insufficient baseline for stability check": 4,
+            "Consistent screening deviation (lower)": 1
+          }
+        }
+      },
+      "latest_measurement_queue": {
+        "total_latest": 75,
+        "category_counts": {
+          "No current verification prompt": 65,
+          "Verify laboratory reference context": 5,
+          "Verify reference measurements": 3,
+          "Check baseline/data quality": 2
+        }
+      }
+    },
+    "osd575_alamar_npq_long": {
+      "records": 5481,
+      "subjects": 4,
+      "unique_biomarkers": 203,
+      "threshold_sensitivity": {
+        "20": {
+          "postflight_measurements": 3248,
+          "class_counts": {
+            "No consistent screening deviation": 2776,
+            "Baseline-sensitive screen": 363,
+            "Consistent screening deviation (lower)": 83,
+            "Consistent screening deviation (higher)": 26
+          }
+        },
+        "30": {
+          "postflight_measurements": 3248,
+          "class_counts": {
+            "No consistent screening deviation": 2776,
+            "Baseline-sensitive screen": 363,
+            "Consistent screening deviation (lower)": 83,
+            "Consistent screening deviation (higher)": 26
+          }
+        },
+        "40": {
+          "postflight_measurements": 3248,
+          "class_counts": {
+            "No consistent screening deviation": 2776,
+            "Baseline-sensitive screen": 363,
+            "Consistent screening deviation (lower)": 83,
+            "Consistent screening deviation (higher)": 26
+          }
+        }
+      },
+      "latest_measurement_queue": {
+        "total_latest": 812,
+        "category_counts": {
+          "No current verification prompt": 689,
+          "Verify reference measurements": 90,
+          "Review consistent observation": 33
+        }
+      }
+    }
+  }
+}

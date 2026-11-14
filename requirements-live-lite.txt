@@ -1,0 +1,6 @@
+# CPU inference + live experimental API WITHOUT PyTorch or Streamlit.
+# PHYSIOGRAPH_INFERENCE_BACKEND=numpy uses the byte-for-byte exported frozen weights.
+numpy>=1.26,<3
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+pydantic>=2.8,<3

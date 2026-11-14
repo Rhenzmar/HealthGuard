@@ -1,0 +1,208 @@
+{
+  "release": "PHYSIOGRAPH_v1.5",
+  "status": "SOFTWARE_AUDIT_PASSED_NOT_CLINICALLY_VALIDATED",
+  "tested_on": "LOCAL_CONTAINER_TESTCLIENT_NO_NETWORK_DEPLOYMENT",
+  "frozen_v14_files": {
+    "physiograph/apdra.py": {
+      "v14_sha256": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f",
+      "v15_sha256": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f",
+      "unchanged": true
+    },
+    "physiograph/stability.py": {
+      "v14_sha256": "47183c43cbda70b51e1446f2cb0c3b922b4fb26f3a2db65a0e7326b028f868d6",
+      "v15_sha256": "47183c43cbda70b51e1446f2cb0c3b922b4fb26f3a2db65a0e7326b028f868d6",
+      "unchanged": true
+    },
+    "physiograph/physioalert.py": {
+      "v14_sha256": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448",
+      "v15_sha256": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448",
+      "unchanged": true
+    },
+    "physiograph/monitoring.py": {
+      "v14_sha256": "4a724dcc52da5cad7e22bd08e7f7fe972d612e73ef66764f25080261a9d83915",
+      "v15_sha256": "4a724dcc52da5cad7e22bd08e7f7fe972d612e73ef66764f25080261a9d83915",
+      "unchanged": true
+    },
+    "physiograph/context_monitor.py": {
+      "v14_sha256": "b173e1e58fb0ab1189d74e73782ce437b758a6882e28773a9302b6077ca25d55",
+      "v15_sha256": "b173e1e58fb0ab1189d74e73782ce437b758a6882e28773a9302b6077ca25d55",
+      "unchanged": true
+    },
+    "physiograph/deep_learning.py": {
+      "v14_sha256": "2e16e867c5e2debb79b114fedd2e669eadf8e6e6a6fdf05d629a4e9e77ade3e8",
+      "v15_sha256": "2e16e867c5e2debb79b114fedd2e669eadf8e6e6a6fdf05d629a4e9e77ade3e8",
+      "unchanged": true
+    },
+    "physiograph/numpy_inference.py": {
+      "v14_sha256": "9857c64a3b0f40546e1e5470a3d7f898f8b3cef495d4f4448fdf3447fa97785a",
+      "v15_sha256": "9857c64a3b0f40546e1e5470a3d7f898f8b3cef495d4f4448fdf3447fa97785a",
+      "unchanged": true
+    },
+    "data/nasa/osd575_cmp_long.csv": {
+      "v14_sha256": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9",
+      "v15_sha256": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9",
+      "unchanged": true
+    },
+    "data/nasa/osd575_alamar_npq_long.csv": {
+      "v14_sha256": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40",
+      "v15_sha256": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40",
+      "unchanged": true
+    },
+    "models/deep_learning/cnn_autoencoder.pt": {
+      "v14_sha256": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219",
+      "v15_sha256": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219",
+      "unchanged": true
+    },
+    "models/deep_learning/cnn_autoencoder_numpy.npz": {
+      "v14_sha256": "ab3857d62684b73e894a9a28bbd2887853258426c20967ed839033cda0f0ce2e",
+      "v15_sha256": "ab3857d62684b73e894a9a28bbd2887853258426c20967ed839033cda0f0ce2e",
+      "unchanged": true
+    },
+    "models/deep_learning/statistical_baseline.npz": {
+      "v14_sha256": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd",
+      "v15_sha256": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd",
+      "unchanged": true
+    }
+  },
+  "frozen_files_unchanged": true,
+  "models_loaded_lightweight_inference": true,
+  "nasa_historical_observations": 5990,
+  "nasa_subjects": 4,
+  "scenarios": {
+    "normal": {
+      "packets": 180,
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "NO_MODEL_FLAG": 76
+      },
+      "statistical": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 43,
+        "NO_MODEL_FLAG": 33
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "MODELS_DISAGREE": 43,
+        "NO_MODEL_FLAG": 33
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 180
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "DETECTORS_DISAGREE": 43,
+        "NO_PATTERN_FLAG": 33
+      },
+      "http_request_latency_median_ms_local_testclient": 0.903,
+      "http_request_latency_p95_ms_local_testclient": 2.122
+    },
+    "activity": {
+      "packets": 180,
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "statistical": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "BOTH_MODELS_FLAG": 76
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 180
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "ACTIVITY_CONTEXT_REVIEW": 58,
+        "POST_ACTIVITY_OBSERVATION": 18
+      },
+      "http_request_latency_median_ms_local_testclient": 0.901,
+      "http_request_latency_p95_ms_local_testclient": 2.053
+    },
+    "artifact": {
+      "packets": 180,
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "NO_MODEL_FLAG": 16,
+        "MODEL_FLAG": 60
+      },
+      "statistical": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 64,
+        "NO_MODEL_FLAG": 12
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "MODELS_DISAGREE": 4,
+        "BOTH_MODELS_FLAG": 60,
+        "NO_MODEL_FLAG": 12
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 119,
+        "VERIFY_MEASUREMENT": 61
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "DETECTORS_DISAGREE": 4,
+        "VERIFY_MEASUREMENT_QUALITY": 61,
+        "NO_PATTERN_FLAG": 11
+      },
+      "http_request_latency_median_ms_local_testclient": 0.869,
+      "http_request_latency_p95_ms_local_testclient": 2.021
+    },
+    "excursion": {
+      "packets": 180,
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "statistical": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "BOTH_MODELS_FLAG": 76
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 180
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "ACTIVITY_CONTEXT_UNKNOWN": 76
+      },
+      "http_request_latency_median_ms_local_testclient": 0.895,
+      "http_request_latency_p95_ms_local_testclient": 2.246
+    }
+  },
+  "external_bidmc_evaluation": {
+    "status": "NOT_COMPLETED",
+    "reason": "Official PhysioNet numeric-file network download unavailable from this execution environment",
+    "download_and_evaluate_script": "RUN_EXTERNAL_VALIDATION_WINDOWS.bat",
+    "deployed_5channel_model_externally_validated": false,
+    "separate_research_3channel_experiment_is_clinical_validation": false
+  },
+  "deployment_limits": {
+    "free_host_actual_deployment": "NOT_PERFORMED",
+    "backend_is_not_crew_medical_device": true,
+    "public_anonymous_ingest_default": "DISABLED",
+    "auto_demo_data": "FICTIONAL",
+    "all_read_only_routes_expose_only_pseudonymous_historical_or_simulated_data": true
+  },
+  "notes": [
+    "FastAPI TestClient latency is not deployed latency and is not a hard realtime guarantee.",
+    "No sensor integration, personalized medical thresholds, disease labels, or validated safety actions.",
+    "CNN and comparator may disagree; observed synthetic flags do not establish sensitivity or specificity.",
+    "APDRA is separate and frozen; its historical screening is not applied to live telemetry."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "windows_tested": 32,
+  "max_abs_reconstruction_difference": 7.152557373046875e-07,
+  "required_tolerance": 4e-05,
+  "source_checkpoint": "cnn_autoencoder.pt",
+  "weights_exported_file": "cnn_autoencoder_numpy.npz",
+  "note": "NumPy implementation runs same learned CNN weights, NOT a new ML model."
+}

@@ -1,0 +1,9 @@
+subject_id,timepoint,biomarker,value,unit,system,phase,source,time_numeric,baseline_n,baseline_median,baseline_mad,delta,percent_change,fold_change_vs_personal_baseline,robust_z,baseline_proximity,source_range_status,source_reference_low,source_reference_high,screening_status,screening_limit_percent
+SIM-001,2026-10-01,Example Marker A,10.0,AU,Example System,baseline,SIMULATED,739890.0,3,10.5,0.5,-0.5,-4.761904761904762,,-0.6744907594765952,,No validated source interval supplied,,,Baseline observation,30.0
+SIM-001,2026-10-05,Example Marker A,11.0,AU,Example System,baseline,SIMULATED,739894.0,3,10.5,0.5,0.5,4.761904761904762,,0.6744907594765952,,No validated source interval supplied,,,Baseline observation,30.0
+SIM-001,2026-10-09,Example Marker A,10.5,AU,Example System,baseline,SIMULATED,739898.0,3,10.5,0.5,0.0,0.0,,0.0,,No validated source interval supplied,,,Baseline observation,30.0
+SIM-001,2026-11-14,Example Marker A,15.0,AU,Example System,monitoring,SIMULATED,739934.0,3,10.5,0.5,4.5,42.857142857142854,,6.070416835289357,,No validated source interval supplied,,,Screening deviation,30.0
+SIM-001,2026-10-01,Example Marker B,8.0,AU,Example System,baseline,SIMULATED,739890.0,3,8.0,1.0,0.0,0.0,,0.0,,No validated source interval supplied,,,Baseline observation,30.0
+SIM-001,2026-10-05,Example Marker B,9.0,AU,Example System,baseline,SIMULATED,739894.0,3,8.0,1.0,1.0,12.5,,0.6744907594765952,,No validated source interval supplied,,,Baseline observation,30.0
+SIM-001,2026-10-09,Example Marker B,7.0,AU,Example System,baseline,SIMULATED,739898.0,3,8.0,1.0,-1.0,-12.5,,-0.6744907594765952,,No validated source interval supplied,,,Baseline observation,30.0
+SIM-001,2026-11-14,Example Marker B,8.5,AU,Example System,monitoring,SIMULATED,739934.0,3,8.0,1.0,0.5,6.25,,0.3372453797382976,,No validated source interval supplied,,,No screening deviation,30.0

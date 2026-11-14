@@ -1,0 +1,13 @@
+streamlit>=1.37,<2
+pandas>=2.1,<3
+numpy>=1.26,<3
+plotly>=5.24,<7
+pytest>=8,<10
+requests>=2.31,<3
+scipy>=1.11,<2
+
+# v1.0 simulated telemetry API (no deep-learning model yet)
+fastapi>=0.115,<1
+uvicorn>=0.30,<1
+httpx>=0.27,<1
+pydantic>=2.8,<3

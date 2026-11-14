@@ -1,0 +1,99 @@
+{
+  "method_version": "APDRA v0.3 baseline-sensitivity analysis",
+  "source": "NASA OSD-575 files uploaded by project user; see research/sources.md",
+  "real_data_descriptive_audit": {
+    "cmp": {
+      "measurement_rows": 509,
+      "subjects": 4,
+      "distinct_markers": 19,
+      "postflight_records": 291,
+      "screening_stability_counts": {
+        "No consistent screening deviation": 252,
+        "Baseline-sensitive screen": 17,
+        "Consistent screening deviation (higher)": 10,
+        "Consistent screening deviation (lower)": 8,
+        "Insufficient baseline for stability check": 4
+      },
+      "trajectory_counts": {
+        "Reference-sensitive or unchanged trajectory": 102,
+        "First available postflight sample": 72,
+        "Farther from reference for every LOO baseline": 58,
+        "Closer to reference for every LOO baseline": 55,
+        "Not enough postflight or baseline observations": 4
+      },
+      "summary": {
+        "individuals": 4,
+        "unique_biomarker_names": 19,
+        "reviewed_nonbaseline_measurements": 291,
+        "consistent_deviations": 18,
+        "baseline_sensitive_screens": 17,
+        "unassessable_baselines": 4
+      }
+    },
+    "alamar_npq": {
+      "measurement_rows": 5481,
+      "subjects": 4,
+      "distinct_markers": 203,
+      "postflight_records": 3248,
+      "screening_stability_counts": {
+        "No consistent screening deviation": 2776,
+        "Baseline-sensitive screen": 363,
+        "Consistent screening deviation (lower)": 83,
+        "Consistent screening deviation (higher)": 26
+      },
+      "trajectory_counts": {
+        "Reference-sensitive or unchanged trajectory": 945,
+        "First available postflight sample": 812,
+        "Farther from reference for every LOO baseline": 753,
+        "Closer to reference for every LOO baseline": 738
+      },
+      "summary": {
+        "individuals": 4,
+        "unique_biomarker_names": 203,
+        "reviewed_nonbaseline_measurements": 3248,
+        "consistent_deviations": 109,
+        "baseline_sensitive_screens": 363,
+        "unassessable_baselines": 0
+      }
+    }
+  },
+  "controlled_synthetic_benchmark": {
+    "design": {
+      "seed": 1729,
+      "scenarios": 1200,
+      "known_truth": "a synthetic +45 unit shift, no clinical diagnosis",
+      "null_scenario": "no injected shift",
+      "baseline_noise_sd": 10,
+      "post_noise_sd": 10,
+      "preflight_outlier_probability": 0.15,
+      "preflight_outlier_magnitude": 50,
+      "screen_threshold_pct": 30,
+      "caveat": "Designed numerical perturbation test, not external clinical validation or statistical evidence of spaceflight effects."
+    },
+    "results": {
+      "Median-only 30% screen": {
+        "true_positive": 524,
+        "false_negative": 76,
+        "false_positive": 11,
+        "true_negative": 589,
+        "synthetic_sensitivity": 0.8733,
+        "synthetic_false_positive_rate": 0.0183
+      },
+      "APDRA consistent LOO screen": {
+        "true_positive": 445,
+        "false_negative": 155,
+        "false_positive": 1,
+        "true_negative": 599,
+        "synthetic_sensitivity": 0.7417,
+        "synthetic_false_positive_rate": 0.0017
+      }
+    }
+  },
+  "limitations": [
+    "All numerical screens are unvalidated, exploratory heuristics.",
+    "Leave-one-baseline-out variation is not a confidence interval.",
+    "Only 4 astronaut subjects; thousands of proteins are correlated measurements, not independent astronauts.",
+    "Postflight trajectory comparisons are observational and do not prove recovery.",
+    "Simulated injected numerical shifts do not represent medical conditions."
+  ]
+}

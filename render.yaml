@@ -1,0 +1,21 @@
+# Free backend demo deployment for NASA Space Apps 2026.
+# Source code must be in the ROOT of a GitHub repository.
+services:
+  - type: web
+    name: physiograph-api
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /api/live/health
+    autoDeployTrigger: commit
+    envVars:
+      - key: PHYSIOGRAPH_INFERENCE_BACKEND
+        value: numpy
+      - key: PHYSIOGRAPH_PUBLIC_MODE
+        value: "1"
+      - key: PHYSIOGRAPH_AUTO_DEMO
+        value: "1"
+      - key: PHYSIOGRAPH_AUTO_DEMO_SPEED
+        value: "10"
+      - key: PYTHONUNBUFFERED
+        value: "1"

@@ -1,0 +1,60 @@
+{
+  "evaluation": "out-of-generator NUMERICAL stress test only",
+  "seed": 246810,
+  "model_checkpoints_modified": false,
+  "cnn_frozen_threshold": 0.00782669335603714,
+  "covariance_frozen_threshold": 0.6256486147035225,
+  "cases": {
+    "quiet": {
+      "windows": 160,
+      "cnn_flag_fraction": 0.0375,
+      "covariance_flag_fraction": 0.05625,
+      "both_flag_fraction": 0.01875,
+      "models_disagree_fraction": 0.05625,
+      "cnn_score_median": 0.003185936715453863,
+      "covariance_score_median": 0.46670852394060824
+    },
+    "activity_like": {
+      "windows": 160,
+      "cnn_flag_fraction": 1.0,
+      "covariance_flag_fraction": 1.0,
+      "both_flag_fraction": 1.0,
+      "models_disagree_fraction": 0.0,
+      "cnn_score_median": 0.06855122745037079,
+      "covariance_score_median": 7.115661825065731
+    },
+    "sensor_artifact": {
+      "windows": 160,
+      "cnn_flag_fraction": 1.0,
+      "covariance_flag_fraction": 1.0,
+      "both_flag_fraction": 1.0,
+      "models_disagree_fraction": 0.0,
+      "cnn_score_median": 0.02388823591172695,
+      "covariance_score_median": 6.351025277498708
+    },
+    "subtle_ramp": {
+      "windows": 160,
+      "cnn_flag_fraction": 0.2,
+      "covariance_flag_fraction": 0.65,
+      "both_flag_fraction": 0.19375,
+      "models_disagree_fraction": 0.4625,
+      "cnn_score_median": 0.006089367903769016,
+      "covariance_score_median": 0.6831554399363258
+    },
+    "large_shift": {
+      "windows": 160,
+      "cnn_flag_fraction": 1.0,
+      "covariance_flag_fraction": 1.0,
+      "both_flag_fraction": 1.0,
+      "models_disagree_fraction": 0.0,
+      "cnn_score_median": 1.2254964113235474,
+      "covariance_score_median": 86.8522188715884
+    }
+  },
+  "limitations": [
+    "Simulator is independent code but produces synthetic 5-channel values, not real sensor recordings.",
+    "quiet and activity_like are only simulator categories; neither establishes a disease-negative ground truth.",
+    "Flag fractions cannot be interpreted as clinical false-positive, diagnosis, or astronaut-performance rates.",
+    "Anomaly detector disagreements should be surfaced, not overwritten by an invented risk level."
+  ]
+}

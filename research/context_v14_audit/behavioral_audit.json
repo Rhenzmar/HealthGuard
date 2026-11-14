@@ -1,0 +1,316 @@
+{
+  "version": "v1.4",
+  "evaluation_type": "INTERNAL_SYNTHETIC_BEHAVIORAL_AUDIT_NOT_MEDICAL_VALIDATION",
+  "replay_seed_or_method": "DETERMINISTIC_REPLAY_NO_RANDOMNESS",
+  "simulated_scenarios": {
+    "normal": {
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "NO_MODEL_FLAG": 76
+      },
+      "covariance": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 43,
+        "NO_MODEL_FLAG": 33
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 180
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "MODELS_DISAGREE": 43,
+        "NO_MODEL_FLAG": 33
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "DETECTORS_DISAGREE": 43,
+        "NO_PATTERN_FLAG": 33
+      },
+      "example_review_events": [
+        {
+          "sequence": 104,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 105,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 106,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 107,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 108,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 109,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        }
+      ],
+      "simulation_packets": 180
+    },
+    "activity": {
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "covariance": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 180
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "BOTH_MODELS_FLAG": 76
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "ACTIVITY_CONTEXT_REVIEW": 58,
+        "POST_ACTIVITY_OBSERVATION": 18
+      },
+      "example_review_events": [
+        {
+          "sequence": 104,
+          "status": "ACTIVITY_CONTEXT_REVIEW",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "ACTIVE",
+          "quality": []
+        },
+        {
+          "sequence": 105,
+          "status": "ACTIVITY_CONTEXT_REVIEW",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "ACTIVE",
+          "quality": []
+        },
+        {
+          "sequence": 106,
+          "status": "ACTIVITY_CONTEXT_REVIEW",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "ACTIVE",
+          "quality": []
+        },
+        {
+          "sequence": 107,
+          "status": "ACTIVITY_CONTEXT_REVIEW",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "ACTIVE",
+          "quality": []
+        },
+        {
+          "sequence": 108,
+          "status": "ACTIVITY_CONTEXT_REVIEW",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "ACTIVE",
+          "quality": []
+        },
+        {
+          "sequence": 109,
+          "status": "ACTIVITY_CONTEXT_REVIEW",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "ACTIVE",
+          "quality": []
+        }
+      ],
+      "simulation_packets": 180
+    },
+    "artifact": {
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "NO_MODEL_FLAG": 16,
+        "MODEL_FLAG": 60
+      },
+      "covariance": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 64,
+        "NO_MODEL_FLAG": 12
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 119,
+        "VERIFY_MEASUREMENT": 61
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "MODELS_DISAGREE": 4,
+        "BOTH_MODELS_FLAG": 60,
+        "NO_MODEL_FLAG": 12
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "DETECTORS_DISAGREE": 4,
+        "VERIFY_MEASUREMENT_QUALITY": 61,
+        "NO_PATTERN_FLAG": 11
+      },
+      "example_review_events": [
+        {
+          "sequence": 104,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 105,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 106,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 107,
+          "status": "DETECTORS_DISAGREE",
+          "raw": "MODELS_DISAGREE",
+          "activity": "REST",
+          "quality": []
+        },
+        {
+          "sequence": 108,
+          "status": "VERIFY_MEASUREMENT_QUALITY",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "REST",
+          "quality": [
+            "ABRUPT_CHANGE_REQUIRES_VERIFICATION"
+          ]
+        },
+        {
+          "sequence": 109,
+          "status": "VERIFY_MEASUREMENT_QUALITY",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "REST",
+          "quality": [
+            "ABRUPT_CHANGE_REQUIRES_VERIFICATION",
+            "SPIKE_REBOUND_PATTERN",
+            "RECENT_SPIKE_MAY_REMAIN_IN_WINDOW"
+          ]
+        }
+      ],
+      "simulation_packets": 180
+    },
+    "excursion": {
+      "cnn": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "covariance": {
+        "BASELINE_CALIBRATING": 45,
+        "WINDOW_COLLECTING": 59,
+        "MODEL_FLAG": 76
+      },
+      "quality": {
+        "NO_QUALITY_ISSUE_DETECTED": 180
+      },
+      "raw_review": {
+        "EVIDENCE_INCOMPLETE": 104,
+        "BOTH_MODELS_FLAG": 76
+      },
+      "context_review": {
+        "NEED_MORE_VALID_DATA": 104,
+        "ACTIVITY_CONTEXT_UNKNOWN": 76
+      },
+      "example_review_events": [
+        {
+          "sequence": 104,
+          "status": "ACTIVITY_CONTEXT_UNKNOWN",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "UNKNOWN",
+          "quality": []
+        },
+        {
+          "sequence": 105,
+          "status": "ACTIVITY_CONTEXT_UNKNOWN",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "UNKNOWN",
+          "quality": []
+        },
+        {
+          "sequence": 106,
+          "status": "ACTIVITY_CONTEXT_UNKNOWN",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "UNKNOWN",
+          "quality": []
+        },
+        {
+          "sequence": 107,
+          "status": "ACTIVITY_CONTEXT_UNKNOWN",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "UNKNOWN",
+          "quality": []
+        },
+        {
+          "sequence": 108,
+          "status": "ACTIVITY_CONTEXT_UNKNOWN",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "UNKNOWN",
+          "quality": []
+        },
+        {
+          "sequence": 109,
+          "status": "ACTIVITY_CONTEXT_UNKNOWN",
+          "raw": "BOTH_MODELS_FLAG",
+          "activity": "UNKNOWN",
+          "quality": []
+        }
+      ],
+      "simulation_packets": 180
+    }
+  },
+  "trained_models_refit": false,
+  "thresholds_recalibrated": false,
+  "freeze_manifest": {
+    "physiograph/apdra.py": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f",
+    "physiograph/stability.py": "47183c43cbda70b51e1446f2cb0c3b922b4fb26f3a2db65a0e7326b028f868d6",
+    "physiograph/physioalert.py": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448",
+    "data/nasa/osd575_cmp_long.csv": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9",
+    "data/nasa/osd575_alamar_npq_long.csv": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40",
+    "models/deep_learning/cnn_autoencoder.pt": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219",
+    "models/deep_learning/cnn_autoencoder_numpy.npz": "ab3857d62684b73e894a9a28bbd2887853258426c20967ed839033cda0f0ce2e",
+    "models/deep_learning/statistical_baseline.npz": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd"
+  },
+  "limitations": [
+    "Scenarios are artificially generated; no independently adjudicated physiological events are present.",
+    "Activity context is scenario-declared, not measured by an activity sensor.",
+    "Two models may agree for reasons unrelated to disease; no medical severity is generated.",
+    "Spaced observations still share highly overlapping 60-second windows.",
+    "Quality concerns are heuristic and do not prove a sensor artifact.",
+    "External BIDMC three-channel experiment remains separate from the deployed five-channel model."
+  ]
+}

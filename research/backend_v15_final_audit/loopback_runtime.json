@@ -1,0 +1,10 @@
+{
+  "status": "PASSED",
+  "test": "ACTUAL_LOOPBACK_UVICORN_PROCESS",
+  "cold_start_elapsed_seconds_to_first_sample": 1.129,
+  "rss_mib": 111.1,
+  "anonymous_post_status": 503,
+  "host": "127.0.0.1",
+  "note": "Local process only, not cloud reliability or performance",
+  "verified_with": "VALID_SAMPLE_PACKET"
+}

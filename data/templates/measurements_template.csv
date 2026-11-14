@@ -1,0 +1,9 @@
+subject_id,timepoint,biomarker,value,unit,system,phase,source
+SIM-001,2026-10-01,Example Marker A,10,AU,Example System,baseline,SIMULATED
+SIM-001,2026-10-05,Example Marker A,11,AU,Example System,baseline,SIMULATED
+SIM-001,2026-10-09,Example Marker A,10.5,AU,Example System,baseline,SIMULATED
+SIM-001,2026-11-14,Example Marker A,15,AU,Example System,monitoring,SIMULATED
+SIM-001,2026-10-01,Example Marker B,8,AU,Example System,baseline,SIMULATED
+SIM-001,2026-10-05,Example Marker B,9,AU,Example System,baseline,SIMULATED
+SIM-001,2026-10-09,Example Marker B,7,AU,Example System,baseline,SIMULATED
+SIM-001,2026-11-14,Example Marker B,8.5,AU,Example System,monitoring,SIMULATED

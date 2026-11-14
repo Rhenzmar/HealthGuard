@@ -1,0 +1,47 @@
+{
+  "source": "PHYSIOGRAPH v1.3 existing files",
+  "comparison": "PHYSIOGRAPH v1.4",
+  "all_core_files_identical": true,
+  "files": {
+    "physiograph/apdra.py": {
+      "v13_sha256": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f",
+      "v14_sha256": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f"
+    },
+    "physiograph/stability.py": {
+      "v13_sha256": "47183c43cbda70b51e1446f2cb0c3b922b4fb26f3a2db65a0e7326b028f868d6",
+      "v14_sha256": "47183c43cbda70b51e1446f2cb0c3b922b4fb26f3a2db65a0e7326b028f868d6"
+    },
+    "physiograph/physioalert.py": {
+      "v13_sha256": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448",
+      "v14_sha256": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448"
+    },
+    "physiograph/quality.py": {
+      "v13_sha256": "bf754e77b84717c0f6bb3e33bcad11b3521a80b13d2f810a76d979170f864df3",
+      "v14_sha256": "bf754e77b84717c0f6bb3e33bcad11b3521a80b13d2f810a76d979170f864df3"
+    },
+    "physiograph/review_queue.py": {
+      "v13_sha256": "80c8c6f34c74b32a4e04f51527066d8004288d8f2be4d9f52cb5ee6a5819ff90",
+      "v14_sha256": "80c8c6f34c74b32a4e04f51527066d8004288d8f2be4d9f52cb5ee6a5819ff90"
+    },
+    "models/deep_learning/cnn_autoencoder.pt": {
+      "v13_sha256": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219",
+      "v14_sha256": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219"
+    },
+    "models/deep_learning/cnn_autoencoder_numpy.npz": {
+      "v13_sha256": "ab3857d62684b73e894a9a28bbd2887853258426c20967ed839033cda0f0ce2e",
+      "v14_sha256": "ab3857d62684b73e894a9a28bbd2887853258426c20967ed839033cda0f0ce2e"
+    },
+    "models/deep_learning/statistical_baseline.npz": {
+      "v13_sha256": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd",
+      "v14_sha256": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd"
+    },
+    "data/nasa/osd575_cmp_long.csv": {
+      "v13_sha256": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9",
+      "v14_sha256": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9"
+    },
+    "data/nasa/osd575_alamar_npq_long.csv": {
+      "v13_sha256": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40",
+      "v14_sha256": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40"
+    }
+  }
+}

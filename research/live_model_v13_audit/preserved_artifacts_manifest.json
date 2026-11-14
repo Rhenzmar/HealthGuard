@@ -1,0 +1,54 @@
+{
+  "base_release": "PhysioGraph v1.2",
+  "checked_original_files": 11,
+  "sha256_matches": true,
+  "modified_apdra_code": false,
+  "modified_nasa_datasets": false,
+  "modified_existing_model_weights": false,
+  "preserved_files": [
+    {
+      "file": "data/nasa/osd575_alamar_npq_long.csv",
+      "sha256": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40"
+    },
+    {
+      "file": "data/nasa/osd575_cmp_long.csv",
+      "sha256": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9"
+    },
+    {
+      "file": "data/processed/monitoring_audit/apdra_measurements.csv",
+      "sha256": "8a65a7b3106cc24745a9647b724d806de1fe6fd8e4e21dbeac52eee61eac9ba8"
+    },
+    {
+      "file": "data/processed/monitoring_audit/audit_summary.json",
+      "sha256": "899647d2c7534f8347d25d9ed30e17b2a0bb7c25dbd7266886bee84ecfa0d608"
+    },
+    {
+      "file": "data/processed/monitoring_audit/baseline_evidence.csv",
+      "sha256": "b06ca99f8e973202889219a2a4227543f260be6b3d53221a8ed501d7c96697d6"
+    },
+    {
+      "file": "data/processed/monitoring_audit/physioalert_review.csv",
+      "sha256": "d8e7de3ece403e1d151d6217c95ea3b8bf3cebd4ad4fe444cda5686c89e02b22"
+    },
+    {
+      "file": "data/templates/measurements_template.csv",
+      "sha256": "9a1ae1c2970d60c7c8d6d4618c0b8fb4e4f5a689d578ca5755faf4435bb064a0"
+    },
+    {
+      "file": "models/deep_learning/cnn_autoencoder.pt",
+      "sha256": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219"
+    },
+    {
+      "file": "models/deep_learning/statistical_baseline.npz",
+      "sha256": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd"
+    },
+    {
+      "file": "physiograph/apdra.py",
+      "sha256": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f"
+    },
+    {
+      "file": "physiograph/physioalert.py",
+      "sha256": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448"
+    }
+  ]
+}

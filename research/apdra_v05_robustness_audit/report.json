@@ -1,0 +1,251 @@
+{
+  "n_per_split": 3000,
+  "n_seeds": 12,
+  "scenarios": {
+    "low_noise": [
+      5.0,
+      5.0,
+      0.0
+    ],
+    "moderate_noise": [
+      10.0,
+      10.0,
+      0.0
+    ],
+    "baseline_outliers": [
+      10.0,
+      10.0,
+      0.15
+    ],
+    "high_noise": [
+      20.0,
+      20.0,
+      0.1
+    ]
+  },
+  "baseline_counts": [
+    2,
+    3
+  ],
+  "summary": [
+    {
+      "baseline_n": 2,
+      "scenario": "baseline_outliers",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 0.866,
+      "false_screen_rate": 0.0541,
+      "AUC": 0.9379,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "baseline_outliers",
+      "method": "median_only",
+      "sensitivity": 0.7971,
+      "false_screen_rate": 0.0494,
+      "AUC": 0.9497,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "high_noise",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 0.4133,
+      "false_screen_rate": 0.0502,
+      "AUC": 0.7935,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "high_noise",
+      "method": "median_only",
+      "sensitivity": 0.3667,
+      "false_screen_rate": 0.051,
+      "AUC": 0.8039,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "low_noise",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 1.0,
+      "false_screen_rate": 0.0478,
+      "AUC": 1.0,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "low_noise",
+      "method": "median_only",
+      "sensitivity": 1.0,
+      "false_screen_rate": 0.0468,
+      "AUC": 1.0,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "moderate_noise",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 0.9286,
+      "false_screen_rate": 0.0483,
+      "AUC": 0.985,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "moderate_noise",
+      "method": "median_only",
+      "sensitivity": 0.9514,
+      "false_screen_rate": 0.0466,
+      "AUC": 0.9896,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "baseline_outliers",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 0.9301,
+      "false_screen_rate": 0.0514,
+      "AUC": 0.9803,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "baseline_outliers",
+      "method": "median_only",
+      "sensitivity": 0.9523,
+      "false_screen_rate": 0.051,
+      "AUC": 0.9886,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "high_noise",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 0.4652,
+      "false_screen_rate": 0.0479,
+      "AUC": 0.8313,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "high_noise",
+      "method": "median_only",
+      "sensitivity": 0.4146,
+      "false_screen_rate": 0.0501,
+      "AUC": 0.8226,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "low_noise",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 1.0,
+      "false_screen_rate": 0.0479,
+      "AUC": 1.0,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "low_noise",
+      "method": "median_only",
+      "sensitivity": 1.0,
+      "false_screen_rate": 0.0486,
+      "AUC": 1.0,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "moderate_noise",
+      "method": "apdra_loo_consistent",
+      "sensitivity": 0.9683,
+      "false_screen_rate": 0.0485,
+      "AUC": 0.9929,
+      "n_runs": 12
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "moderate_noise",
+      "method": "median_only",
+      "sensitivity": 0.9614,
+      "false_screen_rate": 0.0492,
+      "AUC": 0.9914,
+      "n_runs": 12
+    }
+  ],
+  "differences": [
+    {
+      "baseline_n": 2,
+      "scenario": "baseline_outliers",
+      "mean_sensitivity_delta": 0.06888888888888889,
+      "sim_seed_delta_95pct_range": [
+        0.03139999999999996,
+        0.10853333333333333
+      ]
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "high_noise",
+      "mean_sensitivity_delta": 0.04666666666666667,
+      "sim_seed_delta_95pct_range": [
+        0.007333333333333335,
+        0.07995000000000001
+      ]
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "low_noise",
+      "mean_sensitivity_delta": 0.0,
+      "sim_seed_delta_95pct_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "baseline_n": 2,
+      "scenario": "moderate_noise",
+      "mean_sensitivity_delta": -0.022833333333333334,
+      "sim_seed_delta_95pct_range": [
+        -0.03363333333333334,
+        -0.013100000000000013
+      ]
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "baseline_outliers",
+      "mean_sensitivity_delta": -0.02222222222222221,
+      "sim_seed_delta_95pct_range": [
+        -0.032166666666666684,
+        -0.010983333333333309
+      ]
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "high_noise",
+      "mean_sensitivity_delta": 0.050555555555555576,
+      "sim_seed_delta_95pct_range": [
+        0.02833333333333337,
+        0.06938333333333332
+      ]
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "low_noise",
+      "mean_sensitivity_delta": 0.0,
+      "sim_seed_delta_95pct_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "baseline_n": 3,
+      "scenario": "moderate_noise",
+      "mean_sensitivity_delta": 0.00683333333333334,
+      "sim_seed_delta_95pct_range": [
+        -4.999999999998322e-05,
+        0.013633333333333325
+      ]
+    }
+  ],
+  "disclaimer": "Synthetic known numerical shifts only. Not clinical sensitivity or evidence of astronaut health outcomes."
+}

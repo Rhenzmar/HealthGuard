@@ -1,0 +1,18 @@
+{
+  "baseline": "PHYSIOGRAPH_v1.4_Context_Aware_Backend.zip",
+  "files": 12,
+  "sha256": {
+    "physiograph/apdra.py": "0af21321b6aa2d405032d6f706fe449298e77f6c27e8a6afead7b257d4356d5f",
+    "physiograph/stability.py": "47183c43cbda70b51e1446f2cb0c3b922b4fb26f3a2db65a0e7326b028f868d6",
+    "physiograph/physioalert.py": "3a9e151165421cd6bf932b55f43a35494e3d746c88a303414f954fc07960b448",
+    "physiograph/monitoring.py": "4a724dcc52da5cad7e22bd08e7f7fe972d612e73ef66764f25080261a9d83915",
+    "physiograph/context_monitor.py": "b173e1e58fb0ab1189d74e73782ce437b758a6882e28773a9302b6077ca25d55",
+    "physiograph/deep_learning.py": "2e16e867c5e2debb79b114fedd2e669eadf8e6e6a6fdf05d629a4e9e77ade3e8",
+    "physiograph/numpy_inference.py": "9857c64a3b0f40546e1e5470a3d7f898f8b3cef495d4f4448fdf3447fa97785a",
+    "data/nasa/osd575_cmp_long.csv": "57c28ed3eb4fdcd0191ba71762e001ccb3cbbab1661f010759839d77a13cb9f9",
+    "data/nasa/osd575_alamar_npq_long.csv": "ce5ece7abe307913a714bb5abaa682959ef012a93534c46e45356a51f6f62b40",
+    "models/deep_learning/cnn_autoencoder.pt": "84835ad67dec839598ccc34a838b40649a763debf66a5a0defdab8818db07219",
+    "models/deep_learning/cnn_autoencoder_numpy.npz": "ab3857d62684b73e894a9a28bbd2887853258426c20967ed839033cda0f0ce2e",
+    "models/deep_learning/statistical_baseline.npz": "001448831d211e04ae91a6f282bcb141c991df330ea3ce73c2bb127d0147d9cd"
+  }
+}

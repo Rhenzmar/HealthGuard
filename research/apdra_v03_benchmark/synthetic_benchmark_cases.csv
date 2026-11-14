@@ -1,0 +1,1201 @@
+subject_id,injected_numerical_shift,median_threshold_screen,apdra_loo_stable_screen,apdra_status
+S0000,False,False,False,No consistent screening deviation
+S0001,True,True,True,Consistent screening deviation (higher)
+S0002,False,False,False,No consistent screening deviation
+S0003,True,True,True,Consistent screening deviation (higher)
+S0004,False,False,False,No consistent screening deviation
+S0005,True,True,True,Consistent screening deviation (higher)
+S0006,False,False,False,No consistent screening deviation
+S0007,True,True,True,Consistent screening deviation (higher)
+S0008,False,False,False,No consistent screening deviation
+S0009,True,True,True,Consistent screening deviation (higher)
+S0010,False,False,False,No consistent screening deviation
+S0011,True,True,True,Consistent screening deviation (higher)
+S0012,False,False,False,No consistent screening deviation
+S0013,True,True,True,Consistent screening deviation (higher)
+S0014,False,False,False,No consistent screening deviation
+S0015,True,True,False,Baseline-sensitive screen
+S0016,False,False,False,No consistent screening deviation
+S0017,True,True,True,Consistent screening deviation (higher)
+S0018,False,False,False,No consistent screening deviation
+S0019,True,True,False,Baseline-sensitive screen
+S0020,False,False,False,No consistent screening deviation
+S0021,True,True,True,Consistent screening deviation (higher)
+S0022,False,False,False,No consistent screening deviation
+S0023,True,True,True,Consistent screening deviation (higher)
+S0024,False,False,False,No consistent screening deviation
+S0025,True,True,True,Consistent screening deviation (higher)
+S0026,False,False,False,No consistent screening deviation
+S0027,True,True,True,Consistent screening deviation (higher)
+S0028,False,False,False,Baseline-sensitive screen
+S0029,True,True,True,Consistent screening deviation (higher)
+S0030,False,False,False,No consistent screening deviation
+S0031,True,True,True,Consistent screening deviation (higher)
+S0032,False,False,False,No consistent screening deviation
+S0033,True,True,True,Consistent screening deviation (higher)
+S0034,False,False,False,No consistent screening deviation
+S0035,True,True,True,Consistent screening deviation (higher)
+S0036,False,False,False,No consistent screening deviation
+S0037,True,True,True,Consistent screening deviation (higher)
+S0038,False,False,False,No consistent screening deviation
+S0039,True,False,False,No consistent screening deviation
+S0040,False,False,False,No consistent screening deviation
+S0041,True,True,True,Consistent screening deviation (higher)
+S0042,False,False,False,No consistent screening deviation
+S0043,True,False,False,No consistent screening deviation
+S0044,False,False,False,No consistent screening deviation
+S0045,True,True,True,Consistent screening deviation (higher)
+S0046,False,False,False,No consistent screening deviation
+S0047,True,True,True,Consistent screening deviation (higher)
+S0048,False,False,False,No consistent screening deviation
+S0049,True,True,True,Consistent screening deviation (higher)
+S0050,False,False,False,No consistent screening deviation
+S0051,True,True,True,Consistent screening deviation (higher)
+S0052,False,False,False,No consistent screening deviation
+S0053,True,True,True,Consistent screening deviation (higher)
+S0054,False,False,False,No consistent screening deviation
+S0055,True,False,False,No consistent screening deviation
+S0056,False,False,False,Baseline-sensitive screen
+S0057,True,True,True,Consistent screening deviation (higher)
+S0058,False,False,False,No consistent screening deviation
+S0059,True,True,True,Consistent screening deviation (higher)
+S0060,False,False,False,No consistent screening deviation
+S0061,True,True,True,Consistent screening deviation (higher)
+S0062,False,False,False,No consistent screening deviation
+S0063,True,True,True,Consistent screening deviation (higher)
+S0064,False,False,False,No consistent screening deviation
+S0065,True,True,True,Consistent screening deviation (higher)
+S0066,False,True,True,Consistent screening deviation (higher)
+S0067,True,True,True,Consistent screening deviation (higher)
+S0068,False,False,False,No consistent screening deviation
+S0069,True,True,True,Consistent screening deviation (higher)
+S0070,False,False,False,Baseline-sensitive screen
+S0071,True,True,True,Consistent screening deviation (higher)
+S0072,False,False,False,No consistent screening deviation
+S0073,True,True,True,Consistent screening deviation (higher)
+S0074,False,False,False,Baseline-sensitive screen
+S0075,True,True,True,Consistent screening deviation (higher)
+S0076,False,False,False,No consistent screening deviation
+S0077,True,True,True,Consistent screening deviation (higher)
+S0078,False,False,False,No consistent screening deviation
+S0079,True,True,True,Consistent screening deviation (higher)
+S0080,False,False,False,No consistent screening deviation
+S0081,True,True,True,Consistent screening deviation (higher)
+S0082,False,False,False,No consistent screening deviation
+S0083,True,True,True,Consistent screening deviation (higher)
+S0084,False,False,False,Baseline-sensitive screen
+S0085,True,False,False,Baseline-sensitive screen
+S0086,False,False,False,No consistent screening deviation
+S0087,True,False,False,Baseline-sensitive screen
+S0088,False,False,False,No consistent screening deviation
+S0089,True,True,True,Consistent screening deviation (higher)
+S0090,False,False,False,No consistent screening deviation
+S0091,True,False,False,No consistent screening deviation
+S0092,False,False,False,Baseline-sensitive screen
+S0093,True,True,True,Consistent screening deviation (higher)
+S0094,False,False,False,No consistent screening deviation
+S0095,True,False,False,Baseline-sensitive screen
+S0096,False,False,False,No consistent screening deviation
+S0097,True,True,True,Consistent screening deviation (higher)
+S0098,False,False,False,No consistent screening deviation
+S0099,True,False,False,Baseline-sensitive screen
+S0100,False,False,False,No consistent screening deviation
+S0101,True,True,True,Consistent screening deviation (higher)
+S0102,False,False,False,No consistent screening deviation
+S0103,True,True,True,Consistent screening deviation (higher)
+S0104,False,False,False,No consistent screening deviation
+S0105,True,True,True,Consistent screening deviation (higher)
+S0106,False,False,False,No consistent screening deviation
+S0107,True,True,True,Consistent screening deviation (higher)
+S0108,False,False,False,Baseline-sensitive screen
+S0109,True,True,True,Consistent screening deviation (higher)
+S0110,False,False,False,No consistent screening deviation
+S0111,True,False,False,Baseline-sensitive screen
+S0112,False,False,False,No consistent screening deviation
+S0113,True,True,True,Consistent screening deviation (higher)
+S0114,False,False,False,No consistent screening deviation
+S0115,True,True,True,Consistent screening deviation (higher)
+S0116,False,False,False,No consistent screening deviation
+S0117,True,True,True,Consistent screening deviation (higher)
+S0118,False,False,False,No consistent screening deviation
+S0119,True,True,True,Consistent screening deviation (higher)
+S0120,False,False,False,No consistent screening deviation
+S0121,True,True,True,Consistent screening deviation (higher)
+S0122,False,False,False,No consistent screening deviation
+S0123,True,True,True,Consistent screening deviation (higher)
+S0124,False,False,False,No consistent screening deviation
+S0125,True,True,True,Consistent screening deviation (higher)
+S0126,False,False,False,No consistent screening deviation
+S0127,True,True,True,Consistent screening deviation (higher)
+S0128,False,False,False,No consistent screening deviation
+S0129,True,True,True,Consistent screening deviation (higher)
+S0130,False,False,False,No consistent screening deviation
+S0131,True,True,True,Consistent screening deviation (higher)
+S0132,False,False,False,No consistent screening deviation
+S0133,True,True,True,Consistent screening deviation (higher)
+S0134,False,False,False,No consistent screening deviation
+S0135,True,True,False,Baseline-sensitive screen
+S0136,False,False,False,No consistent screening deviation
+S0137,True,True,True,Consistent screening deviation (higher)
+S0138,False,False,False,No consistent screening deviation
+S0139,True,True,True,Consistent screening deviation (higher)
+S0140,False,False,False,No consistent screening deviation
+S0141,True,True,True,Consistent screening deviation (higher)
+S0142,False,False,False,No consistent screening deviation
+S0143,True,True,False,Baseline-sensitive screen
+S0144,False,False,False,No consistent screening deviation
+S0145,True,True,True,Consistent screening deviation (higher)
+S0146,False,False,False,No consistent screening deviation
+S0147,True,True,True,Consistent screening deviation (higher)
+S0148,False,False,False,No consistent screening deviation
+S0149,True,True,True,Consistent screening deviation (higher)
+S0150,False,False,False,No consistent screening deviation
+S0151,True,True,True,Consistent screening deviation (higher)
+S0152,False,False,False,No consistent screening deviation
+S0153,True,True,True,Consistent screening deviation (higher)
+S0154,False,False,False,No consistent screening deviation
+S0155,True,False,False,Baseline-sensitive screen
+S0156,False,False,False,No consistent screening deviation
+S0157,True,False,False,No consistent screening deviation
+S0158,False,False,False,No consistent screening deviation
+S0159,True,True,False,Baseline-sensitive screen
+S0160,False,False,False,No consistent screening deviation
+S0161,True,True,True,Consistent screening deviation (higher)
+S0162,False,False,False,No consistent screening deviation
+S0163,True,False,False,Baseline-sensitive screen
+S0164,False,False,False,No consistent screening deviation
+S0165,True,True,True,Consistent screening deviation (higher)
+S0166,False,False,False,No consistent screening deviation
+S0167,True,True,True,Consistent screening deviation (higher)
+S0168,False,False,False,No consistent screening deviation
+S0169,True,True,True,Consistent screening deviation (higher)
+S0170,False,False,False,No consistent screening deviation
+S0171,True,True,True,Consistent screening deviation (higher)
+S0172,False,False,False,Baseline-sensitive screen
+S0173,True,True,False,Baseline-sensitive screen
+S0174,False,False,False,No consistent screening deviation
+S0175,True,True,True,Consistent screening deviation (higher)
+S0176,False,False,False,No consistent screening deviation
+S0177,True,True,True,Consistent screening deviation (higher)
+S0178,False,False,False,No consistent screening deviation
+S0179,True,True,True,Consistent screening deviation (higher)
+S0180,False,False,False,No consistent screening deviation
+S0181,True,True,True,Consistent screening deviation (higher)
+S0182,False,False,False,No consistent screening deviation
+S0183,True,True,True,Consistent screening deviation (higher)
+S0184,False,True,False,Baseline-sensitive screen
+S0185,True,True,True,Consistent screening deviation (higher)
+S0186,False,False,False,No consistent screening deviation
+S0187,True,True,True,Consistent screening deviation (higher)
+S0188,False,False,False,Baseline-sensitive screen
+S0189,True,True,True,Consistent screening deviation (higher)
+S0190,False,False,False,No consistent screening deviation
+S0191,True,True,True,Consistent screening deviation (higher)
+S0192,False,False,False,No consistent screening deviation
+S0193,True,True,True,Consistent screening deviation (higher)
+S0194,False,False,False,No consistent screening deviation
+S0195,True,True,False,Baseline-sensitive screen
+S0196,False,False,False,No consistent screening deviation
+S0197,True,True,True,Consistent screening deviation (higher)
+S0198,False,False,False,No consistent screening deviation
+S0199,True,True,True,Consistent screening deviation (higher)
+S0200,False,False,False,No consistent screening deviation
+S0201,True,True,True,Consistent screening deviation (higher)
+S0202,False,False,False,No consistent screening deviation
+S0203,True,True,True,Consistent screening deviation (higher)
+S0204,False,False,False,No consistent screening deviation
+S0205,True,True,False,Baseline-sensitive screen
+S0206,False,False,False,No consistent screening deviation
+S0207,True,True,True,Consistent screening deviation (higher)
+S0208,False,False,False,No consistent screening deviation
+S0209,True,True,True,Consistent screening deviation (higher)
+S0210,False,False,False,No consistent screening deviation
+S0211,True,False,False,Baseline-sensitive screen
+S0212,False,True,False,Baseline-sensitive screen
+S0213,True,True,True,Consistent screening deviation (higher)
+S0214,False,False,False,No consistent screening deviation
+S0215,True,True,False,Baseline-sensitive screen
+S0216,False,False,False,No consistent screening deviation
+S0217,True,True,True,Consistent screening deviation (higher)
+S0218,False,False,False,No consistent screening deviation
+S0219,True,True,False,Baseline-sensitive screen
+S0220,False,False,False,No consistent screening deviation
+S0221,True,True,True,Consistent screening deviation (higher)
+S0222,False,False,False,Baseline-sensitive screen
+S0223,True,True,True,Consistent screening deviation (higher)
+S0224,False,False,False,No consistent screening deviation
+S0225,True,True,True,Consistent screening deviation (higher)
+S0226,False,False,False,No consistent screening deviation
+S0227,True,True,False,Baseline-sensitive screen
+S0228,False,False,False,Baseline-sensitive screen
+S0229,True,False,False,Baseline-sensitive screen
+S0230,False,False,False,Baseline-sensitive screen
+S0231,True,True,True,Consistent screening deviation (higher)
+S0232,False,False,False,No consistent screening deviation
+S0233,True,False,False,No consistent screening deviation
+S0234,False,False,False,No consistent screening deviation
+S0235,True,True,True,Consistent screening deviation (higher)
+S0236,False,False,False,No consistent screening deviation
+S0237,True,True,False,Baseline-sensitive screen
+S0238,False,False,False,No consistent screening deviation
+S0239,True,True,True,Consistent screening deviation (higher)
+S0240,False,False,False,No consistent screening deviation
+S0241,True,True,False,Baseline-sensitive screen
+S0242,False,False,False,No consistent screening deviation
+S0243,True,True,True,Consistent screening deviation (higher)
+S0244,False,False,False,No consistent screening deviation
+S0245,True,True,True,Consistent screening deviation (higher)
+S0246,False,False,False,No consistent screening deviation
+S0247,True,True,True,Consistent screening deviation (higher)
+S0248,False,False,False,Baseline-sensitive screen
+S0249,True,True,True,Consistent screening deviation (higher)
+S0250,False,False,False,Baseline-sensitive screen
+S0251,True,True,True,Consistent screening deviation (higher)
+S0252,False,False,False,No consistent screening deviation
+S0253,True,True,True,Consistent screening deviation (higher)
+S0254,False,False,False,No consistent screening deviation
+S0255,True,True,True,Consistent screening deviation (higher)
+S0256,False,False,False,No consistent screening deviation
+S0257,True,True,True,Consistent screening deviation (higher)
+S0258,False,False,False,No consistent screening deviation
+S0259,True,True,True,Consistent screening deviation (higher)
+S0260,False,False,False,No consistent screening deviation
+S0261,True,True,True,Consistent screening deviation (higher)
+S0262,False,False,False,No consistent screening deviation
+S0263,True,True,True,Consistent screening deviation (higher)
+S0264,False,False,False,No consistent screening deviation
+S0265,True,True,True,Consistent screening deviation (higher)
+S0266,False,False,False,No consistent screening deviation
+S0267,True,True,False,Baseline-sensitive screen
+S0268,False,False,False,Baseline-sensitive screen
+S0269,True,True,True,Consistent screening deviation (higher)
+S0270,False,False,False,No consistent screening deviation
+S0271,True,False,False,Baseline-sensitive screen
+S0272,False,False,False,No consistent screening deviation
+S0273,True,True,True,Consistent screening deviation (higher)
+S0274,False,False,False,No consistent screening deviation
+S0275,True,True,True,Consistent screening deviation (higher)
+S0276,False,False,False,Baseline-sensitive screen
+S0277,True,True,True,Consistent screening deviation (higher)
+S0278,False,False,False,No consistent screening deviation
+S0279,True,True,True,Consistent screening deviation (higher)
+S0280,False,False,False,No consistent screening deviation
+S0281,True,True,False,Baseline-sensitive screen
+S0282,False,False,False,No consistent screening deviation
+S0283,True,True,True,Consistent screening deviation (higher)
+S0284,False,False,False,No consistent screening deviation
+S0285,True,True,True,Consistent screening deviation (higher)
+S0286,False,False,False,No consistent screening deviation
+S0287,True,True,True,Consistent screening deviation (higher)
+S0288,False,False,False,No consistent screening deviation
+S0289,True,False,False,Baseline-sensitive screen
+S0290,False,False,False,No consistent screening deviation
+S0291,True,True,True,Consistent screening deviation (higher)
+S0292,False,False,False,No consistent screening deviation
+S0293,True,False,False,No consistent screening deviation
+S0294,False,False,False,No consistent screening deviation
+S0295,True,True,True,Consistent screening deviation (higher)
+S0296,False,False,False,No consistent screening deviation
+S0297,True,True,True,Consistent screening deviation (higher)
+S0298,False,False,False,No consistent screening deviation
+S0299,True,False,False,Baseline-sensitive screen
+S0300,False,False,False,No consistent screening deviation
+S0301,True,True,True,Consistent screening deviation (higher)
+S0302,False,False,False,No consistent screening deviation
+S0303,True,True,True,Consistent screening deviation (higher)
+S0304,False,False,False,No consistent screening deviation
+S0305,True,True,True,Consistent screening deviation (higher)
+S0306,False,False,False,No consistent screening deviation
+S0307,True,True,True,Consistent screening deviation (higher)
+S0308,False,False,False,No consistent screening deviation
+S0309,True,False,False,No consistent screening deviation
+S0310,False,False,False,No consistent screening deviation
+S0311,True,False,False,Baseline-sensitive screen
+S0312,False,False,False,Baseline-sensitive screen
+S0313,True,True,True,Consistent screening deviation (higher)
+S0314,False,False,False,No consistent screening deviation
+S0315,True,True,True,Consistent screening deviation (higher)
+S0316,False,False,False,No consistent screening deviation
+S0317,True,True,True,Consistent screening deviation (higher)
+S0318,False,False,False,No consistent screening deviation
+S0319,True,True,True,Consistent screening deviation (higher)
+S0320,False,False,False,No consistent screening deviation
+S0321,True,True,True,Consistent screening deviation (higher)
+S0322,False,False,False,No consistent screening deviation
+S0323,True,False,False,No consistent screening deviation
+S0324,False,False,False,No consistent screening deviation
+S0325,True,True,True,Consistent screening deviation (higher)
+S0326,False,False,False,No consistent screening deviation
+S0327,True,True,True,Consistent screening deviation (higher)
+S0328,False,False,False,No consistent screening deviation
+S0329,True,True,True,Consistent screening deviation (higher)
+S0330,False,False,False,No consistent screening deviation
+S0331,True,True,False,Baseline-sensitive screen
+S0332,False,False,False,No consistent screening deviation
+S0333,True,True,True,Consistent screening deviation (higher)
+S0334,False,False,False,No consistent screening deviation
+S0335,True,True,True,Consistent screening deviation (higher)
+S0336,False,False,False,Baseline-sensitive screen
+S0337,True,True,True,Consistent screening deviation (higher)
+S0338,False,False,False,No consistent screening deviation
+S0339,True,True,True,Consistent screening deviation (higher)
+S0340,False,False,False,No consistent screening deviation
+S0341,True,True,True,Consistent screening deviation (higher)
+S0342,False,False,False,No consistent screening deviation
+S0343,True,True,True,Consistent screening deviation (higher)
+S0344,False,False,False,No consistent screening deviation
+S0345,True,True,True,Consistent screening deviation (higher)
+S0346,False,False,False,No consistent screening deviation
+S0347,True,False,False,No consistent screening deviation
+S0348,False,False,False,No consistent screening deviation
+S0349,True,True,True,Consistent screening deviation (higher)
+S0350,False,False,False,No consistent screening deviation
+S0351,True,True,True,Consistent screening deviation (higher)
+S0352,False,False,False,No consistent screening deviation
+S0353,True,False,False,No consistent screening deviation
+S0354,False,False,False,No consistent screening deviation
+S0355,True,False,False,Baseline-sensitive screen
+S0356,False,False,False,Baseline-sensitive screen
+S0357,True,True,True,Consistent screening deviation (higher)
+S0358,False,False,False,No consistent screening deviation
+S0359,True,True,True,Consistent screening deviation (higher)
+S0360,False,False,False,No consistent screening deviation
+S0361,True,True,True,Consistent screening deviation (higher)
+S0362,False,False,False,No consistent screening deviation
+S0363,True,True,True,Consistent screening deviation (higher)
+S0364,False,False,False,No consistent screening deviation
+S0365,True,True,True,Consistent screening deviation (higher)
+S0366,False,False,False,No consistent screening deviation
+S0367,True,True,True,Consistent screening deviation (higher)
+S0368,False,False,False,No consistent screening deviation
+S0369,True,False,False,Baseline-sensitive screen
+S0370,False,False,False,Baseline-sensitive screen
+S0371,True,True,False,Baseline-sensitive screen
+S0372,False,False,False,No consistent screening deviation
+S0373,True,False,False,Baseline-sensitive screen
+S0374,False,False,False,No consistent screening deviation
+S0375,True,False,False,No consistent screening deviation
+S0376,False,False,False,No consistent screening deviation
+S0377,True,True,True,Consistent screening deviation (higher)
+S0378,False,False,False,No consistent screening deviation
+S0379,True,False,False,Baseline-sensitive screen
+S0380,False,False,False,No consistent screening deviation
+S0381,True,True,True,Consistent screening deviation (higher)
+S0382,False,False,False,No consistent screening deviation
+S0383,True,True,True,Consistent screening deviation (higher)
+S0384,False,False,False,No consistent screening deviation
+S0385,True,True,True,Consistent screening deviation (higher)
+S0386,False,False,False,No consistent screening deviation
+S0387,True,True,True,Consistent screening deviation (higher)
+S0388,False,False,False,Baseline-sensitive screen
+S0389,True,True,True,Consistent screening deviation (higher)
+S0390,False,False,False,No consistent screening deviation
+S0391,True,True,True,Consistent screening deviation (higher)
+S0392,False,False,False,No consistent screening deviation
+S0393,True,True,True,Consistent screening deviation (higher)
+S0394,False,False,False,No consistent screening deviation
+S0395,True,True,True,Consistent screening deviation (higher)
+S0396,False,False,False,No consistent screening deviation
+S0397,True,True,True,Consistent screening deviation (higher)
+S0398,False,False,False,No consistent screening deviation
+S0399,True,True,True,Consistent screening deviation (higher)
+S0400,False,False,False,No consistent screening deviation
+S0401,True,False,False,No consistent screening deviation
+S0402,False,False,False,No consistent screening deviation
+S0403,True,True,False,Baseline-sensitive screen
+S0404,False,False,False,No consistent screening deviation
+S0405,True,True,True,Consistent screening deviation (higher)
+S0406,False,False,False,No consistent screening deviation
+S0407,True,True,True,Consistent screening deviation (higher)
+S0408,False,False,False,No consistent screening deviation
+S0409,True,True,True,Consistent screening deviation (higher)
+S0410,False,False,False,No consistent screening deviation
+S0411,True,True,True,Consistent screening deviation (higher)
+S0412,False,False,False,No consistent screening deviation
+S0413,True,True,True,Consistent screening deviation (higher)
+S0414,False,True,False,Baseline-sensitive screen
+S0415,True,True,True,Consistent screening deviation (higher)
+S0416,False,False,False,No consistent screening deviation
+S0417,True,True,True,Consistent screening deviation (higher)
+S0418,False,False,False,No consistent screening deviation
+S0419,True,True,False,Baseline-sensitive screen
+S0420,False,False,False,No consistent screening deviation
+S0421,True,False,False,Baseline-sensitive screen
+S0422,False,False,False,No consistent screening deviation
+S0423,True,True,True,Consistent screening deviation (higher)
+S0424,False,False,False,No consistent screening deviation
+S0425,True,True,True,Consistent screening deviation (higher)
+S0426,False,False,False,No consistent screening deviation
+S0427,True,True,False,Baseline-sensitive screen
+S0428,False,False,False,Baseline-sensitive screen
+S0429,True,True,False,Baseline-sensitive screen
+S0430,False,False,False,No consistent screening deviation
+S0431,True,True,False,Baseline-sensitive screen
+S0432,False,False,False,No consistent screening deviation
+S0433,True,True,True,Consistent screening deviation (higher)
+S0434,False,False,False,No consistent screening deviation
+S0435,True,True,True,Consistent screening deviation (higher)
+S0436,False,False,False,No consistent screening deviation
+S0437,True,True,False,Baseline-sensitive screen
+S0438,False,False,False,Baseline-sensitive screen
+S0439,True,True,False,Baseline-sensitive screen
+S0440,False,False,False,No consistent screening deviation
+S0441,True,True,True,Consistent screening deviation (higher)
+S0442,False,False,False,No consistent screening deviation
+S0443,True,True,True,Consistent screening deviation (higher)
+S0444,False,False,False,No consistent screening deviation
+S0445,True,True,True,Consistent screening deviation (higher)
+S0446,False,False,False,No consistent screening deviation
+S0447,True,True,False,Baseline-sensitive screen
+S0448,False,False,False,No consistent screening deviation
+S0449,True,False,False,Baseline-sensitive screen
+S0450,False,False,False,No consistent screening deviation
+S0451,True,True,True,Consistent screening deviation (higher)
+S0452,False,True,False,Baseline-sensitive screen
+S0453,True,True,True,Consistent screening deviation (higher)
+S0454,False,False,False,No consistent screening deviation
+S0455,True,True,True,Consistent screening deviation (higher)
+S0456,False,False,False,No consistent screening deviation
+S0457,True,True,True,Consistent screening deviation (higher)
+S0458,False,False,False,No consistent screening deviation
+S0459,True,True,True,Consistent screening deviation (higher)
+S0460,False,False,False,No consistent screening deviation
+S0461,True,True,True,Consistent screening deviation (higher)
+S0462,False,False,False,No consistent screening deviation
+S0463,True,True,True,Consistent screening deviation (higher)
+S0464,False,False,False,No consistent screening deviation
+S0465,True,True,True,Consistent screening deviation (higher)
+S0466,False,False,False,No consistent screening deviation
+S0467,True,True,True,Consistent screening deviation (higher)
+S0468,False,False,False,No consistent screening deviation
+S0469,True,True,True,Consistent screening deviation (higher)
+S0470,False,False,False,No consistent screening deviation
+S0471,True,True,True,Consistent screening deviation (higher)
+S0472,False,False,False,No consistent screening deviation
+S0473,True,True,True,Consistent screening deviation (higher)
+S0474,False,False,False,No consistent screening deviation
+S0475,True,True,True,Consistent screening deviation (higher)
+S0476,False,False,False,No consistent screening deviation
+S0477,True,True,True,Consistent screening deviation (higher)
+S0478,False,False,False,No consistent screening deviation
+S0479,True,True,False,Baseline-sensitive screen
+S0480,False,False,False,No consistent screening deviation
+S0481,True,True,True,Consistent screening deviation (higher)
+S0482,False,False,False,No consistent screening deviation
+S0483,True,True,False,Baseline-sensitive screen
+S0484,False,False,False,Baseline-sensitive screen
+S0485,True,True,True,Consistent screening deviation (higher)
+S0486,False,False,False,No consistent screening deviation
+S0487,True,True,True,Consistent screening deviation (higher)
+S0488,False,False,False,No consistent screening deviation
+S0489,True,False,False,Baseline-sensitive screen
+S0490,False,False,False,No consistent screening deviation
+S0491,True,True,True,Consistent screening deviation (higher)
+S0492,False,False,False,No consistent screening deviation
+S0493,True,True,True,Consistent screening deviation (higher)
+S0494,False,False,False,No consistent screening deviation
+S0495,True,True,False,Baseline-sensitive screen
+S0496,False,False,False,No consistent screening deviation
+S0497,True,True,True,Consistent screening deviation (higher)
+S0498,False,False,False,No consistent screening deviation
+S0499,True,False,False,No consistent screening deviation
+S0500,False,False,False,No consistent screening deviation
+S0501,True,True,True,Consistent screening deviation (higher)
+S0502,False,False,False,No consistent screening deviation
+S0503,True,True,True,Consistent screening deviation (higher)
+S0504,False,False,False,Baseline-sensitive screen
+S0505,True,True,True,Consistent screening deviation (higher)
+S0506,False,False,False,No consistent screening deviation
+S0507,True,True,True,Consistent screening deviation (higher)
+S0508,False,False,False,No consistent screening deviation
+S0509,True,True,False,Baseline-sensitive screen
+S0510,False,False,False,No consistent screening deviation
+S0511,True,True,True,Consistent screening deviation (higher)
+S0512,False,False,False,No consistent screening deviation
+S0513,True,False,False,No consistent screening deviation
+S0514,False,False,False,No consistent screening deviation
+S0515,True,True,True,Consistent screening deviation (higher)
+S0516,False,False,False,No consistent screening deviation
+S0517,True,True,True,Consistent screening deviation (higher)
+S0518,False,False,False,No consistent screening deviation
+S0519,True,True,True,Consistent screening deviation (higher)
+S0520,False,False,False,No consistent screening deviation
+S0521,True,False,False,Baseline-sensitive screen
+S0522,False,False,False,Baseline-sensitive screen
+S0523,True,True,True,Consistent screening deviation (higher)
+S0524,False,False,False,No consistent screening deviation
+S0525,True,True,True,Consistent screening deviation (higher)
+S0526,False,False,False,No consistent screening deviation
+S0527,True,True,True,Consistent screening deviation (higher)
+S0528,False,False,False,No consistent screening deviation
+S0529,True,True,True,Consistent screening deviation (higher)
+S0530,False,False,False,No consistent screening deviation
+S0531,True,False,False,No consistent screening deviation
+S0532,False,False,False,No consistent screening deviation
+S0533,True,True,True,Consistent screening deviation (higher)
+S0534,False,False,False,No consistent screening deviation
+S0535,True,False,False,Baseline-sensitive screen
+S0536,False,False,False,Baseline-sensitive screen
+S0537,True,True,True,Consistent screening deviation (higher)
+S0538,False,False,False,No consistent screening deviation
+S0539,True,True,True,Consistent screening deviation (higher)
+S0540,False,False,False,No consistent screening deviation
+S0541,True,True,True,Consistent screening deviation (higher)
+S0542,False,False,False,No consistent screening deviation
+S0543,True,True,False,Baseline-sensitive screen
+S0544,False,False,False,No consistent screening deviation
+S0545,True,True,True,Consistent screening deviation (higher)
+S0546,False,False,False,No consistent screening deviation
+S0547,True,True,True,Consistent screening deviation (higher)
+S0548,False,False,False,No consistent screening deviation
+S0549,True,True,True,Consistent screening deviation (higher)
+S0550,False,False,False,No consistent screening deviation
+S0551,True,True,True,Consistent screening deviation (higher)
+S0552,False,False,False,No consistent screening deviation
+S0553,True,True,True,Consistent screening deviation (higher)
+S0554,False,False,False,No consistent screening deviation
+S0555,True,True,True,Consistent screening deviation (higher)
+S0556,False,False,False,No consistent screening deviation
+S0557,True,True,False,Baseline-sensitive screen
+S0558,False,False,False,No consistent screening deviation
+S0559,True,True,False,Baseline-sensitive screen
+S0560,False,False,False,No consistent screening deviation
+S0561,True,True,True,Consistent screening deviation (higher)
+S0562,False,False,False,No consistent screening deviation
+S0563,True,True,True,Consistent screening deviation (higher)
+S0564,False,False,False,No consistent screening deviation
+S0565,True,True,True,Consistent screening deviation (higher)
+S0566,False,False,False,No consistent screening deviation
+S0567,True,True,True,Consistent screening deviation (higher)
+S0568,False,False,False,No consistent screening deviation
+S0569,True,True,True,Consistent screening deviation (higher)
+S0570,False,False,False,No consistent screening deviation
+S0571,True,False,False,Baseline-sensitive screen
+S0572,False,False,False,Baseline-sensitive screen
+S0573,True,True,False,Baseline-sensitive screen
+S0574,False,False,False,No consistent screening deviation
+S0575,True,True,False,Baseline-sensitive screen
+S0576,False,False,False,No consistent screening deviation
+S0577,True,True,True,Consistent screening deviation (higher)
+S0578,False,True,False,Baseline-sensitive screen
+S0579,True,True,False,Baseline-sensitive screen
+S0580,False,False,False,No consistent screening deviation
+S0581,True,True,True,Consistent screening deviation (higher)
+S0582,False,False,False,No consistent screening deviation
+S0583,True,True,True,Consistent screening deviation (higher)
+S0584,False,False,False,No consistent screening deviation
+S0585,True,True,True,Consistent screening deviation (higher)
+S0586,False,False,False,No consistent screening deviation
+S0587,True,True,True,Consistent screening deviation (higher)
+S0588,False,False,False,No consistent screening deviation
+S0589,True,True,True,Consistent screening deviation (higher)
+S0590,False,False,False,No consistent screening deviation
+S0591,True,True,False,Baseline-sensitive screen
+S0592,False,False,False,Baseline-sensitive screen
+S0593,True,False,False,No consistent screening deviation
+S0594,False,False,False,No consistent screening deviation
+S0595,True,False,False,No consistent screening deviation
+S0596,False,False,False,No consistent screening deviation
+S0597,True,True,True,Consistent screening deviation (higher)
+S0598,False,False,False,No consistent screening deviation
+S0599,True,True,True,Consistent screening deviation (higher)
+S0600,False,False,False,No consistent screening deviation
+S0601,True,True,True,Consistent screening deviation (higher)
+S0602,False,False,False,No consistent screening deviation
+S0603,True,True,True,Consistent screening deviation (higher)
+S0604,False,False,False,No consistent screening deviation
+S0605,True,True,True,Consistent screening deviation (higher)
+S0606,False,False,False,No consistent screening deviation
+S0607,True,False,False,No consistent screening deviation
+S0608,False,False,False,Baseline-sensitive screen
+S0609,True,True,True,Consistent screening deviation (higher)
+S0610,False,False,False,No consistent screening deviation
+S0611,True,True,True,Consistent screening deviation (higher)
+S0612,False,False,False,No consistent screening deviation
+S0613,True,True,True,Consistent screening deviation (higher)
+S0614,False,False,False,No consistent screening deviation
+S0615,True,True,True,Consistent screening deviation (higher)
+S0616,False,False,False,No consistent screening deviation
+S0617,True,True,True,Consistent screening deviation (higher)
+S0618,False,True,False,Baseline-sensitive screen
+S0619,True,True,True,Consistent screening deviation (higher)
+S0620,False,False,False,No consistent screening deviation
+S0621,True,True,True,Consistent screening deviation (higher)
+S0622,False,False,False,Baseline-sensitive screen
+S0623,True,True,True,Consistent screening deviation (higher)
+S0624,False,False,False,No consistent screening deviation
+S0625,True,True,True,Consistent screening deviation (higher)
+S0626,False,False,False,No consistent screening deviation
+S0627,True,True,True,Consistent screening deviation (higher)
+S0628,False,False,False,No consistent screening deviation
+S0629,True,True,True,Consistent screening deviation (higher)
+S0630,False,False,False,No consistent screening deviation
+S0631,True,True,True,Consistent screening deviation (higher)
+S0632,False,False,False,No consistent screening deviation
+S0633,True,True,True,Consistent screening deviation (higher)
+S0634,False,False,False,No consistent screening deviation
+S0635,True,True,True,Consistent screening deviation (higher)
+S0636,False,False,False,No consistent screening deviation
+S0637,True,True,True,Consistent screening deviation (higher)
+S0638,False,False,False,No consistent screening deviation
+S0639,True,True,True,Consistent screening deviation (higher)
+S0640,False,False,False,No consistent screening deviation
+S0641,True,True,False,Baseline-sensitive screen
+S0642,False,False,False,No consistent screening deviation
+S0643,True,True,True,Consistent screening deviation (higher)
+S0644,False,False,False,No consistent screening deviation
+S0645,True,True,False,Baseline-sensitive screen
+S0646,False,False,False,No consistent screening deviation
+S0647,True,False,False,Baseline-sensitive screen
+S0648,False,False,False,No consistent screening deviation
+S0649,True,True,True,Consistent screening deviation (higher)
+S0650,False,False,False,No consistent screening deviation
+S0651,True,True,True,Consistent screening deviation (higher)
+S0652,False,False,False,No consistent screening deviation
+S0653,True,True,False,Baseline-sensitive screen
+S0654,False,False,False,No consistent screening deviation
+S0655,True,True,True,Consistent screening deviation (higher)
+S0656,False,False,False,No consistent screening deviation
+S0657,True,True,True,Consistent screening deviation (higher)
+S0658,False,False,False,No consistent screening deviation
+S0659,True,True,False,Baseline-sensitive screen
+S0660,False,False,False,No consistent screening deviation
+S0661,True,True,False,Baseline-sensitive screen
+S0662,False,False,False,No consistent screening deviation
+S0663,True,True,True,Consistent screening deviation (higher)
+S0664,False,False,False,No consistent screening deviation
+S0665,True,True,True,Consistent screening deviation (higher)
+S0666,False,False,False,No consistent screening deviation
+S0667,True,True,True,Consistent screening deviation (higher)
+S0668,False,False,False,No consistent screening deviation
+S0669,True,False,False,No consistent screening deviation
+S0670,False,False,False,No consistent screening deviation
+S0671,True,True,True,Consistent screening deviation (higher)
+S0672,False,False,False,No consistent screening deviation
+S0673,True,True,True,Consistent screening deviation (higher)
+S0674,False,False,False,No consistent screening deviation
+S0675,True,False,False,Baseline-sensitive screen
+S0676,False,False,False,No consistent screening deviation
+S0677,True,True,True,Consistent screening deviation (higher)
+S0678,False,False,False,No consistent screening deviation
+S0679,True,True,True,Consistent screening deviation (higher)
+S0680,False,False,False,No consistent screening deviation
+S0681,True,True,True,Consistent screening deviation (higher)
+S0682,False,False,False,No consistent screening deviation
+S0683,True,True,True,Consistent screening deviation (higher)
+S0684,False,False,False,Baseline-sensitive screen
+S0685,True,False,False,Baseline-sensitive screen
+S0686,False,False,False,No consistent screening deviation
+S0687,True,True,True,Consistent screening deviation (higher)
+S0688,False,False,False,No consistent screening deviation
+S0689,True,True,True,Consistent screening deviation (higher)
+S0690,False,False,False,No consistent screening deviation
+S0691,True,True,True,Consistent screening deviation (higher)
+S0692,False,False,False,No consistent screening deviation
+S0693,True,True,True,Consistent screening deviation (higher)
+S0694,False,False,False,No consistent screening deviation
+S0695,True,True,True,Consistent screening deviation (higher)
+S0696,False,False,False,No consistent screening deviation
+S0697,True,True,True,Consistent screening deviation (higher)
+S0698,False,False,False,No consistent screening deviation
+S0699,True,True,False,Baseline-sensitive screen
+S0700,False,True,False,Baseline-sensitive screen
+S0701,True,True,True,Consistent screening deviation (higher)
+S0702,False,False,False,Baseline-sensitive screen
+S0703,True,True,True,Consistent screening deviation (higher)
+S0704,False,False,False,Baseline-sensitive screen
+S0705,True,True,False,Baseline-sensitive screen
+S0706,False,False,False,No consistent screening deviation
+S0707,True,True,True,Consistent screening deviation (higher)
+S0708,False,False,False,No consistent screening deviation
+S0709,True,False,False,No consistent screening deviation
+S0710,False,False,False,No consistent screening deviation
+S0711,True,True,False,Baseline-sensitive screen
+S0712,False,False,False,No consistent screening deviation
+S0713,True,False,False,No consistent screening deviation
+S0714,False,False,False,No consistent screening deviation
+S0715,True,True,True,Consistent screening deviation (higher)
+S0716,False,False,False,No consistent screening deviation
+S0717,True,True,True,Consistent screening deviation (higher)
+S0718,False,False,False,Baseline-sensitive screen
+S0719,True,True,True,Consistent screening deviation (higher)
+S0720,False,False,False,No consistent screening deviation
+S0721,True,True,True,Consistent screening deviation (higher)
+S0722,False,False,False,No consistent screening deviation
+S0723,True,True,False,Baseline-sensitive screen
+S0724,False,False,False,No consistent screening deviation
+S0725,True,True,True,Consistent screening deviation (higher)
+S0726,False,False,False,No consistent screening deviation
+S0727,True,True,False,Baseline-sensitive screen
+S0728,False,False,False,No consistent screening deviation
+S0729,True,False,False,No consistent screening deviation
+S0730,False,False,False,No consistent screening deviation
+S0731,True,True,False,Baseline-sensitive screen
+S0732,False,False,False,No consistent screening deviation
+S0733,True,True,True,Consistent screening deviation (higher)
+S0734,False,False,False,Baseline-sensitive screen
+S0735,True,True,True,Consistent screening deviation (higher)
+S0736,False,False,False,No consistent screening deviation
+S0737,True,False,False,No consistent screening deviation
+S0738,False,False,False,No consistent screening deviation
+S0739,True,True,True,Consistent screening deviation (higher)
+S0740,False,False,False,No consistent screening deviation
+S0741,True,False,False,Baseline-sensitive screen
+S0742,False,False,False,No consistent screening deviation
+S0743,True,True,False,Baseline-sensitive screen
+S0744,False,False,False,Baseline-sensitive screen
+S0745,True,True,True,Consistent screening deviation (higher)
+S0746,False,False,False,No consistent screening deviation
+S0747,True,True,True,Consistent screening deviation (higher)
+S0748,False,False,False,No consistent screening deviation
+S0749,True,True,True,Consistent screening deviation (higher)
+S0750,False,False,False,No consistent screening deviation
+S0751,True,True,True,Consistent screening deviation (higher)
+S0752,False,False,False,No consistent screening deviation
+S0753,True,True,True,Consistent screening deviation (higher)
+S0754,False,False,False,No consistent screening deviation
+S0755,True,True,True,Consistent screening deviation (higher)
+S0756,False,False,False,No consistent screening deviation
+S0757,True,True,True,Consistent screening deviation (higher)
+S0758,False,False,False,No consistent screening deviation
+S0759,True,True,False,Baseline-sensitive screen
+S0760,False,False,False,No consistent screening deviation
+S0761,True,True,True,Consistent screening deviation (higher)
+S0762,False,False,False,No consistent screening deviation
+S0763,True,True,True,Consistent screening deviation (higher)
+S0764,False,False,False,No consistent screening deviation
+S0765,True,False,False,No consistent screening deviation
+S0766,False,False,False,No consistent screening deviation
+S0767,True,True,True,Consistent screening deviation (higher)
+S0768,False,False,False,No consistent screening deviation
+S0769,True,True,True,Consistent screening deviation (higher)
+S0770,False,False,False,No consistent screening deviation
+S0771,True,False,False,No consistent screening deviation
+S0772,False,False,False,No consistent screening deviation
+S0773,True,True,True,Consistent screening deviation (higher)
+S0774,False,False,False,No consistent screening deviation
+S0775,True,True,True,Consistent screening deviation (higher)
+S0776,False,False,False,No consistent screening deviation
+S0777,True,True,True,Consistent screening deviation (higher)
+S0778,False,False,False,No consistent screening deviation
+S0779,True,True,True,Consistent screening deviation (higher)
+S0780,False,False,False,No consistent screening deviation
+S0781,True,True,True,Consistent screening deviation (higher)
+S0782,False,False,False,No consistent screening deviation
+S0783,True,True,False,Baseline-sensitive screen
+S0784,False,False,False,No consistent screening deviation
+S0785,True,False,False,Baseline-sensitive screen
+S0786,False,False,False,No consistent screening deviation
+S0787,True,True,True,Consistent screening deviation (higher)
+S0788,False,False,False,No consistent screening deviation
+S0789,True,True,False,Baseline-sensitive screen
+S0790,False,False,False,No consistent screening deviation
+S0791,True,False,False,No consistent screening deviation
+S0792,False,False,False,No consistent screening deviation
+S0793,True,True,False,Baseline-sensitive screen
+S0794,False,False,False,No consistent screening deviation
+S0795,True,True,False,Baseline-sensitive screen
+S0796,False,False,False,No consistent screening deviation
+S0797,True,False,False,Baseline-sensitive screen
+S0798,False,False,False,No consistent screening deviation
+S0799,True,True,True,Consistent screening deviation (higher)
+S0800,False,False,False,No consistent screening deviation
+S0801,True,True,True,Consistent screening deviation (higher)
+S0802,False,False,False,No consistent screening deviation
+S0803,True,True,True,Consistent screening deviation (higher)
+S0804,False,False,False,No consistent screening deviation
+S0805,True,True,True,Consistent screening deviation (higher)
+S0806,False,False,False,No consistent screening deviation
+S0807,True,True,True,Consistent screening deviation (higher)
+S0808,False,False,False,No consistent screening deviation
+S0809,True,True,False,Baseline-sensitive screen
+S0810,False,False,False,No consistent screening deviation
+S0811,True,True,True,Consistent screening deviation (higher)
+S0812,False,False,False,No consistent screening deviation
+S0813,True,True,True,Consistent screening deviation (higher)
+S0814,False,False,False,No consistent screening deviation
+S0815,True,True,True,Consistent screening deviation (higher)
+S0816,False,False,False,No consistent screening deviation
+S0817,True,True,True,Consistent screening deviation (higher)
+S0818,False,False,False,No consistent screening deviation
+S0819,True,True,True,Consistent screening deviation (higher)
+S0820,False,False,False,No consistent screening deviation
+S0821,True,True,False,Baseline-sensitive screen
+S0822,False,False,False,No consistent screening deviation
+S0823,True,True,False,Baseline-sensitive screen
+S0824,False,False,False,No consistent screening deviation
+S0825,True,True,False,Baseline-sensitive screen
+S0826,False,False,False,No consistent screening deviation
+S0827,True,True,True,Consistent screening deviation (higher)
+S0828,False,False,False,Baseline-sensitive screen
+S0829,True,True,True,Consistent screening deviation (higher)
+S0830,False,False,False,No consistent screening deviation
+S0831,True,True,True,Consistent screening deviation (higher)
+S0832,False,False,False,No consistent screening deviation
+S0833,True,True,False,Baseline-sensitive screen
+S0834,False,False,False,No consistent screening deviation
+S0835,True,True,True,Consistent screening deviation (higher)
+S0836,False,False,False,No consistent screening deviation
+S0837,True,True,True,Consistent screening deviation (higher)
+S0838,False,False,False,No consistent screening deviation
+S0839,True,True,True,Consistent screening deviation (higher)
+S0840,False,False,False,No consistent screening deviation
+S0841,True,True,True,Consistent screening deviation (higher)
+S0842,False,False,False,No consistent screening deviation
+S0843,True,True,False,Baseline-sensitive screen
+S0844,False,False,False,No consistent screening deviation
+S0845,True,True,True,Consistent screening deviation (higher)
+S0846,False,False,False,No consistent screening deviation
+S0847,True,True,True,Consistent screening deviation (higher)
+S0848,False,False,False,No consistent screening deviation
+S0849,True,True,True,Consistent screening deviation (higher)
+S0850,False,False,False,No consistent screening deviation
+S0851,True,True,True,Consistent screening deviation (higher)
+S0852,False,False,False,Baseline-sensitive screen
+S0853,True,False,False,Baseline-sensitive screen
+S0854,False,False,False,No consistent screening deviation
+S0855,True,True,True,Consistent screening deviation (higher)
+S0856,False,False,False,No consistent screening deviation
+S0857,True,False,False,Baseline-sensitive screen
+S0858,False,False,False,No consistent screening deviation
+S0859,True,True,True,Consistent screening deviation (higher)
+S0860,False,False,False,No consistent screening deviation
+S0861,True,True,True,Consistent screening deviation (higher)
+S0862,False,False,False,No consistent screening deviation
+S0863,True,True,True,Consistent screening deviation (higher)
+S0864,False,False,False,No consistent screening deviation
+S0865,True,True,True,Consistent screening deviation (higher)
+S0866,False,False,False,No consistent screening deviation
+S0867,True,True,True,Consistent screening deviation (higher)
+S0868,False,False,False,No consistent screening deviation
+S0869,True,True,True,Consistent screening deviation (higher)
+S0870,False,False,False,No consistent screening deviation
+S0871,True,False,False,Baseline-sensitive screen
+S0872,False,False,False,No consistent screening deviation
+S0873,True,True,True,Consistent screening deviation (higher)
+S0874,False,False,False,No consistent screening deviation
+S0875,True,True,True,Consistent screening deviation (higher)
+S0876,False,False,False,No consistent screening deviation
+S0877,True,True,True,Consistent screening deviation (higher)
+S0878,False,False,False,No consistent screening deviation
+S0879,True,True,True,Consistent screening deviation (higher)
+S0880,False,False,False,No consistent screening deviation
+S0881,True,True,True,Consistent screening deviation (higher)
+S0882,False,False,False,Baseline-sensitive screen
+S0883,True,True,True,Consistent screening deviation (higher)
+S0884,False,False,False,No consistent screening deviation
+S0885,True,True,False,Baseline-sensitive screen
+S0886,False,False,False,No consistent screening deviation
+S0887,True,True,True,Consistent screening deviation (higher)
+S0888,False,False,False,No consistent screening deviation
+S0889,True,True,True,Consistent screening deviation (higher)
+S0890,False,False,False,No consistent screening deviation
+S0891,True,True,True,Consistent screening deviation (higher)
+S0892,False,False,False,No consistent screening deviation
+S0893,True,True,False,Baseline-sensitive screen
+S0894,False,False,False,No consistent screening deviation
+S0895,True,True,True,Consistent screening deviation (higher)
+S0896,False,True,False,Baseline-sensitive screen
+S0897,True,True,True,Consistent screening deviation (higher)
+S0898,False,False,False,No consistent screening deviation
+S0899,True,True,True,Consistent screening deviation (higher)
+S0900,False,False,False,No consistent screening deviation
+S0901,True,True,True,Consistent screening deviation (higher)
+S0902,False,False,False,Baseline-sensitive screen
+S0903,True,True,True,Consistent screening deviation (higher)
+S0904,False,False,False,No consistent screening deviation
+S0905,True,True,True,Consistent screening deviation (higher)
+S0906,False,False,False,No consistent screening deviation
+S0907,True,True,True,Consistent screening deviation (higher)
+S0908,False,False,False,No consistent screening deviation
+S0909,True,True,True,Consistent screening deviation (higher)
+S0910,False,False,False,No consistent screening deviation
+S0911,True,True,True,Consistent screening deviation (higher)
+S0912,False,False,False,Baseline-sensitive screen
+S0913,True,True,True,Consistent screening deviation (higher)
+S0914,False,False,False,Baseline-sensitive screen
+S0915,True,True,True,Consistent screening deviation (higher)
+S0916,False,False,False,No consistent screening deviation
+S0917,True,True,True,Consistent screening deviation (higher)
+S0918,False,False,False,No consistent screening deviation
+S0919,True,True,True,Consistent screening deviation (higher)
+S0920,False,False,False,No consistent screening deviation
+S0921,True,True,True,Consistent screening deviation (higher)
+S0922,False,False,False,No consistent screening deviation
+S0923,True,True,True,Consistent screening deviation (higher)
+S0924,False,False,False,No consistent screening deviation
+S0925,True,True,True,Consistent screening deviation (higher)
+S0926,False,False,False,Baseline-sensitive screen
+S0927,True,True,True,Consistent screening deviation (higher)
+S0928,False,False,False,No consistent screening deviation
+S0929,True,True,True,Consistent screening deviation (higher)
+S0930,False,False,False,No consistent screening deviation
+S0931,True,True,True,Consistent screening deviation (higher)
+S0932,False,False,False,No consistent screening deviation
+S0933,True,True,True,Consistent screening deviation (higher)
+S0934,False,False,False,No consistent screening deviation
+S0935,True,False,False,Baseline-sensitive screen
+S0936,False,False,False,Baseline-sensitive screen
+S0937,True,True,True,Consistent screening deviation (higher)
+S0938,False,False,False,No consistent screening deviation
+S0939,True,True,True,Consistent screening deviation (higher)
+S0940,False,False,False,No consistent screening deviation
+S0941,True,True,True,Consistent screening deviation (higher)
+S0942,False,False,False,No consistent screening deviation
+S0943,True,True,True,Consistent screening deviation (higher)
+S0944,False,False,False,No consistent screening deviation
+S0945,True,False,False,Baseline-sensitive screen
+S0946,False,False,False,No consistent screening deviation
+S0947,True,True,True,Consistent screening deviation (higher)
+S0948,False,False,False,No consistent screening deviation
+S0949,True,True,True,Consistent screening deviation (higher)
+S0950,False,False,False,No consistent screening deviation
+S0951,True,True,True,Consistent screening deviation (higher)
+S0952,False,False,False,No consistent screening deviation
+S0953,True,True,True,Consistent screening deviation (higher)
+S0954,False,False,False,No consistent screening deviation
+S0955,True,True,True,Consistent screening deviation (higher)
+S0956,False,False,False,No consistent screening deviation
+S0957,True,True,True,Consistent screening deviation (higher)
+S0958,False,False,False,No consistent screening deviation
+S0959,True,True,True,Consistent screening deviation (higher)
+S0960,False,False,False,No consistent screening deviation
+S0961,True,True,True,Consistent screening deviation (higher)
+S0962,False,False,False,No consistent screening deviation
+S0963,True,True,True,Consistent screening deviation (higher)
+S0964,False,False,False,No consistent screening deviation
+S0965,True,True,True,Consistent screening deviation (higher)
+S0966,False,False,False,No consistent screening deviation
+S0967,True,True,True,Consistent screening deviation (higher)
+S0968,False,False,False,No consistent screening deviation
+S0969,True,True,True,Consistent screening deviation (higher)
+S0970,False,False,False,Baseline-sensitive screen
+S0971,True,True,False,Baseline-sensitive screen
+S0972,False,False,False,No consistent screening deviation
+S0973,True,True,True,Consistent screening deviation (higher)
+S0974,False,False,False,No consistent screening deviation
+S0975,True,False,False,No consistent screening deviation
+S0976,False,False,False,No consistent screening deviation
+S0977,True,True,True,Consistent screening deviation (higher)
+S0978,False,False,False,No consistent screening deviation
+S0979,True,True,True,Consistent screening deviation (higher)
+S0980,False,False,False,No consistent screening deviation
+S0981,True,True,True,Consistent screening deviation (higher)
+S0982,False,False,False,No consistent screening deviation
+S0983,True,True,True,Consistent screening deviation (higher)
+S0984,False,False,False,No consistent screening deviation
+S0985,True,False,False,Baseline-sensitive screen
+S0986,False,False,False,Baseline-sensitive screen
+S0987,True,True,True,Consistent screening deviation (higher)
+S0988,False,False,False,No consistent screening deviation
+S0989,True,True,True,Consistent screening deviation (higher)
+S0990,False,False,False,No consistent screening deviation
+S0991,True,True,True,Consistent screening deviation (higher)
+S0992,False,False,False,No consistent screening deviation
+S0993,True,True,True,Consistent screening deviation (higher)
+S0994,False,False,False,No consistent screening deviation
+S0995,True,True,True,Consistent screening deviation (higher)
+S0996,False,False,False,No consistent screening deviation
+S0997,True,True,True,Consistent screening deviation (higher)
+S0998,False,False,False,No consistent screening deviation
+S0999,True,True,True,Consistent screening deviation (higher)
+S1000,False,False,False,No consistent screening deviation
+S1001,True,True,False,Baseline-sensitive screen
+S1002,False,False,False,No consistent screening deviation
+S1003,True,True,True,Consistent screening deviation (higher)
+S1004,False,False,False,No consistent screening deviation
+S1005,True,True,True,Consistent screening deviation (higher)
+S1006,False,False,False,No consistent screening deviation
+S1007,True,True,True,Consistent screening deviation (higher)
+S1008,False,False,False,Baseline-sensitive screen
+S1009,True,True,True,Consistent screening deviation (higher)
+S1010,False,False,False,No consistent screening deviation
+S1011,True,True,True,Consistent screening deviation (higher)
+S1012,False,False,False,No consistent screening deviation
+S1013,True,True,True,Consistent screening deviation (higher)
+S1014,False,True,False,Baseline-sensitive screen
+S1015,True,True,True,Consistent screening deviation (higher)
+S1016,False,False,False,No consistent screening deviation
+S1017,True,True,True,Consistent screening deviation (higher)
+S1018,False,False,False,No consistent screening deviation
+S1019,True,True,True,Consistent screening deviation (higher)
+S1020,False,False,False,No consistent screening deviation
+S1021,True,True,True,Consistent screening deviation (higher)
+S1022,False,False,False,No consistent screening deviation
+S1023,True,True,True,Consistent screening deviation (higher)
+S1024,False,False,False,Baseline-sensitive screen
+S1025,True,True,True,Consistent screening deviation (higher)
+S1026,False,False,False,No consistent screening deviation
+S1027,True,True,False,Baseline-sensitive screen
+S1028,False,False,False,No consistent screening deviation
+S1029,True,True,False,Baseline-sensitive screen
+S1030,False,False,False,No consistent screening deviation
+S1031,True,True,True,Consistent screening deviation (higher)
+S1032,False,False,False,No consistent screening deviation
+S1033,True,True,True,Consistent screening deviation (higher)
+S1034,False,False,False,No consistent screening deviation
+S1035,True,True,True,Consistent screening deviation (higher)
+S1036,False,False,False,No consistent screening deviation
+S1037,True,True,True,Consistent screening deviation (higher)
+S1038,False,False,False,No consistent screening deviation
+S1039,True,True,True,Consistent screening deviation (higher)
+S1040,False,False,False,No consistent screening deviation
+S1041,True,True,True,Consistent screening deviation (higher)
+S1042,False,False,False,No consistent screening deviation
+S1043,True,True,True,Consistent screening deviation (higher)
+S1044,False,False,False,No consistent screening deviation
+S1045,True,True,True,Consistent screening deviation (higher)
+S1046,False,False,False,No consistent screening deviation
+S1047,True,True,True,Consistent screening deviation (higher)
+S1048,False,False,False,No consistent screening deviation
+S1049,True,True,False,Baseline-sensitive screen
+S1050,False,False,False,No consistent screening deviation
+S1051,True,True,True,Consistent screening deviation (higher)
+S1052,False,False,False,Baseline-sensitive screen
+S1053,True,True,True,Consistent screening deviation (higher)
+S1054,False,False,False,No consistent screening deviation
+S1055,True,True,True,Consistent screening deviation (higher)
+S1056,False,False,False,No consistent screening deviation
+S1057,True,True,True,Consistent screening deviation (higher)
+S1058,False,False,False,No consistent screening deviation
+S1059,True,True,True,Consistent screening deviation (higher)
+S1060,False,False,False,No consistent screening deviation
+S1061,True,True,True,Consistent screening deviation (higher)
+S1062,False,False,False,No consistent screening deviation
+S1063,True,True,True,Consistent screening deviation (higher)
+S1064,False,False,False,No consistent screening deviation
+S1065,True,False,False,Baseline-sensitive screen
+S1066,False,False,False,Baseline-sensitive screen
+S1067,True,False,False,No consistent screening deviation
+S1068,False,False,False,No consistent screening deviation
+S1069,True,False,False,Baseline-sensitive screen
+S1070,False,False,False,No consistent screening deviation
+S1071,True,True,False,Baseline-sensitive screen
+S1072,False,False,False,No consistent screening deviation
+S1073,True,True,True,Consistent screening deviation (higher)
+S1074,False,False,False,No consistent screening deviation
+S1075,True,False,False,No consistent screening deviation
+S1076,False,False,False,No consistent screening deviation
+S1077,True,True,True,Consistent screening deviation (higher)
+S1078,False,True,False,Baseline-sensitive screen
+S1079,True,True,True,Consistent screening deviation (higher)
+S1080,False,False,False,No consistent screening deviation
+S1081,True,True,False,Baseline-sensitive screen
+S1082,False,False,False,No consistent screening deviation
+S1083,True,True,True,Consistent screening deviation (higher)
+S1084,False,False,False,No consistent screening deviation
+S1085,True,True,False,Baseline-sensitive screen
+S1086,False,False,False,No consistent screening deviation
+S1087,True,True,True,Consistent screening deviation (higher)
+S1088,False,False,False,Baseline-sensitive screen
+S1089,True,True,True,Consistent screening deviation (higher)
+S1090,False,False,False,No consistent screening deviation
+S1091,True,False,False,Baseline-sensitive screen
+S1092,False,False,False,No consistent screening deviation
+S1093,True,True,False,Baseline-sensitive screen
+S1094,False,False,False,No consistent screening deviation
+S1095,True,True,True,Consistent screening deviation (higher)
+S1096,False,False,False,No consistent screening deviation
+S1097,True,True,True,Consistent screening deviation (higher)
+S1098,False,False,False,Baseline-sensitive screen
+S1099,True,True,True,Consistent screening deviation (higher)
+S1100,False,False,False,No consistent screening deviation
+S1101,True,True,False,Baseline-sensitive screen
+S1102,False,False,False,No consistent screening deviation
+S1103,True,True,True,Consistent screening deviation (higher)
+S1104,False,False,False,No consistent screening deviation
+S1105,True,False,False,No consistent screening deviation
+S1106,False,False,False,No consistent screening deviation
+S1107,True,True,False,Baseline-sensitive screen
+S1108,False,False,False,No consistent screening deviation
+S1109,True,True,False,Baseline-sensitive screen
+S1110,False,False,False,No consistent screening deviation
+S1111,True,True,True,Consistent screening deviation (higher)
+S1112,False,False,False,No consistent screening deviation
+S1113,True,True,True,Consistent screening deviation (higher)
+S1114,False,False,False,No consistent screening deviation
+S1115,True,True,True,Consistent screening deviation (higher)
+S1116,False,False,False,No consistent screening deviation
+S1117,True,True,True,Consistent screening deviation (higher)
+S1118,False,False,False,No consistent screening deviation
+S1119,True,True,False,Baseline-sensitive screen
+S1120,False,False,False,No consistent screening deviation
+S1121,True,True,True,Consistent screening deviation (higher)
+S1122,False,False,False,No consistent screening deviation
+S1123,True,True,True,Consistent screening deviation (higher)
+S1124,False,False,False,Baseline-sensitive screen
+S1125,True,True,True,Consistent screening deviation (higher)
+S1126,False,False,False,No consistent screening deviation
+S1127,True,True,True,Consistent screening deviation (higher)
+S1128,False,False,False,No consistent screening deviation
+S1129,True,False,False,Baseline-sensitive screen
+S1130,False,False,False,No consistent screening deviation
+S1131,True,True,False,Baseline-sensitive screen
+S1132,False,False,False,No consistent screening deviation
+S1133,True,True,False,Baseline-sensitive screen
+S1134,False,False,False,Baseline-sensitive screen
+S1135,True,True,True,Consistent screening deviation (higher)
+S1136,False,False,False,No consistent screening deviation
+S1137,True,False,False,Baseline-sensitive screen
+S1138,False,False,False,No consistent screening deviation
+S1139,True,True,False,Baseline-sensitive screen
+S1140,False,False,False,No consistent screening deviation
+S1141,True,True,True,Consistent screening deviation (higher)
+S1142,False,False,False,No consistent screening deviation
+S1143,True,True,False,Baseline-sensitive screen
+S1144,False,False,False,No consistent screening deviation
+S1145,True,True,True,Consistent screening deviation (higher)
+S1146,False,False,False,No consistent screening deviation
+S1147,True,True,True,Consistent screening deviation (higher)
+S1148,False,False,False,No consistent screening deviation
+S1149,True,True,True,Consistent screening deviation (higher)
+S1150,False,False,False,No consistent screening deviation
+S1151,True,True,True,Consistent screening deviation (higher)
+S1152,False,False,False,No consistent screening deviation
+S1153,True,True,True,Consistent screening deviation (higher)
+S1154,False,False,False,No consistent screening deviation
+S1155,True,True,False,Baseline-sensitive screen
+S1156,False,False,False,No consistent screening deviation
+S1157,True,True,True,Consistent screening deviation (higher)
+S1158,False,False,False,No consistent screening deviation
+S1159,True,True,True,Consistent screening deviation (higher)
+S1160,False,False,False,No consistent screening deviation
+S1161,True,True,True,Consistent screening deviation (higher)
+S1162,False,False,False,Baseline-sensitive screen
+S1163,True,True,True,Consistent screening deviation (higher)
+S1164,False,False,False,No consistent screening deviation
+S1165,True,False,False,No consistent screening deviation
+S1166,False,False,False,No consistent screening deviation
+S1167,True,True,True,Consistent screening deviation (higher)
+S1168,False,False,False,Baseline-sensitive screen
+S1169,True,True,True,Consistent screening deviation (higher)
+S1170,False,False,False,No consistent screening deviation
+S1171,True,True,True,Consistent screening deviation (higher)
+S1172,False,False,False,No consistent screening deviation
+S1173,True,False,False,No consistent screening deviation
+S1174,False,False,False,No consistent screening deviation
+S1175,True,True,True,Consistent screening deviation (higher)
+S1176,False,False,False,No consistent screening deviation
+S1177,True,True,True,Consistent screening deviation (higher)
+S1178,False,False,False,No consistent screening deviation
+S1179,True,True,True,Consistent screening deviation (higher)
+S1180,False,False,False,No consistent screening deviation
+S1181,True,True,True,Consistent screening deviation (higher)
+S1182,False,False,False,No consistent screening deviation
+S1183,True,True,True,Consistent screening deviation (higher)
+S1184,False,False,False,No consistent screening deviation
+S1185,True,True,True,Consistent screening deviation (higher)
+S1186,False,False,False,No consistent screening deviation
+S1187,True,False,False,Baseline-sensitive screen
+S1188,False,False,False,No consistent screening deviation
+S1189,True,True,True,Consistent screening deviation (higher)
+S1190,False,False,False,No consistent screening deviation
+S1191,True,False,False,Baseline-sensitive screen
+S1192,False,False,False,No consistent screening deviation
+S1193,True,True,True,Consistent screening deviation (higher)
+S1194,False,False,False,No consistent screening deviation
+S1195,True,True,True,Consistent screening deviation (higher)
+S1196,False,False,False,No consistent screening deviation
+S1197,True,False,False,Baseline-sensitive screen
+S1198,False,False,False,No consistent screening deviation
+S1199,True,True,True,Consistent screening deviation (higher)

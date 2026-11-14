@@ -1,0 +1,6 @@
+# Optional v1.1 deep learning. Install this ONCE before launching the live backend.
+# CPU-only inference is supported. On Windows, Python 3.11 or 3.12 is recommended.
+-r requirements.txt
+torch>=2.3,<3
+# v1.3: local process-memory benchmarking (optional for ordinary inference)
+psutil>=5.9,<8
