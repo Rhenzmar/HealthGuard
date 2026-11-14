@@ -49,7 +49,7 @@ def test_model_consensus_is_warning_not_critical():
     assert review["status"]=="WARNING"
     assert review["basis"]=="EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY"
     assert review["audible_alert_suggested"]
-    assert "diagnosis" in review["disclaimer"]
+    assert "clinical diagnoses" in review["disclaimer"]
 
 
 def test_environmental_critical_is_fictional_threshold_only():
