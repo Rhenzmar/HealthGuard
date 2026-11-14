@@ -104,7 +104,7 @@ def _cbc_measurements():
         for rec in reader:
             sample=rec.get('Sample Name','')
             import re
-            match=re.fullmatch(r'(C00[1-4])_whole-blood_(L-\\d+|R\\+\\d+)_cbc',sample)
+            match=re.fullmatch(r'(C00[1-4])_whole-blood_(L-\d+|R\+\d+)_cbc',sample)
             if not match:
                 raise ValueError(f'Unexpected CBC sample identifier: {sample}')
             if sample in CBC_QUARANTINED_SAMPLES:
