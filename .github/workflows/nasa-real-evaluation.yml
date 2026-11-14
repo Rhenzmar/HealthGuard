@@ -1,0 +1,67 @@
+name: NASA Original Laboratory Real-Data Evaluation
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'tools/evaluate_nasa_real_biomarkers.py'
+      - 'tests/test_nasa_real_data_evaluation.py'
+      - 'data/nasa/verified/**'
+      - '.github/workflows/nasa-real-evaluation.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nasa-real-lab-validation-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  retrospective-nasa-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test tools
+        run: python -m pip install pytest
+      - name: Verify authentic source and locked APDRA baseline results
+        run: python -m pytest -q tests/test_nasa_real_data_evaluation.py
+      - name: Evaluate five real NASA laboratory panels
+        run: python -m tools.evaluate_nasa_real_biomarkers
+      - name: Save full NASA evaluation as reproducible action artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-real-biomarker-evaluation
+          path: research/nasa_real_data_evaluation/
+          retention-days: 30
+      - name: Publish real NASA evidence, never any synthetic substitutions
+        run: |
+          set -eu
+          mkdir -p /tmp/real-nasa-report
+          cp research/nasa_real_data_evaluation/evaluation.json /tmp/real-nasa-report/
+          cp research/nasa_real_data_evaluation/observation_level_evidence.csv /tmp/real-nasa-report/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            for src in tools/evaluate_nasa_real_biomarkers.py data/nasa/verified/verified_manifest.json; do
+              if [ "$(git rev-parse "$GITHUB_SHA:$src")" != "$(git rev-parse "origin/main:$src")" ]; then
+                echo "Source revision changed; skip publishing stale evaluation."
+                exit 0
+              fi
+            done
+            git reset --hard origin/main
+            mkdir -p research/nasa_real_data_evaluation
+            cp /tmp/real-nasa-report/* research/nasa_real_data_evaluation/
+            git add research/nasa_real_data_evaluation/evaluation.json research/nasa_real_data_evaluation/observation_level_evidence.csv
+            if git diff --staged --quiet; then
+              echo "Report already committed"
+              exit 0
+            fi
+            git commit -m "Publish source-hash-verified NASA-only historical biomarker evaluation"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+            echo "Concurrent update detected; retrying clean source-matched publication"
+          done
+          exit 1
