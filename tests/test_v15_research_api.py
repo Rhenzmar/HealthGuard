@@ -48,7 +48,7 @@ def test_research_biomarker_assays_separated():
         assert len(cmp)==19
         assert len(nul)==203
         assert all(x['assay']=='CMP' for x in cmp)
-        assert all(x['assay']=='NULISA' for x in nul)
+        assert all(x['assay']=='ALAMAR_NPQ' for x in nul)
         assert c.get('/api/research/biomarkers',params={'assay':'OTHER'}).status_code==422
 
 
