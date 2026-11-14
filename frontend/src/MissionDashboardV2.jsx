@@ -9,10 +9,10 @@ import 'open-anatomy-3d-react/styles.css';
 
 const AnatomyViewer=React.lazy(()=>import('open-anatomy-3d-react').then(m=>({default:m.AnatomyViewer})));
 const CREW=[
-  {name:'Cmdr. Elena Park',role:'Flight commander',initials:'EP',portrait:'one',image:'/crew/elena.svg',stream:true},
-  {name:'Dr. Marcus Reed',role:'Medical officer',initials:'MR',portrait:'two',image:'/crew/marcus.svg',stream:false},
-  {name:'Lt. Aisha Khan',role:'Systems engineer',initials:'AK',portrait:'three',image:'/crew/aisha.svg',stream:false},
-  {name:'Spc. Daniel Cho',role:'Mission specialist',initials:'DC',portrait:'four',image:'/crew/daniel.svg',stream:false}
+  {name:'Cmdr. Elena Park',role:'Flight commander',initials:'EP',portrait:'one',image:'/crew/elena.svg',stream:true,subjectId:'SIM_CREW_01'},
+  {name:'Dr. Marcus Reed',role:'Medical officer',initials:'MR',portrait:'two',image:'/crew/marcus.svg',stream:true,subjectId:'SIM_CREW_02'},
+  {name:'Lt. Aisha Khan',role:'Systems engineer',initials:'AK',portrait:'three',image:'/crew/aisha.svg',stream:true,subjectId:'SIM_CREW_03'},
+  {name:'Spc. Daniel Cho',role:'Mission specialist',initials:'DC',portrait:'four',image:'/crew/daniel.svg',stream:true,subjectId:'SIM_CREW_04'}
 ];
 const DATE_KEY=()=>new Date().toISOString().slice(0,10);
 function getRoutine(){
@@ -45,16 +45,16 @@ function Hero({environment,onEnvironment,connected,review,progress,subjects,hasT
     <div className="hg6-hero-env"><EnvironmentPicker value={environment} onChange={onEnvironment} compact/></div>
   </section>;
 }
-function CrewStrip({activeCrewIndex,onSelect,connected,onManage}){
+function CrewStrip({activeCrewIndex,onSelect,connected,availableSubjects,onManage}){
   return <section className="hg6-strip">
     <div className="hg6-strip-heading">
-      <div><Icon name="users" size={18}/><h2>Crew overview</h2><span className="hg6-outline-pill">4 fictional astronauts · 1 simulator stream</span></div>
+      <div><Icon name="users" size={18}/><h2>Crew overview</h2><span className="hg6-outline-pill">4 fictional astronauts · 4 independent simulator streams</span></div>
       <button type="button" className="hg6-small-action" onClick={onManage}>Mission Control <Icon name="arrow" size={15}/></button>
     </div>
     <div className="hg6-crew-grid">
       {CREW.map((person,i)=><button key={person.initials} type="button" className={'hg6-crew-card '+(i===activeCrewIndex?'hg6-crew-selected':'')} aria-pressed={i===activeCrewIndex} aria-label={'Select '+person.name} onClick={()=>onSelect(i)}>
         <span className={'hg6-avatar hg6-avatar-'+person.portrait}><img src={person.image} alt={person.name+' fictional astronaut portrait'} loading="lazy"/><span className="hg6-fallback-initials">{person.initials}</span></span>
-        <span className="hg6-crew-text"><strong>{person.name}</strong><small>{person.role} · fictional</small><em className={i===0&&connected?'hg6-stream-on':'hg6-stream-off'}><i/>{i===0?(connected?'Simulated stream live':'Stream reconnecting') :'Telemetry not connected'}</em></span>
+        <span className="hg6-crew-text"><strong>{person.name}</strong><small>{person.role} · fictional</small><em className={connected&&availableSubjects.includes(person.subjectId)?'hg6-stream-on':'hg6-stream-off'}><i/>{connected&&availableSubjects.includes(person.subjectId)?'Simulated stream live':'Stream reconnecting'}</em></span>
         <Icon name="arrow" size={17}/>
       </button>)}
     </div>
@@ -81,9 +81,9 @@ function SelectedCrew({person,hasTelemetry,latest,review,connection,onTelemetry,
     <div className="hg6-card-heading"><h2><Icon name="user" size={19}/> Selected crew: {person.name}</h2><span className="hg6-quiet-badge">FICTIONAL CREW 0{CREW.indexOf(person)+1}</span></div>
     <div className="hg6-selected-body">
       <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={'Fictional astronaut '+person.name+' wearing a space suit'}/><button type="button" onClick={onProfile}>View crew profile <Icon name="arrow" size={13}/></button></div>
-      <div className="hg6-health-summary hg6-unavailable-summary"><div className="hg6-crew-unavailable" role="status"><span className="hg6-crew-unavailable-icon"><Icon name="radio" size={26}/></span><h3>Telemetry not connected</h3><p>{person.name} has a fictional crew profile, but no independent physiological data stream has been assigned.</p><div className="hg6-crew-no-data"><span>Vital signs</span><strong>Not available</strong></div><div className="hg6-crew-no-data"><span>PhysioAlert</span><strong>Awaiting data</strong></div></div></div>
+      <div className="hg6-health-summary hg6-unavailable-summary"><div className="hg6-crew-unavailable" role="status"><span className="hg6-crew-unavailable-icon"><Icon name="radio" size={26}/></span><h3>Awaiting simulator stream</h3><p>{person.name} has an independent fictional telemetry source assigned. Waiting for its first valid packet.</p><div className="hg6-crew-no-data"><span>Vital signs</span><strong>Not available</strong></div><div className="hg6-crew-no-data"><span>PhysioAlert</span><strong>Awaiting data</strong></div></div></div>
     </div>
-    <div className="hg6-selected-foot"><span>Measurements are not borrowed from another crew member.</span><button type="button" onClick={onProfile}>View crew profile <Icon name="arrow" size={15}/></button></div>
+    <div className="hg6-selected-foot"><span>Only the selected crew member’s simulator packets are displayed.</span><button type="button" onClick={onProfile}>View crew profile <Icon name="arrow" size={15}/></button></div>
   </section>;
   const status=review?.status||'AWAITING_DATA';
   const quality=review?.quality?.status;
@@ -104,7 +104,7 @@ function SelectedCrew({person,hasTelemetry,latest,review,connection,onTelemetry,
   </section>;
 }
 function LiveVitals({hasTelemetry,latest,connection,onMetric}){
-  if(!hasTelemetry)return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/> Live vitals</h2><span className="hg6-connection"><i/>Not connected</span></div><div className="hg6-empty-panel"><Icon name="radio" size={24}/><strong>No vital signs available</strong><p>An independent simulator stream has not been assigned to this crew member.</p></div></section>;
+  if(!hasTelemetry)return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/> Live vitals</h2><span className="hg6-connection"><i/>Not connected</span></div><div className="hg6-empty-panel"><Icon name="radio" size={24}/><strong>No vital signs available</strong><p>Waiting for the selected crew member’s simulator data.</p></div></section>;
   return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/> Live vitals</h2><span className={'hg6-connection '+(connection==='connected'?'connected':'')}><i/>{connection==='connected'?'Simulated stream':'Reconnecting'}</span></div>
     <div className="hg6-vital-lines">{METRICS.map(m=><button type="button" key={m.key} onClick={()=>onMetric(m.key)} title={'View '+m.label+' trend'}>
       <span style={{color:m.color}}><Icon name={m.glyph} size={18}/></span><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong>
@@ -112,7 +112,7 @@ function LiveVitals({hasTelemetry,latest,connection,onMetric}){
   </section>;
 }
 function PhysioAlert({hasTelemetry,review,voice,speak,speaking}){
-  if(!hasTelemetry)return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/> PhysioAlert</h2><span className="hg6-quiet-badge">CONTEXTUAL REVIEW</span></div><div className="hg6-empty-panel hg6-empty-alert"><Icon name="shield" size={26}/><strong>Awaiting telemetry</strong><p>PhysioAlert cannot assess a crew member without their own valid measurements.</p></div><div className="hg6-alert-bottom"><small>No assessment available</small><small>Not a diagnosis</small></div></section>;
+  if(!hasTelemetry)return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/> PhysioAlert</h2><span className="hg6-quiet-badge">CONTEXTUAL REVIEW</span></div><div className="hg6-empty-panel hg6-empty-alert"><Icon name="shield" size={26}/><strong>Awaiting telemetry</strong><p>PhysioAlert is awaiting this crew member’s own valid measurements.</p></div><div className="hg6-alert-bottom"><small>No assessment available</small><small>Not a diagnosis</small></div></section>;
   const status=review?.status||'AWAITING_DATA',tone=statusTone(status);
   return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/> PhysioAlert</h2><span className="hg6-quiet-badge">CONTEXTUAL REVIEW</span></div>
     <div className={'hg6-alert-state hg6-alert-'+tone}><span className="hg6-alert-symbol"><Icon name={tone==='mint'?'check':'activity'} size={23}/></span><div><strong>{friendlyStatus(status)}</strong><p>{review?.reason||'Collecting valid measurements to review simulated physiological patterns.'}</p></div></div>
@@ -120,7 +120,7 @@ function PhysioAlert({hasTelemetry,review,voice,speak,speaking}){
   </section>;
 }
 function Trend({hasTelemetry,samples,keyValue,onChange}){
-  if(!hasTelemetry)return <section className="hg6-card hg6-trend" id="hg6-trend"><div className="hg6-card-heading"><h2><Icon name="activity" size={18}/> Live trend: <span>Unavailable</span></h2></div><div className="hg6-trend-empty"><Icon name="activity" size={24}/><span>No trend data for this crew member. An independent stream is required to display measurements.</span></div></section>;
+  if(!hasTelemetry)return <section className="hg6-card hg6-trend" id="hg6-trend"><div className="hg6-card-heading"><h2><Icon name="activity" size={18}/> Live trend: <span>Unavailable</span></h2></div><div className="hg6-trend-empty"><Icon name="activity" size={24}/><span>No trend data for this crew member. Waiting for this crew member’s simulated measurements.</span></div></section>;
   const metric=METRICS.find(m=>m.key===keyValue)||METRICS[0];
   return <section className="hg6-card hg6-trend" id="hg6-trend"><div className="hg6-card-heading"><h2><Icon name="activity" size={18}/> Live trend: <span>{metric.label}</span></h2><label><span className="sr-only">Select chart measurement</span><select value={metric.key} onChange={e=>onChange(e.target.value)}>{METRICS.map(m=><option key={m.key} value={m.key}>{m.label}</option>)}</select></label></div>
     <div className="hg6-trend-plot"><VitalChart data={samples} metric={metric}/></div>
@@ -136,11 +136,11 @@ function Routine({progress,onOpen}){
     <button type="button" className="hg6-routine-link" onClick={onOpen}>Open routine <Icon name="arrow" size={17}/></button>
   </section>;
 }
-function CrewTelemetry({selected,latest,samples,review,cnn,comparison,onClose,onBody}){
+function CrewTelemetry({person,selected,latest,samples,review,cnn,comparison,onClose,onBody}){
   const [key,setKey]=useState(METRICS[0].key);
   const metric=METRICS.find(x=>x.key===key)||METRICS[0];
   return <section className="hg6-telemetry" aria-label="Detailed crew telemetry">
-    <div className="hg6-telemetry-heading"><button type="button" onClick={onClose}><Icon name="arrow" size={15}/> Back to Mission Dashboard</button><div><p className="hg6-overline">CREW TELEMETRY · SIMULATED STREAM</p><h1><img className="hg6-telemetry-avatar" src="/crew/elena.svg" alt="Fictional astronaut Elena Park"/> Cmdr. Elena Park <span>· Crew 01</span></h1><p>Detailed numerical monitoring. No live medical sensors are connected.</p></div></div>
+    <div className="hg6-telemetry-heading"><button type="button" onClick={onClose}><Icon name="arrow" size={15}/> Back to Mission Dashboard</button><div><p className="hg6-overline">CREW TELEMETRY · SIMULATED STREAM</p><h1><img className="hg6-telemetry-avatar" src={person.image} alt={'Fictional astronaut '+person.name}/> {person.name} <span>· Crew {String(CREW.indexOf(person)+1).padStart(2,'0')}</span></h1><p>Detailed numerical monitoring. No live medical sensors are connected.</p></div></div>
     <div className="hg6-telemetry-metrics">{METRICS.map(m=><button type="button" key={m.key} className={key===m.key?'active':''} onClick={()=>setKey(m.key)}><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong></button>)}</div>
     <div className="hg6-telemetry-bottom"><div className="hg6-card"><div className="hg6-card-heading"><h2>{metric.label} · latest samples</h2></div><div className="hg6-large-graph"><VitalChart data={samples} metric={metric}/></div><p className="hg6-trend-footer">{samples.length} available simulator packets</p></div>
     <div className="hg6-card hg6-telemetry-review"><div className="hg6-card-heading"><h2>Model comparison</h2></div><p><span>PhysioAlert</span><strong>{friendlyStatus(review?.status)}</strong></p><p><span>CNN autoencoder</span><strong>{friendlyStatus(cnn?.status)}</strong></p><p><span>Statistical detector</span><strong>{friendlyStatus(comparison?.status)}</strong></p><p><span>Measurement quality</span><strong>{friendlyStatus(review?.quality?.status)}</strong></p><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={16}/></button></div></div>
@@ -172,23 +172,24 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const [activeCrewIndex,setActiveCrewIndex]=useState(0);
   const activeCrew=CREW[activeCrewIndex];
-  const hasTelemetry=activeCrew.stream;
+  const hasTelemetry=Boolean(snapshot?.subjects?.[activeCrew.subjectId]?.latest);
+  const streamConnected=connection==='connected'&&hasTelemetry;
   const [showTelemetry,setShowTelemetry]=useState(false);
   const [infoProfile,setInfoProfile]=useState(null);
   const subjects=Object.keys(snapshot?.subjects||{});
-  const latest=snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null;
+  const latest=hasTelemetry?(snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null):null;
   const progress=getRoutine();
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   return <div className="hg6-shell">
-    {infoProfile?<CrewProfile person={infoProfile} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry selected={selected} latest={latest} samples={samples} review={review} cnn={cnn} comparison={comparison} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
+    {infoProfile?<CrewProfile person={infoProfile} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry person={activeCrew} selected={selected} latest={latest} samples={samples} review={review} cnn={cnn} comparison={comparison} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
     <main className="hg6-main">
-      <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={review} progress={progress} subjects={subjects} hasTelemetry={hasTelemetry}/>
+      <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={hasTelemetry?review:null} progress={progress} subjects={subjects} hasTelemetry={hasTelemetry}/>
       {error&&<div className="hg6-network-error" role="status"><Icon name="alert" size={16}/>Telemetry connection issue: {error}. No missing measurements are filled in.</div>}
-      <CrewStrip activeCrewIndex={activeCrewIndex} connected={connected} onSelect={i=>{setActiveCrewIndex(i);setShowTelemetry(false);setInfoProfile(null);}} onManage={onMission}/>
+      <CrewStrip activeCrewIndex={activeCrewIndex} connected={connected} availableSubjects={subjects} onSelect={i=>{setActiveCrewIndex(i);setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);}} onManage={onMission}/>
       <div className="hg6-center-grid">
         <SelectedCrew person={activeCrew} hasTelemetry={hasTelemetry} latest={hasTelemetry?latest:null} review={hasTelemetry?review:null} connection={connection} onTelemetry={()=>setShowTelemetry(true)} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)}/>
-        <LiveVitals hasTelemetry={hasTelemetry} latest={hasTelemetry?latest:null} connection={connection} onMetric={setMetricKey}/>
+        <LiveVitals hasTelemetry={hasTelemetry} latest={hasTelemetry?latest:null} connection={streamConnected?'connected':'reconnecting'} onMetric={setMetricKey}/>
         <PhysioAlert hasTelemetry={hasTelemetry} review={hasTelemetry?review:null} voice={hasTelemetry?voice:null} speak={speak} speaking={speaking}/>
       </div>
       <div className="hg6-bottom-grid"><Trend hasTelemetry={hasTelemetry} samples={hasTelemetry?samples:[]} keyValue={metricKey} onChange={setMetricKey}/><Routine progress={progress} onOpen={onRoutine}/></div>
