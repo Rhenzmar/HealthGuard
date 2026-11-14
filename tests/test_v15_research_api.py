@@ -65,7 +65,7 @@ def test_nasa_source_catalog_does_not_claim_uningested_cbc_or_ocular_live_data()
         catalog=c.get('/api/research/source-catalog').json()
         sources={x['id']:x for x in catalog['sources']}
         assert sources['OSD-575']['availability']=='BUNDLED_HISTORICAL_OBSERVATIONS'
-        assert sources['OSD-569']['availability']=='SOURCE_IDENTIFIED_NOT_INGESTED'
+        assert sources['OSD-569']['availability']=='PUBLIC_MIRROR_QUARANTINED_QC_PENDING'
         assert sources['NASA-SANS']['availability']=='RESEARCH_CONTEXT_ONLY'
         assert catalog['historical_cohort_is_fictional_crew'] is False
 
@@ -92,3 +92,24 @@ def test_biomarker_panel_observations_are_historical_and_source_attributed():
         assert c.get('/api/research/biomarker-panel',params={'subject_id':'SIM_CREW_01'}).status_code==422
         assert c.get('/api/research/biomarker-panel',params={'assay':'CBC'}).status_code==422
         assert c.get('/api/research/biomarker-panel',params={'offset':999,'limit':10}).json()['biomarkers']==[]
+
+
+def test_cbc_mirror_isolation_and_quarantined_malformed_source_row():
+    with TestClient(build_app()) as client:
+        q=client.get('/api/research/cbc/quality').json()
+        assert q['biomarker_types']==20
+        assert q['independent_nasa_checksum_verification'] is False
+        assert q['quarantined_source_samples']==['C003_whole-blood_L-92_cbc']
+        assert q['observation_count']>400
+        panel=client.get('/api/research/biomarker-panel',params={
+            'assay':'CBC','subject_id':'C003','limit':40}).json()
+        assert panel['total_biomarkers']==20
+        assert panel['classification']=='NOT_EVALUATED'
+        assert panel['source_kind']=='HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE'
+        assert all(r['latest']['sample_id']!='C003_whole-blood_L-92_cbc' for r in panel['biomarkers'])
+        assert all('unverified public mirror' in r['latest']['source'] for r in panel['biomarkers'])
+        measurements=client.get('/api/research/cbc/measurements',params={
+            'subject_id':'C003'}).json()
+        assert measurements['source_kind']=='HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE'
+        assert all(x['sample_id']!='C003_whole-blood_L-92_cbc' for x in measurements['rows'])
+        assert client.get('/api/research/cbc/measurements',params={'subject_id':'SIM_CREW_01'}).status_code==422
