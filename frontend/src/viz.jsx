@@ -3,6 +3,9 @@ import { formatValue } from './api';
 
 const paths = {
   grid: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
+  users: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></>,
+  user: <><circle cx="12" cy="7" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></>,
+  circle: <circle cx="12" cy="12" r="9"/>,
   heart: <path d="M20.8 4.6a5.6 5.6 0 0 0-7.9 0L12 5.5l-.9-.9a5.6 5.6 0 0 0-7.9 7.9L12 21.2l8.8-8.7a5.6 5.6 0 0 0 0-7.9Z"/>,
   pulse: <path d="M2 12h4l3-7 4 14 3-7h6"/>,
   activity: <><path d="M2 12h4l3-7 4 14 3-7h6"/><circle cx="19" cy="6" r="1"/></>,
