@@ -37,7 +37,8 @@ def test_real_nasa_original_five_assay_evaluation_and_qc(tmp_path):
     assert report["sensitivity_specificity_roc_auc_estimable"] is False
     assert report["method"]["thresholds_fit_on_nasa_data"] is False
     assert report["method"]["test_measurement_in_its_own_reference"] is False
-    assert report["assays"]["CBC"]["excluded_review_flagged_rows"]==20
+    assert report["assays"]["CBC"]["excluded_review_flagged_rows"]==19
+    assert manifest["assays"][0]["review_flagged_rows"]==20  # One additional original QC row is missing
     assert report["assays"]["CMP"]["numeric_source_rows"]==509
     assert report["assays"]["ALAMAR_NPQ"]["numeric_source_rows"]==5481
     assert all(x["data_source"].startswith("VERIFIED_ORIGINAL_NASA_OSDR")
