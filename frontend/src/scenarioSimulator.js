@@ -105,6 +105,21 @@ export function scenarioAt(subjectId, scenarioId, second) {
     hrv_rmssd_ms: false
   };
   const alert = Object.values(flags).some(Boolean);
+  // Severity is a scripted training progression, not a diagnostic score.
+  // The status colors describe only scenario intensity; stable, actual
+  // physiological baselines and sparse OSDR lab data are not rated.
+  const tier = disturbance < 0.12 ? 'OPTIMAL' :
+    disturbance < 0.42 ? 'CHECK' :
+    disturbance < 0.78 ? 'WARNING' : alert ? 'CRITICAL' : 'WARNING';
+  const affected = {
+    oxygenation: ['heart_rate_bpm','spo2_percent','respiratory_rate_bpm','hrv_rmssd_ms'],
+    exertion: ['heart_rate_bpm','spo2_percent','respiratory_rate_bpm','core_temp_c','hrv_rmssd_ms'],
+    thermal: ['heart_rate_bpm','respiratory_rate_bpm','core_temp_c','hrv_rmssd_ms'],
+    sensor: ['spo2_percent']
+  }[scenarioId];
+  const metric_levels = Object.fromEntries(Object.keys(values).map(key=>[
+    key,affected.includes(key) ? tier : 'OPTIMAL'
+  ]));
   const stage = t >= 64 ? 'Complete' : t >= 44 ? 'Recovery' :
     t >= 25 ? 'Peak disturbance' : t >= 9 ? 'Developing' : 'Baseline';
   return {
@@ -114,7 +129,7 @@ export function scenarioAt(subjectId, scenarioId, second) {
     source: 'SCRIPTED_TRAINING_SCENARIO',
     scenario_id: scenarioId,
     elapsed_seconds: t,
-    values, flags, alert, stage, disturbance,
+    values, flags, alert, stage, disturbance, severity:tier, metric_levels,
     reason: alert ? scenario.cause : t > 8 && t < 63 ? 'Scenario values are evolving. Training triggers have not fired at this instant.' :
       'Illustrative baseline or recovered phase; not a clinical clearance.',
     guidance: scenario.guidance,
