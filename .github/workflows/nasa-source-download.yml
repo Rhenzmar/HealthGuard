@@ -1,0 +1,32 @@
+name: NASA OSDR Original Source Download
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nasa-source-download.yml'
+      - 'tools/download_official_nasa_osdr.py'
+  workflow_dispatch:
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download official OSD-569 and OSD-575 data
+        id: nasa
+        continue-on-error: true
+        run: python -m tools.download_official_nasa_osdr --timeout 30
+      - name: Upload original source files and provenance manifest
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-osdr-original-source-attempt
+          path: data/external/nasa_osdr/
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Enforce NASA source retrieval success
+        if: steps.nasa.outcome == 'failure'
+        run: exit 1
