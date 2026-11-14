@@ -116,7 +116,7 @@ function LiveVitals({hasTelemetry,latest,connection,onMetric,training}){
     </button>)}</div>
   </section>;
 }
-function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,onTrainingSpeak}){
+function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,onTrainingSpeak,liveAlertsEnabled,onToggleLiveAlerts}){
   if(!hasTelemetry)return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/> PhysioAlert</h2><span className="hg6-quiet-badge">CONTEXTUAL REVIEW</span></div><div className="hg6-empty-panel hg6-empty-alert"><Icon name="shield" size={26}/><strong>Awaiting telemetry</strong><p>PhysioAlert is awaiting this crew member’s own valid measurements.</p></div><div className="hg6-alert-bottom"><small>No assessment available</small><small>Not a diagnosis</small></div></section>;
   const status=review?.status||'AWAITING_DATA';
   const isUnified=unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY';
@@ -125,6 +125,7 @@ function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,
   return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/>{training?"Scenario response":"PhysioAlert"}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":isUnified?"17-CHANNEL TRAINING REVIEW":"CONTEXTUAL REVIEW"}</span></div>
     <div className={"hg6-alert-state hg6-alert-"+tone+(training?.alert?" hg6-alert-training":"")}><span className="hg6-alert-symbol"><Icon name={tone==='mint'?'check':'activity'} size={23}/></span><div><strong>{training?(attention+" · Training"):isUnified?(attention+" · Training"):friendlyStatus(status)}</strong><p>{training?training.reason:isUnified?unified.reason:review?.reason||"Collecting valid measurements to review simulated physiological patterns."}</p></div></div>
     {!training&&isUnified&&<div className="hg6-unified-summary"><span>{unified.models_ready?'17-channel and original model evidence available':'Collecting complete model evidence'}</span>{unified.explanation?.candidate_17ch?.top_reconstruction_residuals?.length>0&&<small>Largest numerical residual: {unified.explanation.candidate_17ch.top_reconstruction_residuals[0].channel.replaceAll('_',' ')}</small>}<small>Training attention, not medical severity</small></div>}
+    {!training&&isUnified&&<div className="hg6-live-alert-preference"><button type="button" aria-pressed={liveAlertsEnabled} onClick={onToggleLiveAlerts}><Icon name={liveAlertsEnabled?'volume':'mute'} size={13}/>{liveAlertsEnabled?'Live training sound enabled':'Enable training sound + voice'}</button><small>Opt-in · only Warning/Critical</small></div>}
     <div className="hg6-alert-bottom">{training?<button type="button" onClick={onTrainingSpeak}><Icon name="volume" size={15}/> Speak training guidance <Icon name="arrow" size={14}/></button>:voice?.text?<button type="button" onClick={speak}><Icon name={speaking?'mute':'volume'} size={15}/>{speaking?'Stop explanation':'Explain result'} <Icon name="arrow" size={14}/></button>:<span>Waiting for a review explanation</span>}<small>Not a diagnosis</small></div>
   </section>;
 }
@@ -189,8 +190,20 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   const [scenarioSecond,setScenarioSecond]=useState(0);
   const [scenarioRunning,setScenarioRunning]=useState(false);
   const [scenarioSound,setScenarioSound]=useState(true);
+  const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(false);
+  const lastLiveAttentionRef=useRef({subject_id:null,status:null});
   const alarmRef=useRef(false);
   const audioRef=useRef(null);
+  const toggleLiveAlerts=()=>{
+    if(!liveAlertsEnabled&&typeof window!=='undefined'){
+      const Audio=window.AudioContext||window.webkitAudioContext;
+      if(Audio){
+        if(!audioRef.current)audioRef.current=new Audio();
+        audioRef.current.resume().catch(()=>{});
+      }
+    }
+    setLiveAlertsEnabled(v=>!v);
+  };
   const stopScenario=()=>{
     setScenarioRunning(false);setScenarioId('');setScenarioSecond(0);
     alarmRef.current=false;
@@ -252,6 +265,33 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
     // Browser speech permission can vary; manual Speak guidance stays available.
     speakScenario();
   },[training?.alert,scenarioSound,scenarioId,activeCrew.subjectId]);
+  useEffect(()=>{
+    if(!unified||!unified.subject_id||unified.subject_id!==selected||scenarioId)return;
+    const last=lastLiveAttentionRef.current;
+    const current={subject_id:unified.subject_id,status:unified.status};
+    lastLiveAttentionRef.current=current;
+    if(!liveAlertsEnabled||!unified.audible_alert_suggested)return;
+    if(last.subject_id===current.subject_id&&last.status===current.status)return;
+    if(!['WARNING','CRITICAL'].includes(unified.status))return;
+    const ctx=audioRef.current;
+    if(ctx&&ctx.state==='running'){
+      try{
+        const osc=ctx.createOscillator(),gain=ctx.createGain();
+        osc.type='triangle';osc.frequency.setValueAtTime(680,ctx.currentTime);
+        osc.frequency.setValueAtTime(930,ctx.currentTime+.16);
+        gain.gain.setValueAtTime(.0001,ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.07,ctx.currentTime+.03);
+        gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.35);
+        osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.38);
+      }catch{/* Browser may deny audio playback. */}
+    }
+    if(typeof window!=='undefined'&&window.speechSynthesis&&unified.voice_ready_script){
+      window.speechSynthesis.cancel();
+      const utterance=new SpeechSynthesisUtterance(unified.voice_ready_script);
+      utterance.lang='en-US';utterance.rate=.95;
+      window.speechSynthesis.speak(utterance);
+    }
+  },[unified?.subject_id,unified?.status,unified?.sequence,unified?.audible_alert_suggested,liveAlertsEnabled,scenarioId,selected]);
   useEffect(()=>()=>{if(audioRef.current)audioRef.current.close().catch(()=>{});},[]);
   const subjects=Object.keys(snapshot?.subjects||{});
   const latest=training|| (hasTelemetry?(snapshot?.subjects?.[activeCrew.subjectId]?.latest||samples.filter(x=>x.subject_id===activeCrew.subjectId).at(-1)||null):null);
@@ -275,7 +315,7 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
       <div className="hg6-center-grid">
         <SelectedCrew person={activeCrew} hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} review={displayReview} unified={training?null:unified} training={training} connection={connection} onTelemetry={()=>setShowTelemetry(true)} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)}/>
         <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey}/>
-        <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
+        <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking} liveAlertsEnabled={liveAlertsEnabled} onToggleLiveAlerts={toggleLiveAlerts}/>
       </div>
       <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
       <EngineeringTelemetry subjectId={activeCrew.subjectId} personName={activeCrew.name} training={training}/>
