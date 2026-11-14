@@ -132,6 +132,101 @@ def review(subject_id: str | None=None,
             'warning':'Review queue is an exploratory measurement-check prompt. No medical diagnosis or verified risk.'}
 
 
+
+# Distinguish availability of bundled historical data from NASA context-only
+# research pages. These sources are not live sensors or fictional crew profiles.
+NASA_SOURCE_CATALOG = (
+    {'id':'OSD-575','title':'Inspiration4 serum chemistry and immune protein panels',
+     'url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-575',
+     'availability':'BUNDLED_HISTORICAL_OBSERVATIONS',
+     'assays':['CMP','NULISA']},
+    {'id':'OSD-569','title':'Inspiration4 whole blood and complete blood count',
+     'url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-569',
+     'availability':'SOURCE_IDENTIFIED_NOT_INGESTED','assays':['CBC']},
+    {'id':'NASA-CVL','title':'Cardiovascular adaptations and headward fluid shifts',
+     'url':'https://www.nasa.gov/directorates/esdmd/hhp/cardiovascular-and-vision/',
+     'availability':'RESEARCH_CONTEXT_ONLY','assays':[]},
+    {'id':'NASA-SANS','title':'Risk of spaceflight associated neuro-ocular syndrome',
+     'url':'https://www.nasa.gov/reference/risk-of-spaceflight-associated-neuro-ocular-syndrome-sans/',
+     'availability':'RESEARCH_CONTEXT_ONLY','assays':[]},
+)
+
+def _flight_order(record):
+    timepoint = str(record.get('timepoint') or '')
+    if timepoint.startswith('L-'):
+        try:return -int(timepoint[2:])
+        except ValueError:return -999999
+    if timepoint.startswith('R+'):
+        try:return int(timepoint[2:])
+        except ValueError:return -999999
+    return -999999
+
+@router.get('/source-catalog')
+def source_catalog():
+    return {
+        'sources':list(NASA_SOURCE_CATALOG),
+        'live_sensor_integration':False,
+        'historical_cohort_is_fictional_crew':False,
+        'warning':'OSD-569 CBC is not part of the bundled numerical data. NASA CVL and SANS are scientific background, not telemetry datasets.'
+    }
+
+@router.get('/biomarker-panel')
+def biomarker_panel(subject_id: str=Query(default='C001'),
+                    assay: str | None=Query(default=None, pattern='^(CMP|NULISA)
+def method():
+    return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
+            'data_domain':'HISTORICAL_OSD_575_SERUM_LAB_ASSAYS',
+            'core_property':'leave-one-baseline-out sign and screen consistency for sparse personal reference observations',
+            'headline_exploratory_observation':{'median_only_heuristic_flags':195,
+                 'baseline_sensitive_of_these_flags':68,'percent':34.87,
+                 'interpretation':'68 flags depend on omitted reference observations; they are NOT established false positives'},
+            'external_clinical_validation':False,
+            'documentation':'FINAL_APDRA_VALIDATION_REPORT.md',
+            'warning':'Do not apply this lab-panel method to simulated 1 Hz telemetry or interpret its screen as medical risk.'}
+),
+                    search: str | None=Query(default=None,max_length=120),
+                    offset:int=Query(default=0,ge=0),
+                    limit:int=Query(default=250,ge=1,le=300)):
+    """Latest *observed* sample per NASA biomarker for a selected historical
+    participant. These are not current physiology, extrapolated lab values,
+    or severity classifications. Unit, collection timepoint and sample ID
+    remain exactly as recorded.
+    """
+    _validate_subject(subject_id)
+    groups={}
+    for rec in _measurements():
+        if rec['subject_id']!=subject_id or (assay and rec['assay']!=assay):
+            continue
+        if search and search.casefold() not in rec['biomarker'].casefold():
+            continue
+        key=(rec['assay'],rec['biomarker'],rec['unit'])
+        group=groups.setdefault(key,{'observations':0,'latest':None})
+        group['observations']+=1
+        if group['latest'] is None or _flight_order(rec)>_flight_order(group['latest']):
+            group['latest']=rec
+    items=[]
+    for (a,name,unit),group in sorted(groups.items()):
+        latest=group['latest']
+        items.append({
+            'assay':a,'name':name,'unit':unit,'observations':group['observations'],
+            'latest':{
+                'value':latest['value'],'timepoint':latest['timepoint'],
+                'phase':latest['phase'],'sample_id':latest['sample_id'],
+                'ref_low':latest['ref_low'],'ref_high':latest['ref_high'],
+                'qc_note':latest['qc_note'],'source':latest['source']
+            }
+        })
+    return {
+        'source':'NASA OSD-575 / Inspiration4',
+        'study_url':NASA_SOURCE_CATALOG[0]['url'],
+        'source_kind':'HISTORICAL_DISCRETE_SAMPLES_NOT_LIVE',
+        'subject_id':subject_id,'total_biomarkers':len(items),
+        'offset':offset,'limit':limit,'biomarkers':items[offset:offset+limit],
+        'classification':'NOT_EVALUATED',
+        'warning':'Last available sample by study timepoint, not a current reading. Source intervals are lab metadata, not mission emergency thresholds. No extrapolation or linkage to fictional simulator crew.'
+    }
+
+
 @router.get('/method')
 def method():
     return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
