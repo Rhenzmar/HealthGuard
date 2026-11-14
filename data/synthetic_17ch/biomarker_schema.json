@@ -1,0 +1,347 @@
+{
+  "schema_version": "healthguard.17ch.synthetic.v1",
+  "created_utc": "2026-11-15",
+  "purpose": "Experimental 17-channel multibranch anomaly detector candidate dataset, not astronaut clinical training.",
+  "cadence_hz": 1,
+  "reference_points": 45,
+  "window_points": 60,
+  "episode_points": 105,
+  "feature_count": 17,
+  "feature_order": [
+    "heart_rate_bpm",
+    "spo2_percent",
+    "respiratory_rate_bpm",
+    "core_temp_c",
+    "hrv_rmssd_ms",
+    "systolic_bp_mmhg",
+    "diastolic_bp_mmhg",
+    "peripheral_temp_c",
+    "etco2_mmhg",
+    "cabin_co2_ppm",
+    "cabin_o2_percent",
+    "cabin_pressure_kpa",
+    "cabin_temp_c",
+    "cabin_humidity_percent",
+    "radiation_rate_usv_h",
+    "cumulative_dose_usv",
+    "suit_o2_remaining_percent"
+  ],
+  "branches": {
+    "physiological": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "engineering": [
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ]
+  },
+  "features": [
+    {
+      "index": 0,
+      "key": "heart_rate_bpm",
+      "label": "Heart rate",
+      "unit": "bpm",
+      "branch": "physiological",
+      "scope": "individual",
+      "nominal": 70,
+      "normalization_scale": 12,
+      "broad_generation_bounds": [
+        20,
+        250
+      ],
+      "origin": "SIMULATED_LIVE",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 1,
+      "key": "spo2_percent",
+      "label": "Peripheral oxygen saturation",
+      "unit": "%",
+      "branch": "physiological",
+      "scope": "individual",
+      "nominal": 98,
+      "normalization_scale": 2,
+      "broad_generation_bounds": [
+        50,
+        100
+      ],
+      "origin": "SIMULATED_LIVE",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 2,
+      "key": "respiratory_rate_bpm",
+      "label": "Respiratory rate",
+      "unit": "breaths/min",
+      "branch": "physiological",
+      "scope": "individual",
+      "nominal": 14,
+      "normalization_scale": 4,
+      "broad_generation_bounds": [
+        4,
+        70
+      ],
+      "origin": "SIMULATED_LIVE",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 3,
+      "key": "core_temp_c",
+      "label": "Core temperature",
+      "unit": "°C",
+      "branch": "physiological",
+      "scope": "individual",
+      "nominal": 36.8,
+      "normalization_scale": 0.4,
+      "broad_generation_bounds": [
+        30,
+        43
+      ],
+      "origin": "SIMULATED_LIVE",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 4,
+      "key": "hrv_rmssd_ms",
+      "label": "Heart-rate variability RMSSD",
+      "unit": "ms",
+      "branch": "physiological",
+      "scope": "individual",
+      "nominal": 62,
+      "normalization_scale": 20,
+      "broad_generation_bounds": [
+        0,
+        400
+      ],
+      "origin": "SIMULATED_LIVE",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 5,
+      "key": "systolic_bp_mmhg",
+      "label": "Systolic blood pressure estimate",
+      "unit": "mmHg",
+      "branch": "physiological_estimate",
+      "scope": "individual",
+      "nominal": 114,
+      "normalization_scale": 14,
+      "broad_generation_bounds": [
+        50,
+        250
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 6,
+      "key": "diastolic_bp_mmhg",
+      "label": "Diastolic blood pressure estimate",
+      "unit": "mmHg",
+      "branch": "physiological_estimate",
+      "scope": "individual",
+      "nominal": 75,
+      "normalization_scale": 9,
+      "broad_generation_bounds": [
+        20,
+        150
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 7,
+      "key": "peripheral_temp_c",
+      "label": "Peripheral skin temperature estimate",
+      "unit": "°C",
+      "branch": "physiological_estimate",
+      "scope": "individual",
+      "nominal": 33.8,
+      "normalization_scale": 0.7,
+      "broad_generation_bounds": [
+        15,
+        42
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 8,
+      "key": "etco2_mmhg",
+      "label": "End-tidal carbon dioxide estimate",
+      "unit": "mmHg",
+      "branch": "physiological_estimate",
+      "scope": "individual",
+      "nominal": 37,
+      "normalization_scale": 6,
+      "broad_generation_bounds": [
+        0,
+        100
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 9,
+      "key": "cabin_co2_ppm",
+      "label": "Cabin CO₂",
+      "unit": "ppm",
+      "branch": "environmental",
+      "scope": "shared_habitat",
+      "nominal": 650,
+      "normalization_scale": 600,
+      "broad_generation_bounds": [
+        0,
+        30000
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 10,
+      "key": "cabin_o2_percent",
+      "label": "Cabin O₂ fraction",
+      "unit": "%",
+      "branch": "environmental",
+      "scope": "shared_habitat",
+      "nominal": 20.9,
+      "normalization_scale": 0.7,
+      "broad_generation_bounds": [
+        0,
+        100
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 11,
+      "key": "cabin_pressure_kpa",
+      "label": "Cabin pressure",
+      "unit": "kPa",
+      "branch": "environmental",
+      "scope": "shared_habitat",
+      "nominal": 101.2,
+      "normalization_scale": 6,
+      "broad_generation_bounds": [
+        0,
+        115
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 12,
+      "key": "cabin_temp_c",
+      "label": "Cabin ambient temperature",
+      "unit": "°C",
+      "branch": "environmental",
+      "scope": "shared_habitat",
+      "nominal": 22.2,
+      "normalization_scale": 4,
+      "broad_generation_bounds": [
+        0,
+        50
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 13,
+      "key": "cabin_humidity_percent",
+      "label": "Cabin relative humidity",
+      "unit": "%",
+      "branch": "environmental",
+      "scope": "shared_habitat",
+      "nominal": 43,
+      "normalization_scale": 15,
+      "broad_generation_bounds": [
+        0,
+        100
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 14,
+      "key": "radiation_rate_usv_h",
+      "label": "Illustrative radiation dose rate",
+      "unit": "µSv/h",
+      "branch": "radiation",
+      "scope": "location_or_suit",
+      "nominal": 0.42,
+      "normalization_scale": 5,
+      "broad_generation_bounds": [
+        0,
+        100000
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 15,
+      "key": "cumulative_dose_usv",
+      "label": "Illustrative accumulated dose",
+      "unit": "µSv",
+      "branch": "radiation",
+      "scope": "location_or_suit",
+      "nominal": 0,
+      "normalization_scale": 5,
+      "broad_generation_bounds": [
+        0,
+        1000000
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    },
+    {
+      "index": 16,
+      "key": "suit_o2_remaining_percent",
+      "label": "Illustrative suit O₂ reserve",
+      "unit": "%",
+      "branch": "suit",
+      "scope": "individual",
+      "nominal": 94,
+      "normalization_scale": 10,
+      "broad_generation_bounds": [
+        0,
+        100
+      ],
+      "origin": "FICTIONAL_ENGINEERING_SIMULATOR",
+      "measurement_status": "synthetic_not_measured"
+    }
+  ],
+  "normalization": {
+    "method": "(analysis_window - fixed_median_of_first_45_points) / per_feature_scale",
+    "no_per_window_renormalization": true,
+    "missingness_policy": "reject_incomplete;do_not_impute",
+    "clinical_thresholds": false
+  },
+  "data_source_policy": {
+    "synthetic_training": "Only scripted synthetic generator; no astronaut or hospital records",
+    "external_reference": "BIDMC has aligned HR/RR/SpO2 only and remains a separate 3-column reference",
+    "historical_nasa": "OSD-575 CMP/NULISA and OSD-569 CBC are sparse historical laboratory assays, never interpolated into this tensor"
+  },
+  "experimental_events": [
+    "oxygenation",
+    "exertion",
+    "thermal",
+    "sensor",
+    "co2",
+    "cabin_leak",
+    "radiation"
+  ],
+  "disclaimer": "All model inputs and perturbation labels generated by this pipeline are synthetic; no medical sensitivity, crew outcome, NASA-trained inference or operational thresholds are established."
+}
