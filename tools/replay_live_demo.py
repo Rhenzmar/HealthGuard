@@ -14,6 +14,16 @@ import math
 import time
 
 
+# Fictional, deterministic baselines. These are not measurements from NASA,
+# astronauts, wearables, or medical patients. Per-crew phases prevent identical
+# telemetry traces, while the original single-subject replay remains supported.
+CREW_PROFILES = {
+    "SIM_CREW_01": {"hr": 0.0, "spo2": 0.0, "rr": 0.0, "temp": 0.0, "hrv": 0.0, "phase": 0.0},
+    "SIM_CREW_02": {"hr": -5.0, "spo2": 0.4, "rr": -1.2, "temp": -0.12, "hrv": 9.0, "phase": 2.0},
+    "SIM_CREW_03": {"hr": 6.0, "spo2": -0.35, "rr": 1.5, "temp": 0.10, "hrv": -7.0, "phase": 4.0},
+    "SIM_CREW_04": {"hr": 2.0, "spo2": 0.15, "rr": -0.5, "temp": -0.05, "hrv": 3.0, "phase": 6.0},
+}
+
 
 def generate_packets(*, subject: str = "SIM_CREW_01", count: int = 180,
                      start: datetime | None = None, hz: float = 1.0,
@@ -23,19 +33,21 @@ def generate_packets(*, subject: str = "SIM_CREW_01", count: int = 180,
     if count < 1 or hz <= 0:
         raise ValueError("count and hz must be positive")
     origin = start or datetime.now(timezone.utc).replace(microsecond=0)
+    profile = CREW_PROFILES.get(subject, CREW_PROFILES["SIM_CREW_01"])
     for i in range(count):
         t = i / hz
+        wave_t = t + profile["phase"]
         # Nominal trend, then deliberately injected abnormal-looking example,
         # then recovery. This is NOT a ground-truth medical condition.
         ramp = min(max((i - count*0.30)/(count*0.20),0.0),1.0)
         recovery = min(max((i-count*0.65)/(count*0.25),0.0),1.0)
         excursion = max(0.0, ramp*(1.0-recovery)) if mode in ("excursion", "activity") else 0.0
         values = {
-            "heart_rate_bpm":round(70+2*math.sin(t/6)+38*excursion,2),
-            "spo2_percent":round(98+0.15*math.sin(t/11)-4.2*excursion,2),
-            "respiratory_rate_bpm":round(14+0.4*math.sin(t/8)+8*excursion,2),
-            "core_temp_c":round(36.8+0.08*math.sin(t/17),2),
-            "hrv_rmssd_ms":round(62+2*math.sin(t/7)-26*excursion,2),
+            "heart_rate_bpm":round(70+profile["hr"]+2*math.sin(wave_t/6)+38*excursion,2),
+            "spo2_percent":round(98+profile["spo2"]+0.15*math.sin(wave_t/11)-4.2*excursion,2),
+            "respiratory_rate_bpm":round(14+profile["rr"]+0.4*math.sin(wave_t/8)+8*excursion,2),
+            "core_temp_c":round(36.8+profile["temp"]+0.08*math.sin(wave_t/17),2),
+            "hrv_rmssd_ms":round(62+profile["hrv"]+2*math.sin(wave_t/7)-26*excursion,2),
         }
         if mode == "artifact" and i == int(count * 0.6):
             values['heart_rate_bpm'] += 50
