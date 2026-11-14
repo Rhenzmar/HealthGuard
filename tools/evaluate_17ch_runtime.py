@@ -35,7 +35,15 @@ def evaluate(output:Path=OUTPUT)->dict:
                     raise ValueError(f'Candidate {mode} replay failed: {result}')
             if not assessed:
                 raise ValueError(f'No evaluated rolling windows for {sid} / {mode}')
+            from collections import Counter
+            top_error_counts=Counter(
+                r['channel']
+                for entry in assessed for r in entry['largest_reconstruction_errors'][:3]
+            )
             cases[mode]={
+                'mean_physiological_reconstruction_error':sum(x['physiological_error'] for x in assessed)/len(assessed),
+                'mean_engineering_reconstruction_error':sum(x['engineering_error'] for x in assessed)/len(assessed),
+                'common_top_residual_channels':dict(top_error_counts.most_common(6)),
                 'evaluated_windows':len(assessed),
                 'flags':sum(x['status']=='MODEL_FLAG' for x in assessed),
                 'flag_fraction':sum(x['status']=='MODEL_FLAG' for x in assessed)/len(assessed),
@@ -52,7 +60,7 @@ def evaluate(output:Path=OUTPUT)->dict:
         'normal_replay_flag_fraction':normal_flags/total_normal,
         'normal_replay_evaluated_windows':total_normal,
         'promotion_ready':normal_flags/total_normal<=.10,
-        'promotion_note':'Tentative engineering screening gate only; not clinical validation',
+        'promotion_note':'Tentative engineering screening gate only; not clinical validation. Original replay was consulted during model development, so do not call this an untouched external benchmark.',
         'scientific_limitations':'Demo replay is generated with different numerical assumptions from candidate training, but remains simulated, not independent real measurements.',
         'clinical_validation':False,
     }
