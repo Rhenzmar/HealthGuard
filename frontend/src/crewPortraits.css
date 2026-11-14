@@ -1,0 +1,50 @@
+
+/* HealthGuard astronaut portraits and universal crew profile views */
+.hg6-avatar{position:relative;overflow:hidden;background:#132f47!important;border-color:#4d899a;box-shadow:0 0 0 1px #73d4e34d}
+.hg6-avatar img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 43%;border-radius:inherit}
+.hg6-avatar .hg6-fallback-initials{display:none}
+.hg6-crew-card:not(.hg6-crew-selected){cursor:pointer}
+.hg6-crew-card:not(.hg6-crew-selected):hover{border-color:#39bfbd;box-shadow:0 6px 24px #1acac41e}
+.hg6-crew-card>svg:last-child{color:#58d7d6;flex-shrink:0}
+.hg6-selected-portrait{background:linear-gradient(#0d243700,#0d243735),radial-gradient(circle at 50% 40%,#1b607579,transparent 83%)}
+.hg6-selected-portrait>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;opacity:.95}
+.hg6-selected-portrait>button{background:#0a314bdc;backdrop-filter:blur(8px);border-color:#35798b}
+.hg6-telemetry-heading h1{display:flex;align-items:center;gap:16px}
+.hg6-telemetry-avatar{width:67px;height:67px;border-radius:50%;object-fit:cover;border:2px solid #37c8ca;flex:none}
+.hg6-profile{max-width:1370px;margin:auto;padding:30px clamp(18px,3vw,50px) 75px}
+.hg6-profile-back{display:flex;align-items:center;gap:10px;background:#0f3048;border:1px solid #386d83;border-radius:10px;color:#cae9ed;padding:11px 16px;font-size:11px;margin-bottom:22px}
+.hg6-profile-back svg{transform:rotate(180deg)}
+.hg6-profile-grid{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(350px,1.2fr);gap:24px}
+.hg6-profile-photo{position:relative;border:1px solid #356c8a;border-radius:18px;overflow:hidden;background:#153148;min-height:530px}
+.hg6-profile-photo img{display:block;width:100%;height:100%;min-height:530px;object-fit:cover;object-position:center 30%;position:absolute;inset:0}
+.hg6-profile-photo:after{content:"";pointer-events:none;position:absolute;inset:52% 0 0;background:linear-gradient(transparent,#06162bdc)}
+.hg6-profile-label{position:absolute;z-index:2;bottom:22px;left:25px;color:#bfe5ee;letter-spacing:1.5px;font-size:10px}
+.hg6-profile-information{padding:32px 34px;border:1px solid #356784;background:linear-gradient(140deg,#0c2a44,#0a182c);border-radius:18px}
+.hg6-profile-information h1{font-size:clamp(29px,3vw,44px);margin:12px 0 5px;letter-spacing:-1.3px}
+.hg6-profile-role{color:#a7c1cf;font-size:13px;margin:0}
+.hg6-profile-status{display:flex;gap:14px;margin:28px 0;background:#172f41;border:1px solid #406279;padding:18px;border-radius:12px}
+.hg6-profile-status svg{color:#6fcbdd;flex:none}
+.hg6-profile-status strong{color:#deedf3;font-size:14px}
+.hg6-profile-status p{font-size:11px;line-height:1.75;margin:7px 0 0;color:#abc3d2}
+.hg6-profile-details{display:grid;gap:0;margin:18px 0}
+.hg6-profile-details>div{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid #29495f;padding:14px 0;font-size:11px}
+.hg6-profile-details span{color:#a1becc}
+.hg6-profile-details strong{font-size:11px;font-weight:650;color:#deedf4}
+.hg6-profile-context{font-size:11px;line-height:1.8;color:#91afbd}
+.hg6-profile-actions{display:flex;gap:11px;flex-wrap:wrap;margin-top:28px}
+.hg6-profile-actions button{background:#13516b;border:1px solid #348a9c;color:#ddf4f8;padding:12px 17px;font-size:11px;border-radius:9px;display:flex;align-items:center;gap:8px}
+.hg6-profile-actions button:first-child{background:transparent}
+@media(max-width:860px){
+.hg6-profile-grid{grid-template-columns:1fr}
+.hg6-profile-photo{min-height:330px;max-height:420px}
+.hg6-profile-photo img{min-height:330px}
+.hg6-profile-information{padding:25px}
+}
+@media(max-width:560px){
+.hg6-profile{padding:20px 12px 40px}
+.hg6-profile-information{padding:20px}
+.hg6-profile-photo{min-height:280px;max-height:330px}
+.hg6-profile-photo img{min-height:280px}
+.hg6-telemetry-heading h1{flex-wrap:wrap}
+.hg6-telemetry-avatar{width:52px;height:52px}
+}

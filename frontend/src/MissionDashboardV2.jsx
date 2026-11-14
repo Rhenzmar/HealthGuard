@@ -9,10 +9,10 @@ import 'open-anatomy-3d-react/styles.css';
 
 const AnatomyViewer=React.lazy(()=>import('open-anatomy-3d-react').then(m=>({default:m.AnatomyViewer})));
 const CREW=[
-  {name:'Cmdr. Elena Park',role:'Flight commander',initials:'EP',portrait:'one'},
-  {name:'Dr. Marcus Reed',role:'Medical officer',initials:'MR',portrait:'two'},
-  {name:'Lt. Aisha Khan',role:'Systems engineer',initials:'AK',portrait:'three'},
-  {name:'Spc. Daniel Cho',role:'Mission specialist',initials:'DC',portrait:'four'}
+  {name:'Cmdr. Elena Park',role:'Flight commander',initials:'EP',portrait:'one',image:'/crew/elena.svg',stream:true},
+  {name:'Dr. Marcus Reed',role:'Medical officer',initials:'MR',portrait:'two',image:'/crew/marcus.svg',stream:false},
+  {name:'Lt. Aisha Khan',role:'Systems engineer',initials:'AK',portrait:'three',image:'/crew/aisha.svg',stream:false},
+  {name:'Spc. Daniel Cho',role:'Mission specialist',initials:'DC',portrait:'four',image:'/crew/daniel.svg',stream:false}
 ];
 const DATE_KEY=()=>new Date().toISOString().slice(0,10);
 function getRoutine(){
@@ -53,9 +53,9 @@ function CrewStrip({activeStream,connected,onTelemetry,onManage,onProfile}){
     </div>
     <div className="hg6-crew-grid">
       {CREW.map((person,i)=><button key={person.initials} type="button" className={'hg6-crew-card '+(i===0?'hg6-crew-selected':'')} onClick={i===0?onTelemetry:()=>onProfile(person)}>
-        <span className={'hg6-avatar hg6-avatar-'+person.portrait}><span>{person.initials}</span></span>
+        <span className={'hg6-avatar hg6-avatar-'+person.portrait}><img src={person.image} alt={person.name+' fictional astronaut portrait'} loading="lazy"/><span className="hg6-fallback-initials">{person.initials}</span></span>
         <span className="hg6-crew-text"><strong>{person.name}</strong><small>{person.role} · fictional</small><em className={i===0&&connected?'hg6-stream-on':'hg6-stream-off'}><i/>{i===0?(connected?'Simulated stream live':'Stream reconnecting'):'Profile only · no telemetry'}</em></span>
-        {i===0&&<Icon name="arrow" size={17}/>}
+        <Icon name="arrow" size={17}/>
       </button>)}
     </div>
   </section>;
@@ -81,7 +81,7 @@ function SelectedCrew({latest,review,connection,onTelemetry,onBody}){
   return <section className="hg6-card hg6-selected">
     <div className="hg6-card-heading"><h2><Icon name="user" size={19}/> Selected crew: Cmdr. Elena Park</h2><span className="hg6-quiet-badge">FICTIONAL CREW 01</span></div>
     <div className="hg6-selected-body">
-      <div className="hg6-small-human"><MiniAnatomy onBody={onBody}/><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={13}/></button></div>
+      <div className="hg6-small-human hg6-selected-portrait"><img src="/crew/elena.svg" alt="Illustration of fictional astronaut Elena Park wearing a space suit"/><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={13}/></button></div>
       <div className="hg6-health-summary">
         <div className="hg6-summary-intro"><div><h3>Health monitoring summary</h3><p>Five simulated signals · Experimental pattern review</p></div><span className={'hg6-state '+(statusTone(status)==='mint'?'hg6-state-mint':'')}>{friendlyStatus(status)}</span></div>
         <RowSummary glyph="heart" label="Cardiovascular" note="Simulated"><span>HR {formatValue(latest?.values?.heart_rate_bpm,0)} bpm</span><span className="hg6-sep"> · </span><span>HRV {formatValue(latest?.values?.hrv_rmssd_ms,1)} ms</span></RowSummary>
@@ -128,12 +128,34 @@ function CrewTelemetry({selected,latest,samples,review,cnn,comparison,onClose,on
   const [key,setKey]=useState(METRICS[0].key);
   const metric=METRICS.find(x=>x.key===key)||METRICS[0];
   return <section className="hg6-telemetry" aria-label="Detailed crew telemetry">
-    <div className="hg6-telemetry-heading"><button type="button" onClick={onClose}><Icon name="arrow" size={15}/> Back to Mission Dashboard</button><div><p className="hg6-overline">CREW TELEMETRY · SIMULATED STREAM</p><h1>Cmdr. Elena Park <span>· Crew 01</span></h1><p>Detailed numerical monitoring. No live medical sensors are connected.</p></div></div>
+    <div className="hg6-telemetry-heading"><button type="button" onClick={onClose}><Icon name="arrow" size={15}/> Back to Mission Dashboard</button><div><p className="hg6-overline">CREW TELEMETRY · SIMULATED STREAM</p><h1><img className="hg6-telemetry-avatar" src="/crew/elena.svg" alt="Fictional astronaut Elena Park"/> Cmdr. Elena Park <span>· Crew 01</span></h1><p>Detailed numerical monitoring. No live medical sensors are connected.</p></div></div>
     <div className="hg6-telemetry-metrics">{METRICS.map(m=><button type="button" key={m.key} className={key===m.key?'active':''} onClick={()=>setKey(m.key)}><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong></button>)}</div>
     <div className="hg6-telemetry-bottom"><div className="hg6-card"><div className="hg6-card-heading"><h2>{metric.label} · latest samples</h2></div><div className="hg6-large-graph"><VitalChart data={samples} metric={metric}/></div><p className="hg6-trend-footer">{samples.length} available simulator packets</p></div>
     <div className="hg6-card hg6-telemetry-review"><div className="hg6-card-heading"><h2>Model comparison</h2></div><p><span>PhysioAlert</span><strong>{friendlyStatus(review?.status)}</strong></p><p><span>CNN autoencoder</span><strong>{friendlyStatus(cnn?.status)}</strong></p><p><span>Statistical detector</span><strong>{friendlyStatus(comparison?.status)}</strong></p><p><span>Measurement quality</span><strong>{friendlyStatus(review?.quality?.status)}</strong></p><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={16}/></button></div></div>
   </section>;
 }
+
+function CrewProfile({person,onClose,onMission}){
+  return <section className="hg6-profile" aria-label={person.name+' astronaut profile'}>
+    <button type="button" className="hg6-profile-back" onClick={onClose}><Icon name="arrow" size={17}/> Back to crew overview</button>
+    <div className="hg6-profile-grid">
+      <div className="hg6-profile-photo">
+        <img src={person.image} alt={'Portrait of fictional astronaut '+person.name+' in a spacecraft and space suit'}/>
+        <span className="hg6-profile-label">FICTIONAL MISSION CREW</span>
+      </div>
+      <div className="hg6-profile-information">
+        <p className="hg6-overline">HEALTHGUARD · CREW PROFILE</p>
+        <h1>{person.name}</h1>
+        <p className="hg6-profile-role">{person.role} · Artemis IV demonstration</p>
+        <div className="hg6-profile-status"><Icon name="radio" size={21}/><div><strong>Telemetry not connected</strong><p>This astronaut has a demonstration profile but no live or simulated physiological data source assigned.</p></div></div>
+        <div className="hg6-profile-details"><div><span>Heart rate</span><strong>Not available</strong></div><div><span>Oxygen saturation</span><strong>Not available</strong></div><div><span>PhysioAlert</span><strong>Awaiting data</strong></div><div><span>Routine progress</span><strong>Not recorded</strong></div></div>
+        <p className="hg6-profile-context">When an independent telemetry feed is implemented for this fictional crew member, their measurements and reviews can be shown here. Until then, no readings or health status are invented.</p>
+        <div className="hg6-profile-actions"><button type="button" onClick={onClose}>Return to dashboard</button><button type="button" onClick={onMission}>Mission Control <Icon name="arrow" size={15}/></button></div>
+      </div>
+    </div>
+  </section>;
+}
+
 export default function MissionDashboard({error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment}){
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const [showTelemetry,setShowTelemetry]=useState(false);
@@ -144,7 +166,7 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   return <div className="hg6-shell">
-    {showTelemetry?<CrewTelemetry selected={selected} latest={latest} samples={samples} review={review} cnn={cnn} comparison={comparison} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
+    {infoProfile?<CrewProfile person={infoProfile} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry selected={selected} latest={latest} samples={samples} review={review} cnn={cnn} comparison={comparison} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
     <main className="hg6-main">
       <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={review} progress={progress} subjects={subjects}/>
       {error&&<div className="hg6-network-error" role="status"><Icon name="alert" size={16}/>Telemetry connection issue: {error}. No missing measurements are filled in.</div>}
@@ -155,8 +177,8 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
         <PhysioAlert review={review} voice={voice} speak={speak} speaking={speaking}/>
       </div>
       <div className="hg6-bottom-grid"><Trend samples={samples} keyValue={metricKey} onChange={setMetricKey}/><Routine progress={progress} onOpen={onRoutine}/></div>
-      <p className="hg6-fineprint">All displayed crew names and profiles are fictional. Only Crew 01 has an available simulated telemetry source. Experimental pattern flags are not medical diagnoses. <a href="https://eol.jsc.nasa.gov/SearchPhotos/photo.pl?frame=5378&mission=ISS046&roll=E" target="_blank" rel="noreferrer">Earth photograph: NASA/JSC</a>. <span>3D anatomy: {ATTRIBUTION}.</span></p>
+
     </main>}
-    {infoProfile&&<div className="hg6-modal-backdrop" role="presentation" onClick={()=>setInfoProfile(null)}><div className="hg6-modal" role="dialog" aria-modal="true" aria-labelledby="hg6-profile-title" onClick={e=>e.stopPropagation()}><div className="hg6-modal-icon"><Icon name="user" size={26}/></div><h2 id="hg6-profile-title">{infoProfile.name}</h2><p>{infoProfile.role} · Fictional demo profile</p><p>This crew profile does not have a connected telemetry stream. HealthGuard cannot display measurements, model reviews, or health status for this individual.</p><button type="button" onClick={()=>setInfoProfile(null)}>Close profile</button></div></div>}
+
   </div>;
 }
