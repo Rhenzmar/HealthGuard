@@ -14,7 +14,7 @@ import numpy as np
 ROOT=Path(__file__).resolve().parent.parent
 SCHEMA=ROOT/'data/synthetic_17ch/biomarker_schema.json'
 CHECKPOINT=ROOT/'models/deep_learning/candidate_17ch/model.pt'
-VERSION='candidate-17ch-two-branch-v1'
+VERSION='candidate-17ch-two-branch-v2'
 PHYS_COUNT=9
 ENG_COUNT=8
 WINDOW_POINTS=60
