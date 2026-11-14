@@ -6,6 +6,7 @@ on:
       - 'physiograph/candidate_17ch.py'
       - 'tools/train_17ch_candidate.py'
       - 'tools/export_17ch_numpy.py'
+      - 'tools/evaluate_17ch_runtime.py'
       - 'physiograph/candidate_17ch_numpy.py'
       - 'tools/generate_17ch_dataset.py'
       - 'tests/test_candidate_17ch.py'
@@ -35,6 +36,8 @@ jobs:
         run: python -m tools.train_17ch_candidate
       - name: Export NumPy inference and verify Torch parity
         run: python -m tools.export_17ch_numpy
+      - name: Assess normal replay false flags across four simulated crew profiles
+        run: python -m tools.evaluate_17ch_runtime
       - name: Preserve checkpoint, evaluation, dataset provenance
         uses: actions/upload-artifact@v4
         with:
@@ -49,7 +52,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add models/deep_learning/candidate_17ch/model.pt models/deep_learning/candidate_17ch/evaluation.json models/deep_learning/candidate_17ch/model_numpy.npz models/deep_learning/candidate_17ch/numpy_parity_report.json
+          git add models/deep_learning/candidate_17ch/model.pt models/deep_learning/candidate_17ch/evaluation.json models/deep_learning/candidate_17ch/model_numpy.npz models/deep_learning/candidate_17ch/numpy_parity_report.json models/deep_learning/candidate_17ch/runtime_compatibility_report.json
           if git diff --staged --quiet; then
             echo "Candidate model unchanged"
           else
