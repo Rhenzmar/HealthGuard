@@ -79,7 +79,7 @@ function MiniAnatomy({onBody}){
 function RowSummary({glyph,label,children,note}){
   return <div className="hg6-summary-row"><Icon name={glyph} size={17}/><span>{label}</span><strong>{children}</strong><small>{note}</small></div>;
 }
-function SelectedCrew({person,hasTelemetry,latest,review,connection,onTelemetry,onBody,onProfile,training}){
+function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTelemetry,onBody,onProfile,training}){
 
   if(!hasTelemetry)return <section className="hg6-card hg6-selected" aria-label={'Selected crew '+person.name}>
     <div className="hg6-card-heading"><h2><Icon name="user" size={19}/> Selected crew: {person.name}</h2><span className="hg6-quiet-badge">FICTIONAL CREW 0{CREW.indexOf(person)+1}</span></div>
@@ -90,17 +90,18 @@ function SelectedCrew({person,hasTelemetry,latest,review,connection,onTelemetry,
     <div className="hg6-selected-foot"><span>Only the selected crew member’s simulator packets are displayed.</span><button type="button" onClick={onProfile}>View crew profile <Icon name="arrow" size={15}/></button></div>
   </section>;
   const status=review?.status||'AWAITING_DATA';
+  const trainingAttention=unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY'?unified.status:null;
   const quality=review?.quality?.status;
   return <section className={"hg6-card hg6-selected "+(training?"hg6-selected-training":"")}>
     <div className="hg6-card-heading"><h2><Icon name="user" size={19}/> Selected crew: {person.name}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":"FICTIONAL CREW 0"+(CREW.indexOf(person)+1)}</span></div>
     <div className="hg6-selected-body">
       <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={"Illustration of fictional astronaut "+person.name+" wearing a space suit"}/><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={13}/></button></div>
       <div className="hg6-health-summary">
-        <div className="hg6-summary-intro"><div><h3>Health monitoring summary</h3><p>{training?'Five scripted training signals · No backend model inference':'Five simulated signals · Experimental pattern review'}</p></div><span className={'hg6-state '+(training?.alert?'hg6-state-danger':statusTone(status)==='mint'?'hg6-state-mint':'')}>{training?(training.alert?'Training alert':'Scenario playback'):friendlyStatus(status)}</span></div>
+        <div className="hg6-summary-intro"><div><h3>Health monitoring summary</h3><p>{training?'Five scripted training signals · No backend model inference':'17 simulated signals · Experimental pattern review'}</p></div><span className={'hg6-state '+(training?.alert?'hg6-state-danger':statusTone(status)==='mint'?'hg6-state-mint':'')}>{training?(training.alert?'Training alert':'Scenario playback'):trainingAttention?trainingAttention+' · Training':friendlyStatus(status)}</span></div>
         <RowSummary glyph="heart" label="Cardiovascular" note="Simulated"><span>HR {formatValue(latest?.values?.heart_rate_bpm,0)} bpm</span><span className="hg6-sep"> · </span><span>HRV {formatValue(latest?.values?.hrv_rmssd_ms,1)} ms</span></RowSummary>
         <RowSummary glyph="wind" label="Respiratory" note="Simulated"><span>SpO₂ {formatValue(latest?.values?.spo2_percent,1)}%</span><span className="hg6-sep"> · </span><span>RR {formatValue(latest?.values?.respiratory_rate_bpm,1)}/min</span></RowSummary>
         <RowSummary glyph="thermometer" label="Thermal" note="Simulated"><span>Core {formatValue(latest?.values?.core_temp_c,2)} °C</span></RowSummary>
-        <RowSummary glyph="shield" label={training?"Scenario status":"Pattern review"} note={training?"Scripted":"Experimental"}>{training?(training.alert?"Training trigger active":training.stage):friendlyStatus(status)}</RowSummary>
+        <RowSummary glyph="shield" label={training?"Scenario status":"Pattern review"} note={training?"Scripted":"Experimental"}>{training?(training.alert?"Training trigger active":training.stage):trainingAttention?trainingAttention+' · Training':friendlyStatus(status)}</RowSummary>
         <RowSummary glyph="activity" label="Signal quality" note={training?"Not evaluated":"Quality check"}>{training?"Not evaluated":friendlyStatus(quality||"NOT_EVALUATED")}</RowSummary>
       </div>
     </div>
@@ -115,11 +116,15 @@ function LiveVitals({hasTelemetry,latest,connection,onMetric,training}){
     </button>)}</div>
   </section>;
 }
-function PhysioAlert({hasTelemetry,review,voice,speak,speaking,training,onTrainingSpeak}){
+function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,onTrainingSpeak}){
   if(!hasTelemetry)return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/> PhysioAlert</h2><span className="hg6-quiet-badge">CONTEXTUAL REVIEW</span></div><div className="hg6-empty-panel hg6-empty-alert"><Icon name="shield" size={26}/><strong>Awaiting telemetry</strong><p>PhysioAlert is awaiting this crew member’s own valid measurements.</p></div><div className="hg6-alert-bottom"><small>No assessment available</small><small>Not a diagnosis</small></div></section>;
-  const status=review?.status||'AWAITING_DATA',tone=training?(training.alert?'amber':'mint'):statusTone(status);
-  return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/>{training?"Scenario response":"PhysioAlert"}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":"CONTEXTUAL REVIEW"}</span></div>
-    <div className={"hg6-alert-state hg6-alert-"+tone+(training?.alert?" hg6-alert-training":"")}><span className="hg6-alert-symbol"><Icon name={tone==='mint'?'check':'activity'} size={23}/></span><div><strong>{training?(training.alert?"Training deviation detected":training.stage):friendlyStatus(status)}</strong><p>{training?training.reason:review?.reason||"Collecting valid measurements to review simulated physiological patterns."}</p></div></div>
+  const status=review?.status||'AWAITING_DATA';
+  const isUnified=unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY';
+  const attention=training?.severity||(isUnified?unified.status:null);
+  const tone=attention==='CRITICAL'?'red':attention==='WARNING'||attention==='CHECK'?'amber':attention==='OPTIMAL'?'mint':statusTone(status);
+  return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/>{training?"Scenario response":"PhysioAlert"}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":isUnified?"17-CHANNEL TRAINING REVIEW":"CONTEXTUAL REVIEW"}</span></div>
+    <div className={"hg6-alert-state hg6-alert-"+tone+(training?.alert?" hg6-alert-training":"")}><span className="hg6-alert-symbol"><Icon name={tone==='mint'?'check':'activity'} size={23}/></span><div><strong>{training?(attention+" · Training"):isUnified?(attention+" · Training"):friendlyStatus(status)}</strong><p>{training?training.reason:isUnified?unified.reason:review?.reason||"Collecting valid measurements to review simulated physiological patterns."}</p></div></div>
+    {!training&&isUnified&&<div className="hg6-unified-summary"><span>{unified.models_ready?'17-channel and original model evidence available':'Collecting complete model evidence'}</span>{unified.explanation?.candidate_17ch?.top_reconstruction_residuals?.length>0&&<small>Largest numerical residual: {unified.explanation.candidate_17ch.top_reconstruction_residuals[0].channel.replaceAll('_',' ')}</small>}<small>Training attention, not medical severity</small></div>}
     <div className="hg6-alert-bottom">{training?<button type="button" onClick={onTrainingSpeak}><Icon name="volume" size={15}/> Speak training guidance <Icon name="arrow" size={14}/></button>:voice?.text?<button type="button" onClick={speak}><Icon name={speaking?'mute':'volume'} size={15}/>{speaking?'Stop explanation':'Explain result'} <Icon name="arrow" size={14}/></button>:<span>Waiting for a review explanation</span>}<small>Not a diagnosis</small></div>
   </section>;
 }
@@ -172,7 +177,7 @@ function CrewProfile({person,onClose,onMission,latest,training}){
   </section>;
 }
 
-export default function MissionDashboard({error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment}){
+export default function MissionDashboard({error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment}){
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const [activeCrewIndex,setActiveCrewIndex]=useState(0);
   const activeCrew=CREW[activeCrewIndex];
@@ -268,9 +273,9 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
         sample={training} soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
         onSpeak={speakScenario}/>
       <div className="hg6-center-grid">
-        <SelectedCrew person={activeCrew} hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} review={displayReview} training={training} connection={connection} onTelemetry={()=>setShowTelemetry(true)} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)}/>
+        <SelectedCrew person={activeCrew} hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} review={displayReview} unified={training?null:unified} training={training} connection={connection} onTelemetry={()=>setShowTelemetry(true)} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)}/>
         <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey}/>
-        <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
+        <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
       </div>
       <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
       <EngineeringTelemetry subjectId={activeCrew.subjectId} personName={activeCrew.name} training={training}/>
