@@ -44,15 +44,21 @@ def test_public_ingest_fails_closed_but_server_demo_runs(monkeypatch):
             if state['subject_count']:
                 break
             time.sleep(.05)
-        assert state['subject_count']==1, 'Internal producer must start without any browser writes'
-        assert 'SIM_CREW_01' in state['subjects']
+        end=time.monotonic()+4
+        while time.monotonic()<end and state['subject_count']<4:
+            time.sleep(.05)
+            state=c.get('/api/live/snapshot').json()
+        assert state['subject_count']==4, 'All four internal demo streams must start without browser writes'
+        assert set(state['subjects'])=={'SIM_CREW_01','SIM_CREW_02','SIM_CREW_03','SIM_CREW_04'}
+        first_values=[state['subjects'][sid]['latest']['values']['heart_rate_bpm'] for sid in sorted(state['subjects'])]
+        assert len(set(first_values))==4, 'Crew profiles must not produce cloned vital signs'
         assert state['subjects']['SIM_CREW_01']['latest']['source']=='SIMULATED_LIVE'
         assert c.get('/api/live/health').json()['public_ingest']=='DISABLED'
         assert c.get('/api/live/voice/SIM_CREW_01').json()['generation']=='DETERMINISTIC_TEMPLATE_NOT_LLM'
         with c.websocket_connect('/api/live/ws') as ws:
             data=ws.receive_json()
             assert data['type']=='snapshot'
-            assert data['data']['subject_count']==1
+            assert data['data']['subject_count']==4
 
 
 def test_public_key_is_not_exposed_and_controls_ingest(monkeypatch):
@@ -106,3 +112,34 @@ def test_bad_demo_speed_cannot_start(monkeypatch):
     monkeypatch.setenv('PHYSIOGRAPH_AUTO_DEMO_SPEED','100000')
     with pytest.raises(ValueError,match='between'):
         build_app()
+
+def test_four_demo_crew_have_independent_model_results(monkeypatch):
+    monkeypatch.setenv('PHYSIOGRAPH_INFERENCE_BACKEND','numpy')
+    monkeypatch.setenv('PHYSIOGRAPH_PUBLIC_MODE','1')
+    monkeypatch.delenv('PHYSIOGRAPH_INGEST_API_KEY',raising=False)
+    monkeypatch.setenv('PHYSIOGRAPH_AUTO_DEMO','1')
+    monkeypatch.setenv('PHYSIOGRAPH_AUTO_DEMO_SPEED','20')
+    with TestClient(build_app()) as c:
+        end=time.monotonic()+4
+        while time.monotonic()<end:
+            snap=c.get('/api/live/snapshot').json()
+            if snap['subject_count']==4:
+                break
+            time.sleep(.05)
+        assert snap['subject_count']==4
+        ids=sorted(snap['subjects'])
+        for sid in ids:
+            packet=snap['subjects'][sid]['latest']
+            assert packet['subject_id']==sid
+            assert packet['source']=='SIMULATED_LIVE'
+            hist=c.get(f'/api/live/history/{sid}').json()['samples']
+            assert hist and all(x['subject_id']==sid for x in hist)
+            review=c.get(f'/api/live/context-review/{sid}').json()
+            assert review['subject_id']==sid
+            assert review['sequence']==packet['sequence']
+            assert c.get(f'/api/live/voice/{sid}').json()['subject_id']==sid
+            assert c.get(f'/api/live/dl/{sid}').json()['subject_id']==sid
+            assert c.get(f'/api/live/comparison/{sid}').json()['subject_id']==sid
+        assert c.get('/api/live/health').json()['demo_crew_subjects']==ids
+        assert c.post('/api/live/ingest',json=snap['subjects'][ids[0]]['latest']).status_code==503
+
