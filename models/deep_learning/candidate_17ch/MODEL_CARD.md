@@ -14,6 +14,12 @@ Training and calibration use the generator in `tools/generate_17ch_dataset.py`. 
 
 **No NASA astronaut time-series measurements, medical patient outcomes, or real spacecraft sensor readings were used to fit the 17-channel weights.** The verified OSD-569 and OSD-575 data are real, discrete laboratory records and are processed in a separate historical biomarker-screening module. They cannot directly fill the 17 required synchronized one-second inputs.
 
+## Candidate v2 synthetic results
+
+Version `candidate-17ch-two-branch-v2` uses seed 1729, 320 synthetic normal training episodes, 96 normal calibration episodes, and held-out synthetic evaluation on 96 normal plus 168 injected-event episodes. The 95th percentile calibration threshold is **0.0264081** reconstruction MSE. Normal synthetic test flag fraction was **4/96 (4.17%)**, and all 168 deliberately large injected-event episodes exceeded that threshold. The recorded synthetic ROC-AUC is 1.000. These events are easy, explicitly programmed disturbances and this result is **not medical accuracy, mission risk assessment, or external validation**.
+
+An additional fictional four-crew replay check reported **0/304 normal rolling windows flagged** for v2. The first candidate flagged 103/304 (33.9%), motivating a broadening of the normal synthetic generator; therefore this four-crew replay has been used during development and is **not an independent holdout**. Long-duration real astronaut measurements and clinical validation remain unavailable.
+
 ## Training, evaluation and model selection
 
 The training script is `tools/train_17ch_candidate.py` and evaluation details are in `evaluation.json`. The training pipeline uses deterministic seed 1729, AdamW, denoising mean squared error, separate branch losses, early stopping and a fixed 95th percentile calibration-normal reconstruction threshold. The primary result is a reconstruction novelty score, **not a probability of disease, adverse event or medical severity**.
