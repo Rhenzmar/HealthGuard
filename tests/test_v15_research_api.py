@@ -144,3 +144,24 @@ def test_five_original_nasa_assays_include_all_322_biomarker_types():
         assert hemoglobin and all(x['unit']=='g/dL' for x in hemoglobin)
         assert c.get('/api/research/verified/measurements',
                      params={'subject_id':'SIM_CREW_01'}).status_code==422
+
+def test_authentic_nasa_evaluation_api_is_source_aware_and_not_cnn_validation():
+    with TestClient(build_app()) as c:
+        resp=c.get('/api/research/evaluation/nasa-original')
+        assert resp.status_code==200
+        evaluation=resp.json()
+        assert evaluation['evaluation_kind']=='REAL_NASA_HISTORICAL_OBSERVATIONAL_DATA'
+        assert evaluation['biological_independent_participants']==4
+        assert evaluation['original_numeric_source_rows']==8783
+        assert evaluation['assay_specific_marker_types']==322
+        assert evaluation['overall_postflight_screening']['median_only_flags']==829
+        assert evaluation['overall_postflight_screening']['apdra_consistent_flags']==557
+        assert evaluation['overall_postflight_screening']['median_flags_not_loo_consistent']==272
+        assert evaluation['method']['synthetic_records_used'] is False
+        assert evaluation['clinical_validation'] is False
+        assert evaluation['real_nasa_validation_of_continuous_17ch_cnn'] is False
+        for assay in ('CBC','CMP','EVE_IMMUNE','EVE_CARDIOVASCULAR','ALAMAR_NPQ'):
+            d=c.get('/api/research/evaluation/nasa-original/'+assay)
+            assert d.status_code==200
+            assert d.json()['data']==evaluation['assays'][assay]
+        assert c.get('/api/research/evaluation/nasa-original/unknown').status_code==422
