@@ -82,7 +82,7 @@ def test_biomarker_panel_observations_are_historical_and_source_attributed():
                 assert row['assay']==assay
                 assert row['observations']>=1
                 assert row['latest']['sample_id'].startswith('C001_serum_')
-                assert row['latest']['source'].startswith('NASA OSD-575')
+                assert row['latest']['source'].startswith('NASA OSDR OSD-575')
                 assert row['latest']['phase'] in {'preflight','postflight'}
         row=c.get('/api/research/biomarker-panel',params={
             'subject_id':'C001','assay':'CMP','search':'GLUCOSE'}).json()
