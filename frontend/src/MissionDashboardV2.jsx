@@ -1,10 +1,10 @@
 
-import React,{Suspense,useEffect,useMemo,useRef,useState} from 'react';
+import React,{Suspense,useEffect,useRef,useState} from 'react';
 import ScenarioConsole from './ScenarioConsole.jsx';
 import TelemetryBiomarkerHub from './TelemetryBiomarkerHub.jsx';
 import EngineeringTelemetry from './EngineeringTelemetry.jsx';
-import {SCENARIOS,SCENARIO_LENGTH,scenarioAt,scenarioHistory} from './scenarioSimulator.js';
-import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel} from './api.js';
+import {SCENARIOS,SCENARIO_LENGTH} from './scenarioSimulator.js';
+import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel,readApi} from './api.js';
 import {Icon,VitalChart} from './viz.jsx';
 import {EnvironmentPicker,ENVIRONMENTS} from './HealthGuardPages.jsx';
 import {QUESTS,getQuestPoints,getQuestCompletion} from './questLogic.js';
@@ -97,7 +97,7 @@ function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTe
     <div className="hg6-selected-body">
       <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={"Illustration of fictional astronaut "+person.name+" wearing a space suit"}/><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={13}/></button></div>
       <div className="hg6-health-summary">
-        <div className="hg6-summary-intro"><div><h3>Health monitoring summary</h3><p>{training?'Five scripted training signals · No backend model inference':'17 simulated signals · Experimental pattern review'}</p></div><span className={'hg6-state '+(training?.alert?'hg6-state-danger':statusTone(status)==='mint'?'hg6-state-mint':'')}>{training?(training.alert?'Training alert':'Scenario playback'):trainingAttention?trainingAttention+' · Training':friendlyStatus(status)}</span></div>
+        <div className="hg6-summary-intro"><div><h3>Health monitoring summary</h3><p>{training?'17 scripted channels · Backend model inference':'17 simulated signals · Experimental pattern review'}</p></div><span className={'hg6-state '+(training?.alert?'hg6-state-danger':statusTone(status)==='mint'?'hg6-state-mint':'')}>{training?(training.alert?'Training alert':'Scenario playback'):trainingAttention?trainingAttention+' · Training':friendlyStatus(status)}</span></div>
         <RowSummary glyph="heart" label="Cardiovascular" note="Simulated"><span>HR {formatValue(latest?.values?.heart_rate_bpm,0)} bpm</span><span className="hg6-sep"> · </span><span>HRV {formatValue(latest?.values?.hrv_rmssd_ms,1)} ms</span></RowSummary>
         <RowSummary glyph="wind" label="Respiratory" note="Simulated"><span>SpO₂ {formatValue(latest?.values?.spo2_percent,1)}%</span><span className="hg6-sep"> · </span><span>RR {formatValue(latest?.values?.respiratory_rate_bpm,1)}/min</span></RowSummary>
         <RowSummary glyph="thermometer" label="Thermal" note="Simulated"><span>Core {formatValue(latest?.values?.core_temp_c,2)} °C</span></RowSummary>
@@ -150,10 +150,10 @@ function CrewTelemetry({person,selected,latest,samples,review,cnn,comparison,onC
   const [key,setKey]=useState(METRICS[0].key);
   const metric=METRICS.find(x=>x.key===key)||METRICS[0];
   return <section className="hg6-telemetry" aria-label="Detailed crew telemetry">
-    <div className="hg6-telemetry-heading"><button type="button" onClick={onClose}><Icon name="arrow" size={15}/> Back to Mission Dashboard</button><div><p className="hg6-overline">{training?"CREW TELEMETRY · SCRIPTED TRAINING":"CREW TELEMETRY · SIMULATED STREAM"}</p><h1><img className="hg6-telemetry-avatar" src={person.image} alt={'Fictional astronaut '+person.name}/> {person.name} <span>· Crew {String(CREW.indexOf(person)+1).padStart(2,'0')}</span></h1><p>{training?"Scripted training measurements. These are not PhysioAlert model predictions or actual sensor measurements.":"Detailed numerical monitoring. No live medical sensors are connected."}</p></div></div>
+    <div className="hg6-telemetry-heading"><button type="button" onClick={onClose}><Icon name="arrow" size={15}/> Back to Mission Dashboard</button><div><p className="hg6-overline">{training?"CREW TELEMETRY · SCRIPTED TRAINING":"CREW TELEMETRY · SIMULATED STREAM"}</p><h1><img className="hg6-telemetry-avatar" src={person.image} alt={'Fictional astronaut '+person.name}/> {person.name} <span>· Crew {String(CREW.indexOf(person)+1).padStart(2,'0')}</span></h1><p>{training?"Synthetic training measurements evaluated by the trained CNN. Neither these measurements nor model flags are clinical diagnoses.":"Detailed numerical monitoring. No live medical sensors are connected."}</p></div></div>
     <div className="hg6-telemetry-metrics">{METRICS.map(m=><button type="button" key={m.key} className={key===m.key?'active':''} onClick={()=>setKey(m.key)}><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong></button>)}</div>
     <div className="hg6-telemetry-bottom"><div className="hg6-card"><div className="hg6-card-heading"><h2>{metric.label} · latest samples</h2></div><div className="hg6-large-graph"><VitalChart data={samples} metric={metric}/></div><p className="hg6-trend-footer">{samples.length} available simulator packets</p></div>
-    <div className="hg6-card hg6-telemetry-review"><div className="hg6-card-heading"><h2>{training?"Scenario review":"Model comparison"}</h2></div>{training?<><p><span>Training scenario</span><strong>{training.scenario_id}</strong></p><p><span>Illustrative trigger</span><strong>{training.alert?"Active":"Not active"}</strong></p><p><span>CNN / statistical models</span><strong>Not applied to scripted playback</strong></p></>:<><p><span>PhysioAlert</span><strong>{friendlyStatus(review?.status)}</strong></p><p><span>CNN autoencoder</span><strong>{friendlyStatus(cnn?.status)}</strong></p><p><span>Statistical detector</span><strong>{friendlyStatus(comparison?.status)}</strong></p><p><span>Measurement quality</span><strong>{friendlyStatus(review?.quality?.status)}</strong></p></>}<button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={16}/></button></div></div>
+    <div className="hg6-card hg6-telemetry-review"><div className="hg6-card-heading"><h2>{training?"Scenario review":"Model comparison"}</h2></div>{training?<><p><span>Training scenario</span><strong>{training.scenario_id}</strong></p><p><span>Illustrative trigger</span><strong>{training.alert?"Active":"Not active"}</strong></p><p><span>17-channel CNN</span><strong>{friendlyStatus(training.model_evidence?.candidate_17ch?.status)}</strong></p><p><span>Five-channel CNN</span><strong>{friendlyStatus(training.model_evidence?.five_channel_cnn?.status)}</strong></p><p><span>Statistical detector</span><strong>{friendlyStatus(training.model_evidence?.statistical_comparator?.status)}</strong></p><p><span>Unified review</span><strong>{training.model_evidence?.unified?.status||"Unavailable"} · Training</strong></p></>:<><p><span>PhysioAlert</span><strong>{friendlyStatus(review?.status)}</strong></p><p><span>CNN autoencoder</span><strong>{friendlyStatus(cnn?.status)}</strong></p><p><span>Statistical detector</span><strong>{friendlyStatus(comparison?.status)}</strong></p><p><span>Measurement quality</span><strong>{friendlyStatus(review?.quality?.status)}</strong></p></>}<button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={16}/></button></div></div>
   </section>;
 }
 
@@ -189,6 +189,9 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   const [scenarioId,setScenarioId]=useState('');
   const [scenarioSecond,setScenarioSecond]=useState(0);
   const [scenarioRunning,setScenarioRunning]=useState(false);
+  const [scenarioFrame,setScenarioFrame]=useState(null);
+  const [scenarioFetchError,setScenarioFetchError]=useState('');
+  const [scenarioPending,setScenarioPending]=useState(false);
   const [scenarioSound,setScenarioSound]=useState(true);
   const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(false);
   const lastLiveAttentionRef=useRef({subject_id:null,status:null});
@@ -205,11 +208,13 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
     setLiveAlertsEnabled(v=>!v);
   };
   const stopScenario=()=>{
+    setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
     setScenarioRunning(false);setScenarioId('');setScenarioSecond(0);
     alarmRef.current=false;
     if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
   };
   const selectScenario=id=>{
+    setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
     setScenarioRunning(false);setScenarioId(id);setScenarioSecond(0);
     alarmRef.current=false;
     if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
@@ -231,7 +236,8 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
     const item=SCENARIOS.find(x=>x.id===scenarioId);
     if(!item)return;
     window.speechSynthesis.cancel();
-    const utterance=new SpeechSynthesisUtterance('HealthGuard training alert for '+activeCrew.name+'. '+item.guidance);
+    const speech=training?.alarm?.voice_ready_script||('HealthGuard training guidance for '+activeCrew.name+'. '+item.guidance);
+    const utterance=new SpeechSynthesisUtterance(speech);
     utterance.lang='en-US';utterance.rate=.95;
     window.speechSynthesis.speak(utterance);
   };
@@ -243,8 +249,34 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
     }),1000);
     return()=>clearInterval(timer);
   },[scenarioRunning,scenarioId]);
-  const training=scenarioId?scenarioAt(activeCrew.subjectId,scenarioId,scenarioSecond):null;
-  const trainingHistory=useMemo(()=>scenarioId?scenarioHistory(activeCrew.subjectId,scenarioId,scenarioSecond):[],[activeCrew.subjectId,scenarioId,scenarioSecond]);
+  // Backend owns all seven scripted signals and their CNN model evaluations.
+  // Never use the older browser-side generator as a model prediction fallback.
+  useEffect(()=>{
+    if(!scenarioId){
+      setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
+      return;
+    }
+    let cancelled=false;
+    setScenarioPending(true);
+    readApi('/api/simulation/scenarios/'+encodeURIComponent(activeCrew.subjectId)+'/'+encodeURIComponent(scenarioId)
+      +'?second='+encodeURIComponent(scenarioSecond)+'&include_history=true')
+      .then(frame=>{
+        if(cancelled)return;
+        if(frame.subject_id!==activeCrew.subjectId||frame.scenario_id!==scenarioId
+           ||frame.elapsed_seconds!==scenarioSecond
+           ||frame.source!=='SERVER_SCRIPTED_TRAINING_SCENARIO'){
+          throw new Error('Backend returned mismatched scenario data');
+        }
+        setScenarioFrame(frame);setScenarioFetchError('');setScenarioPending(false);
+      })
+      .catch(error=>{if(cancelled)return;setScenarioFetchError(error.message||'Scenario model analysis unavailable');
+        setScenarioFrame(null);setScenarioPending(false);setScenarioRunning(false);});
+    return()=>{cancelled=true;};
+  },[activeCrew.subjectId,scenarioId,scenarioSecond]);
+  const training=(scenarioFrame?.scenario_id===scenarioId
+                  &&scenarioFrame?.subject_id===activeCrew.subjectId
+                  &&scenarioFrame?.elapsed_seconds===scenarioSecond)?scenarioFrame:null;
+  const trainingHistory=training?.history||[];
   useEffect(()=>{
     const newlyAlert=Boolean(training?.alert)&&!alarmRef.current;
     alarmRef.current=Boolean(training?.alert);
@@ -294,9 +326,9 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   },[unified?.subject_id,unified?.status,unified?.sequence,unified?.audible_alert_suggested,liveAlertsEnabled,scenarioId,selected]);
   useEffect(()=>()=>{if(audioRef.current)audioRef.current.close().catch(()=>{});},[]);
   const subjects=Object.keys(snapshot?.subjects||{});
-  const latest=training|| (hasTelemetry?(snapshot?.subjects?.[activeCrew.subjectId]?.latest||samples.filter(x=>x.subject_id===activeCrew.subjectId).at(-1)||null):null);
+  const latest=scenarioId?training:(hasTelemetry?(snapshot?.subjects?.[activeCrew.subjectId]?.latest||samples.filter(x=>x.subject_id===activeCrew.subjectId).at(-1)||null):null);
   const displaySamples=training?trainingHistory:samples.filter(x=>x.subject_id===activeCrew.subjectId);
-  const displayReview=training?null:review;
+  const displayReview=scenarioId?null:review;
   const progress=getRoutine();
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
@@ -306,9 +338,9 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
       <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={hasTelemetry?review:null} progress={progress} subjects={subjects} hasTelemetry={Boolean(training)||hasTelemetry} training={training}/>
       {error&&<div className="hg6-network-error" role="status"><Icon name="alert" size={16}/>Telemetry connection issue: {error}. No missing measurements are filled in.</div>}
       <CrewStrip activeCrewIndex={activeCrewIndex} connected={connected} availableSubjects={subjects} onSelect={i=>{stopScenario();setActiveCrewIndex(i);setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);}} onManage={onMission}/>
-      <ScenarioConsole person={activeCrew} scenarioId={scenarioId} onSelectScenario={selectScenario}
+      <ScenarioConsole person={activeCrew} scenarioId={scenarioId} scenarioPending={scenarioPending} scenarioError={scenarioFetchError} onSelectScenario={selectScenario}
         onStart={startScenario} onPause={()=>setScenarioRunning(false)}
-        onReset={()=>{setScenarioSecond(0);setScenarioRunning(false);alarmRef.current=false;}}
+        onReset={()=>{setScenarioFrame(null);setScenarioFetchError('');setScenarioSecond(0);setScenarioRunning(false);alarmRef.current=false;}}
         onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond}
         sample={training} soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
         onSpeak={speakScenario}/>
