@@ -14,6 +14,9 @@ on:
       - 'data/synthetic_17ch/biomarker_schema.json'
       - '.github/workflows/train-17ch-candidate.yml'
   workflow_dispatch:
+concurrency:
+  group: healthguard-17ch-candidate-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
