@@ -189,7 +189,7 @@ def overview():
 
 
 @router.get('/biomarkers')
-def biomarkers(assay: str | None = Query(default=None,pattern='^(CMP|NULISA|CBC))):
+def biomarkers(assay: str | None = Query(default=None,pattern='^(CMP|NULISA|CBC)
     data=_rows_with_filters(_cbc_measurements() if assay=='CBC' else _measurements(),None,assay,None)
     groups={}
     for row in data:
@@ -262,12 +262,12 @@ def source_catalog():
         'sources':list(NASA_SOURCE_CATALOG),
         'live_sensor_integration':False,
         'historical_cohort_is_fictional_crew':False,
-        'warning':'OSD-569 CBC uses an unauthenticated public mirror, with one quarantined source sample. NASA CVL and SANS are scientific background, not telemetry datasets.'
+        'warning':'OSD-569 CBC currently uses a third-party public mirror with one quarantined record; independently verify with NASA. CVL and SANS are background research.'
     }
 
 @router.get('/biomarker-panel')
 def biomarker_panel(subject_id: str=Query(default='C001'),
-                    assay: str | None=Query(default=None, pattern=r'^(CMP|NULISA|CBC)),
+                    assay: str | None=Query(default=None, pattern=r'^(CMP|NULISA|CBC)
                     search: str | None=Query(default=None,max_length=120),
                     offset:int=Query(default=0,ge=0),
                     limit:int=Query(default=250,ge=1,le=300)):
@@ -303,11 +303,11 @@ def biomarker_panel(subject_id: str=Query(default='C001'),
     return {
         'source':'NASA OSD-575 / Inspiration4',
         'study_url':NASA_SOURCE_CATALOG[0]['url'],
-        'source_kind':'HISTORICAL_DISCRETE_SAMPLES_NOT_LIVE',
+        'source_kind':'HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE' if assay=='CBC' else 'HISTORICAL_DISCRETE_SAMPLES_NOT_LIVE',
         'subject_id':subject_id,'total_biomarkers':len(items),
         'offset':offset,'limit':limit,'biomarkers':items[offset:offset+limit],
         'classification':'NOT_EVALUATED',
-        'cbc_mirror_qc':'UNAUDITED_PUBLIC_MIRROR_ONE_SAMPLE_QUARANTINED' if assay=='CBC' else None,
+        'cbc_mirror_qc':'ONE_RECORD_QUARANTINED_SOURCE_UNVERIFIED' if assay=='CBC' else None,
         'warning':'Last available sample by study timepoint, not a current reading. Source intervals are lab metadata, not mission emergency thresholds. No extrapolation or linkage to fictional simulator crew.'
     }
 
