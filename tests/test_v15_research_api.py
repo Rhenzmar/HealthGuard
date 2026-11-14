@@ -64,8 +64,8 @@ def test_nasa_source_catalog_does_not_claim_uningested_cbc_or_ocular_live_data()
     with TestClient(build_app()) as c:
         catalog=c.get('/api/research/source-catalog').json()
         sources={x['id']:x for x in catalog['sources']}
-        assert sources['OSD-575']['availability']=='BUNDLED_HISTORICAL_OBSERVATIONS'
-        assert sources['OSD-569']['availability']=='PUBLIC_MIRROR_QUARANTINED_QC_PENDING'
+        assert sources['OSD-575']['availability']=='NASA_S3_CHECKSUM_VERIFIED'
+        assert sources['OSD-569']['availability']=='NASA_S3_CHECKSUM_VERIFIED_WITH_QC_REVIEW'
         assert sources['NASA-SANS']['availability']=='RESEARCH_CONTEXT_ONLY'
         assert catalog['historical_cohort_is_fictional_crew'] is False
 
@@ -75,7 +75,7 @@ def test_biomarker_panel_observations_are_historical_and_source_attributed():
         for assay,count in (('CMP',19),('NULISA',203)):
             data=c.get('/api/research/biomarker-panel',params={
                 'subject_id':'C001','assay':assay}).json()
-            assert data['source_kind']=='HISTORICAL_DISCRETE_SAMPLES_NOT_LIVE'
+            assert data['source_kind']=='NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE'
             assert data['classification']=='NOT_EVALUATED'
             assert data['total_biomarkers']==count
             for row in data['biomarkers']:
@@ -98,18 +98,49 @@ def test_cbc_mirror_isolation_and_quarantined_malformed_source_row():
     with TestClient(build_app()) as client:
         q=client.get('/api/research/cbc/quality').json()
         assert q['biomarker_types']==20
-        assert q['independent_nasa_checksum_verification'] is False
-        assert q['quarantined_source_samples']==['C003_whole-blood_L-92_cbc']
+        assert q['independent_nasa_checksum_verification'] is True
+        assert q['quality_review_samples']==['C003_whole-blood_L-92_cbc']
+        assert q['quality_review_rows']==20
+        assert q['quarantined_source_samples']==[]
         assert q['observation_count']>400
         panel=client.get('/api/research/biomarker-panel',params={
             'assay':'CBC','subject_id':'C003','limit':40}).json()
         assert panel['total_biomarkers']==20
         assert panel['classification']=='NOT_EVALUATED'
-        assert panel['source_kind']=='HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE'
-        assert all(r['latest']['sample_id']!='C003_whole-blood_L-92_cbc' for r in panel['biomarkers'])
-        assert all('unverified public mirror' in r['latest']['source'] for r in panel['biomarkers'])
+        assert panel['source_kind']=='NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE'
+        assert panel['total_biomarkers']==20
+        assert any(r['quality_flagged_observations']>0 for r in panel['biomarkers'])
+        assert all(r['latest']['source'].startswith('NASA OSDR OSD-569') for r in panel['biomarkers'] if r['latest'])
         measurements=client.get('/api/research/cbc/measurements',params={
             'subject_id':'C003'}).json()
-        assert measurements['source_kind']=='HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE'
-        assert all(x['sample_id']!='C003_whole-blood_L-92_cbc' for x in measurements['rows'])
+        assert measurements['source_kind']=='NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE'
+        assert any(x['sample_id']=='C003_whole-blood_L-92_cbc' and x['qc_status']=='SOURCE_OUTLIER_REQUIRES_REVIEW' for x in measurements['rows'])
         assert client.get('/api/research/cbc/measurements',params={'subject_id':'SIM_CREW_01'}).status_code==422
+
+def test_five_original_nasa_assays_include_all_322_biomarker_types():
+    with TestClient(build_app()) as c:
+        overview=c.get('/api/research/overview').json()
+        assert overview['verified_numeric_observations']==8783
+        assert overview['verified_biomarker_types']==322
+        assert set(overview['verified_assays'])=={
+            'CBC','CMP','EVE_IMMUNE','EVE_CARDIOVASCULAR','ALAMAR_NPQ'}
+        for assay,expected in [
+            ('CBC',20),('CMP',19),('EVE_IMMUNE',71),
+            ('EVE_CARDIOVASCULAR',9),('ALAMAR_NPQ',203)
+        ]:
+            d=c.get('/api/research/biomarker-panel',
+                    params={'subject_id':'C001','assay':assay}).json()
+            assert d['total_biomarkers']==expected
+            assert d['classification']=='NOT_EVALUATED'
+            assert d['source_kind']=='NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE'
+            assert all(x['assay']==assay for x in d['biomarkers'])
+            assert all(x['latest']['source_sha256'] for x in d['biomarkers'] if x['latest'])
+        assert c.get('/api/research/biomarker-panel',params={'assay':'NULISA'}).json()['total_biomarkers']==203
+        all_rows=c.get('/api/research/verified/measurements',
+                       params={'assay':'CBC','subject_id':'C003','limit':500}).json()
+        assert all_rows['total']>0
+        assert any(x['qc_status']=='SOURCE_OUTLIER_REQUIRES_REVIEW' for x in all_rows['rows'])
+        hemoglobin=[x for x in all_rows['rows'] if x['biomarker']=='HEMOGLOBIN']
+        assert hemoglobin and all(x['unit']=='g/dL' for x in hemoglobin)
+        assert c.get('/api/research/verified/measurements',
+                     params={'subject_id':'SIM_CREW_01'}).status_code==422
