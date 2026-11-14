@@ -113,7 +113,7 @@ def download(output: Path) -> dict:
         print('DISCOVERY',json.dumps(item),flush=True)
     for item in entries:
         print('SOURCE',json.dumps({k:item.get(k) for k in (
-            'study','filename','status','bytes','error_type','error')}),flush=True)
+            'study','filename','s3_key','status','bytes','sha256','error_type','error')}),flush=True)
     return result
 
 
