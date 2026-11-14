@@ -215,6 +215,23 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
             raise HTTPException(404, "No unified simulated PhysioAlert review for this crew member")
         return result
 
+    @api.get("/api/live/physioalert-unified/voice/{subject_id}")
+    def unified_voice(subject_id: str):
+        if subject_id not in ENGINEERING_CREW_IDS:
+            raise HTTPException(404, "Unknown fictional crew subject")
+        review=api.state.unified.latest(subject_id)
+        if review is None:
+            raise HTTPException(404, "No unified simulated review for this crew member")
+        return {
+            "subject_id":subject_id, "sequence":review["sequence"],
+            "status":review["status"],
+            "text":review["voice_ready_script"],
+            "source":review["source"],
+            "generation":"DETERMINISTIC_TEMPLATE_NOT_LLM",
+            "clinical_validation":False,
+            "audio_requires_browser_permission":True,
+        }
+
     @api.get("/api/live/physioalert-unified/history/{subject_id}")
     def unified_history(subject_id: str, limit: int = Query(120,ge=1,le=300)):
         if subject_id not in ENGINEERING_CREW_IDS:
