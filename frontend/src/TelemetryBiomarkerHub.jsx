@@ -13,8 +13,10 @@ const GROUPS=[
   {id:'pulmonary',title:'Pulmonary & respiratory',icon:'wind',desc:'Fictional SpO₂ and respiratory rate',keys:['spo2_percent','respiratory_rate_bpm'],source:'SIMULATED'},
   {id:'thermal',title:'Thermoregulation',icon:'thermometer',desc:'Fictional core temperature signal',keys:['core_temp_c'],source:'SIMULATED'},
   {id:'cmp',title:'Metabolic & chemistry',icon:'flask',desc:'19 CMP biomarkers from historical NASA OSD-575',assay:'CMP',source:'HISTORICAL'},
-  {id:'immune',title:'Immune & protein markers',icon:'shield',desc:'203 NULISA proteins from historical NASA OSD-575',assay:'NULISA',source:'HISTORICAL'},
-  {id:'cbc',title:'Hematology / CBC',icon:'activity',desc:'20 CBC biomarker types from an OSD-569-labelled public mirror; one source record quarantined',assay:'CBC',source:'MIRROR'},
+  {id:'immune',title:'Alamar protein panel',icon:'shield',desc:'203 relative protein markers from NASA OSD-575',assay:'ALAMAR_NPQ',source:'HISTORICAL'},
+  {id:'eveImmune',title:'Eve immune proteins',icon:'shield',desc:'71 immune analytes from NASA OSD-575',assay:'EVE_IMMUNE',source:'HISTORICAL'},
+  {id:'eveCardio',title:'Eve cardiovascular',icon:'heart',desc:'9 cardiovascular proteins from NASA OSD-575',assay:'EVE_CARDIOVASCULAR',source:'HISTORICAL'},
+  {id:'cbc',title:'Hematology / CBC',icon:'activity',desc:'20 source-verified CBC biomarkers from NASA OSD-569, including QC-flagged values',assay:'CBC',source:'HISTORICAL'},
   {id:'fluid',title:'Cardiovascular & fluid shifts',icon:'pulse',desc:'NASA research context, not live jugular or ocular measurements',source:'CONTEXT'},
   {id:'sans',title:'Neuro-ocular / SANS',icon:'user',desc:'NASA SANS risk research, no connected ocular measurements',source:'CONTEXT'},
   {id:'radiation',title:'Radiation & suit environment',icon:'satellite',desc:'No connected radiation, pressure, or cabin-atmosphere sensors',source:'PENDING'}
@@ -59,10 +61,10 @@ function HistoricalBrowser({assay,subject,setSubject}){
       </select></label>
       <label>Find biomarker<input value={query} onChange={e=>setQuery(e.target.value)} placeholder="e.g. GLUCOSE or IL6"/></label>
     </div>
-    <p className="hg-bio-disclosure">These are <strong>discrete historical research samples</strong> from {assay==='CBC'?'an OSD-569-labelled public mirror that awaits independent NASA verification':'OSD-575'}, not readings from {subject==='C001'?'Elena Park or the fictional crew':'any fictional HealthGuard astronaut'}. The most recent available sample within the study is shown, not a current health state. {assay==='CBC'?'The malformed C003 L-92 record is quarantined, not silently corrected.':'NPQ log2 values are relative protein measurements, not concentrations in pg/mL.'}</p>
+    <p className="hg-bio-disclosure">These are <strong>discrete historical research samples</strong> from {assay==='CBC'?'verified NASA OSD-569':'verified NASA OSD-575'}, not readings from {subject==='C001'?'Elena Park or the fictional crew':'any fictional HealthGuard astronaut'}. The most recent available sample within the study is shown, not a current health state. {assay==='CBC'?'The C003 L-92 sample is retained with quality-review flags, not silently corrected.':'NPQ log2 values are relative protein measurements, not concentrations in pg/mL.'}</p>
     {error?<p role="alert" className="hg-bio-error">Unable to load historical measurements: {error}</p>:
     loading?<p className="hg-bio-wait">Loading historical NASA records…</p>:
-    <><div className="hg-bio-count">{results?.total_biomarkers??0} available biomarker types · {assay==='CMP'?'Chemistry panel':assay==='CBC'?'CBC panel (mirror)':'Protein panel'} · No severity assigned</div>
+    <><div className="hg-bio-count">{results?.total_biomarkers??0} available biomarker types · {assay==='CMP'?'Chemistry panel':assay==='CBC'?'CBC panel':assay==='EVE_CARDIOVASCULAR'?'Cardiovascular proteins':'Immune protein panel'} · No severity assigned</div>
       <div className="hg-bio-scroll"><table><thead><tr><th>Biomarker</th><th>Last observed</th><th>Flight timepoint</th><th>Source sample</th><th>Source status</th></tr></thead>
       <tbody>{(results?.biomarkers||[]).map(item=><tr key={item.assay+item.name+item.unit}>
         <td><strong>{item.name}</strong><small>{item.observations} observations</small></td>
@@ -84,19 +86,19 @@ export default function TelemetryBiomarkerHub({person,latest,training}){
   const selected=useMemo(()=>GROUPS.find(x=>x.id===group)||GROUPS[0],[group]);
   return <section className="hg-bio-hub" aria-label="Subsystems and research biomarkers">
     <div className="hg-bio-heading">
-      <div><span className="hg-bio-overline">SUBSYSTEMS & BIOMARKERS</span><h2>Extended monitoring and NASA research</h2><p>5 fictional physiological signals · 222 OSD-575 historical biomarkers · 20 CBC markers from unverified OSD-569 mirror</p></div>
+      <div><span className="hg-bio-overline">SUBSYSTEMS & BIOMARKERS</span><h2>Extended monitoring and NASA research</h2><p>5 fictional physiological signals · 322 assay-specific biomarkers from verified historical NASA OSDR source files</p></div>
       <button type="button" onClick={()=>setOpened(x=>!x)} aria-expanded={opened}>{opened?'Collapse biomarker explorer':'Explore all subsystems'} <Icon name="chevron" size={16}/></button>
     </div>
     <div className="hg-bio-group-grid">
       {GROUPS.map(item=>{
         const tier=statusOf(item,training);
         return <button type="button" key={item.id} className={'hg-bio-group '+(group===item.id&&opened?'hg-bio-group-active':'')} onClick={()=>{setGroup(item.id);setOpened(true);}}>
-          <div className="hg-bio-card-top"><Icon name={item.icon} size={18}/><strong>{item.title}</strong><span className={'hg-bio-label hg-bio-label-'+(tier||item.source).toLowerCase()}>{tier|| (item.source==='HISTORICAL'?'NASA LAB':item.source==='MIRROR'?'MIRRORED CBC':item.source==='PENDING'?'NO FEED':'RESEARCH')}</span></div>
+          <div className="hg-bio-card-top"><Icon name={item.icon} size={18}/><strong>{item.title}</strong><span className={'hg-bio-label hg-bio-label-'+(tier||item.source).toLowerCase()}>{tier|| (item.source==='HISTORICAL'?'NASA LAB':item.source==='PENDING'?'NO FEED':'RESEARCH')}</span></div>
           {item.keys?<div className="hg-bio-signal-rows">{item.keys.map(key=>{
             const m=METRICS.find(x=>x.key===key);
             return <div key={key}><span>{m?.label||key}</span><strong>{formatValue(latest?.values?.[key],m?.digits??1)} <small>{m?.unit||''}</small></strong></div>;
           })}</div>:<p>{item.desc}</p>}
-          <small className="hg-bio-source">{item.keys?(training?'SCRIPTED TRAINING':'FICTIONAL CONTINUOUS STREAM'):item.source==='HISTORICAL'?'DISCRETE LAB SAMPLES':item.source==='MIRROR'?'THIRD-PARTY HISTORICAL MIRROR · QC PENDING':item.source==='PENDING'?'NOT CONNECTED':'BACKGROUND RESEARCH'}</small>
+          <small className="hg-bio-source">{item.keys?(training?'SCRIPTED TRAINING':'FICTIONAL CONTINUOUS STREAM'):item.source==='HISTORICAL'?'DISCRETE LAB SAMPLES':item.source==='PENDING'?'NOT CONNECTED':'BACKGROUND RESEARCH'}</small>
         </button>;
       })}
     </div>
@@ -107,6 +109,6 @@ export default function TelemetryBiomarkerHub({person,latest,training}){
           {selected.keys.map(key=><div className="hg-bio-single" key={key}><span>{METRICS.find(m=>m.key===key)?.label||key}</span><strong>{formatValue(latest?.values?.[key],METRICS.find(m=>m.key===key)?.digits??1)}</strong><span>{training?(training.metric_levels?.[key]||'OPTIMAL'):'Simulated, unclassified'}</span></div>)}
         </div>:<div className="hg-bio-description"><p>{selected.desc}. No measured, per-astronaut numerical series is currently attached to this subsystem. Its presence here is a <strong>data-source roadmap</strong>, not evidence of live measurements or clinical status.</p>{CATALOG_LINKS[selected.id]&&<a target="_blank" rel="noreferrer" href={CATALOG_LINKS[selected.id]}>Open official NASA reference</a>}</div>}
     </div>}
-    <p className="hg-bio-foot">Data provenance: NASA OSD-575 historical research participants C001–C004 are not the four fictional dashboard astronauts. Historical protein, chemistry and mirrored CBC records are not streamed, interpolated, or classified as Optimal/Check/Warning/Critical. OSD-569 CBC mirror needs independent NASA file verification, with one sample excluded for reported integrity problems. Scenario tiers are demonstration-only.</p>
+    <p className="hg-bio-foot">Data provenance: NASA OSD-575 historical research participants C001–C004 are not the four fictional dashboard astronauts. Historical CBC, CMP, Eve and Alamar records are not streamed, interpolated, or classified as Optimal/Check/Warning/Critical. Original OSDR source hashes are verified; C003 CBC outliers remain explicitly flagged for scientific review. Scenario tiers are demonstration-only.</p>
   </section>;
 }
