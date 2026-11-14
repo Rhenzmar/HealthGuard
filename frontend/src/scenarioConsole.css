@@ -81,3 +81,15 @@
 .hg6-scenario-metric-critical em,.hg6-scenario-metric-critical strong{color:#ffc1b9}
 .hg6-state-danger{color:#ffc0c0!important;background:#5c222f!important;border-color:#ee6671!important}
 @media(max-width:540px){.hg6-scenario-tier span{font-size:9px;padding:8px 2px}}
+
+.hg6-scenario-env{background:#0b263b;border:1px solid #35647b;border-radius:10px;padding:13px}
+.hg6-scenario-env>strong{font-size:11px;display:block;margin-bottom:12px;color:#e4f6fc}
+.hg6-scenario-env-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.hg6-scenario-env-grid>div{padding:12px;background:#102b40;border:1px solid #366076;border-radius:8px;display:flex;gap:6px;flex-direction:column}
+.hg6-scenario-env-grid>div>span{color:#9cc1d1;font-size:10px}
+.hg6-scenario-env-grid strong{color:#e6f7fc;font-size:18px;font-variant-numeric:tabular-nums}
+.hg6-scenario-env-grid strong small{font-size:9px;font-weight:400;color:#afd0dd}
+.hg6-scenario-env-grid em{font-style:normal;color:#80c4c5;font-size:9px}
+.hg6-scenario-env-grid .flagged{background:#612531;border-color:#f57879}
+.hg6-scenario-env-grid .flagged strong,.hg6-scenario-env-grid .flagged em{color:#ffc1b5}
+@media(max-width:650px){.hg6-scenario-env-grid{grid-template-columns:1fr}}
