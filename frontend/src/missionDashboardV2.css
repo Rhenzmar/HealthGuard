@@ -213,3 +213,8 @@
 .hg6-alert-red .hg6-alert-symbol{border-color:#ff989b;color:#ffe6e7;background:#78303d;box-shadow:0 0 17px #f45e6a5c}
 .hg6-unified-summary{display:flex;flex-direction:column;gap:4px;padding:10px 16px 0;color:#b0d2df;font-size:10px}
 .hg6-unified-summary small{font-size:9px;color:#97b9c8}
+
+.hg6-live-alert-preference{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:8px 16px 0}
+.hg6-live-alert-preference button{display:inline-flex;align-items:center;gap:6px;font-size:10px;color:#d8f2f5;background:#164052;border:1px solid #3d7185;border-radius:8px;padding:7px 9px;cursor:pointer}
+.hg6-live-alert-preference button[aria-pressed=true]{border-color:#56bea5;background:#17483e}
+.hg6-live-alert-preference small{font-size:9px;color:#9cbbca}
