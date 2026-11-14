@@ -23,6 +23,8 @@ export default function ScenarioPickerModal({
   const modalRef=useRef(null);
   const closeRef=useRef(null);
   const returnFocusRef=useRef(null);
+  const onCloseRef=useRef(onClose);
+  onCloseRef.current=onClose;
   useEffect(()=>{
     if(!open)return;
     returnFocusRef.current=document.activeElement;
@@ -32,7 +34,7 @@ export default function ScenarioPickerModal({
     document.body.style.overflow='hidden';
     closeRef.current?.focus();
     const onKeyDown=event=>{
-      if(event.key==='Escape'){event.preventDefault();onClose();return;}
+      if(event.key==='Escape'){event.preventDefault();onCloseRef.current();return;}
       if(event.key!=='Tab'||!modalRef.current)return;
       const focusables=Array.from(modalRef.current.querySelectorAll('button:not([disabled]),select:not([disabled]),a[href],summary,[tabindex]:not([tabindex="-1"])')).filter(node=>node.getClientRects().length);
       if(!focusables.length)return;
@@ -46,7 +48,7 @@ export default function ScenarioPickerModal({
       document.removeEventListener('keydown',onKeyDown);
       returnFocusRef.current?.focus?.();
     };
-  },[open,onClose]);
+  },[open]);
   if(!open)return null;
   const group=CATEGORIES.find(item=>item.id===category)||CATEGORIES[0];
   const visible=SCENARIOS.filter(item=>category==='crew'?CREW_SCENARIOS.has(item.id):!CREW_SCENARIOS.has(item.id));
