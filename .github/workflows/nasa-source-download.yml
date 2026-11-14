@@ -18,7 +18,7 @@ jobs:
       - name: Download official OSD-569 and OSD-575 data
         id: nasa
         continue-on-error: true
-        run: python -m tools.download_official_nasa_osdr --timeout 30
+        run: python -m tools.download_official_nasa_osdr
       - name: Upload original source files and provenance manifest
         if: always()
         uses: actions/upload-artifact@v4
