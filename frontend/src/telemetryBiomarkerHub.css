@@ -1,0 +1,55 @@
+/* NASA source-separated subsystem explorer */
+.hg-bio-hub{margin:15px 0 0;border:1px solid #356b85;border-radius:15px;background:linear-gradient(140deg,#0d263e,#071b2d);padding:17px;color:#e8f6fc}
+.hg-bio-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}
+.hg-bio-overline{font-size:10px;font-weight:750;letter-spacing:1.8px;color:#4ddbd2}
+.hg-bio-heading h2{font-size:20px;letter-spacing:-.4px;margin:7px 0}
+.hg-bio-heading p{font-size:11px;color:#abc4d0;line-height:1.6;margin:0}
+.hg-bio-heading button,.hg-bio-expanded-heading button{background:#123a50;border:1px solid #34889c;color:#dbf6fb;border-radius:8px;padding:10px 12px;font-size:11px;display:flex;gap:8px;align-items:center;justify-content:center;white-space:nowrap;cursor:pointer}
+.hg-bio-group-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hg-bio-group{background:#0b1b2c;border:1px solid #304d63;border-radius:11px;min-width:0;min-height:132px;padding:14px;display:flex;flex-direction:column;gap:12px;color:#e3f2fa;text-align:left;cursor:pointer;transition:border-color .18s,background .18s}
+.hg-bio-group:hover,.hg-bio-group-active{border-color:#26b6b8;background:#12394b}
+.hg-bio-card-top{display:flex;align-items:center;gap:9px;min-width:0}
+.hg-bio-card-top>svg{color:#52d5d1;flex:none}
+.hg-bio-card-top strong{font-size:12px;flex:1;min-width:0}
+.hg-bio-label{flex:none;font-size:9px;font-weight:750;padding:4px 6px;border:1px solid #405b68;border-radius:16px;color:#b4d5dd;background:#142b3a}
+.hg-bio-label-optimal{border-color:#297967;color:#8de6c4;background:#123f39}
+.hg-bio-label-check{border-color:#9c8134;color:#f5df85;background:#3d3520}
+.hg-bio-label-warning{border-color:#b66b33;color:#f8b46d;background:#493222}
+.hg-bio-label-critical{border-color:#b44754;color:#ffafb6;background:#4c202b}
+.hg-bio-label-simulated{border-color:#2a7883;color:#7ddbe0}
+.hg-bio-group p{font-size:11px;line-height:1.55;color:#9bb9c8;margin:0}
+.hg-bio-signal-rows{display:grid;gap:9px}
+.hg-bio-signal-rows>div{display:flex;justify-content:space-between;gap:6px;font-size:11px}
+.hg-bio-signal-rows strong{font-variant-numeric:tabular-nums}
+.hg-bio-signal-rows small{color:#90b5c3;font-size:9px;font-weight:450}
+.hg-bio-source{margin-top:auto;font-size:9px;letter-spacing:.45px;color:#6faebc}
+.hg-bio-expanded{margin-top:14px;padding:15px;background:#091e30;border:1px solid #346077;border-radius:11px}
+.hg-bio-expanded-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.hg-bio-expanded-heading h3{margin:0;font-size:16px}
+.hg-bio-lab-tools{display:flex;align-items:end;gap:11px;flex-wrap:wrap}
+.hg-bio-lab-tools label{font-size:10px;display:flex;flex-direction:column;gap:5px;color:#aad0dc;flex:1;min-width:180px}
+.hg-bio-lab-tools input,.hg-bio-lab-tools select{width:100%;background:#102d40;border:1px solid #42788d;border-radius:8px;padding:10px;color:#e9f9fc;font-size:12px}
+.hg-bio-disclosure,.hg-bio-description p,.hg-bio-foot{font-size:11px;line-height:1.7;color:#a8c5d4}
+.hg-bio-disclosure{margin:13px 0}
+.hg-bio-disclosure strong{color:#d8ebf4}
+.hg-bio-count{color:#8fe0dc;font-size:11px;font-weight:700;margin:13px 0 9px}
+.hg-bio-scroll{overflow:auto;border:1px solid #2a5269;border-radius:8px;max-height:480px}
+.hg-bio-scroll table{width:100%;border-collapse:collapse;font-size:11px;white-space:nowrap}
+.hg-bio-scroll th{text-align:left;background:#13374e;color:#a8d3df;position:sticky;top:0;font-size:10px;z-index:1}
+.hg-bio-scroll th,.hg-bio-scroll td{padding:11px 13px;border-bottom:1px solid #244457}
+.hg-bio-scroll td{color:#d9eaf3}
+.hg-bio-scroll td strong{display:block;color:#edf9fe}
+.hg-bio-scroll td small{display:block;color:#86aebb;font-size:9px;margin-top:3px}
+.hg-bio-not-evaluated{font-size:9px;white-space:nowrap;color:#9dc4d0;border-radius:12px;border:1px solid #456174;padding:5px}
+.hg-bio-pagination{display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:11px;color:#9bbdcd;margin:12px 0}
+.hg-bio-pagination>div{display:flex;gap:9px}
+.hg-bio-pagination button{border:1px solid #42768b;background:#153b52;border-radius:7px;padding:7px 11px;color:#d2f3f9;cursor:pointer}
+.hg-bio-pagination button:disabled{opacity:.42;cursor:not-allowed}
+.hg-bio-lab>a,.hg-bio-description a{color:#71d3df;font-size:11px;text-decoration:underline}
+.hg-bio-error{color:#ffb9ad;font-size:11px}
+.hg-bio-wait{font-size:11px;color:#a9c4d5}
+.hg-bio-single{display:flex;justify-content:space-between;border-bottom:1px solid #294e63;gap:12px;padding:11px 0;font-size:11px;color:#bcd5e1}
+.hg-bio-single strong{color:#e9f7fb}
+.hg-bio-foot{border-top:1px solid #24495e;margin:16px 0 0;padding-top:12px}
+@media(max-width:1100px){.hg-bio-group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.hg-bio-hub{padding:13px}.hg-bio-heading{align-items:stretch;flex-direction:column}.hg-bio-group-grid{grid-template-columns:1fr}.hg-bio-group{min-height:110px}.hg-bio-pagination{align-items:flex-start;flex-direction:column}}
