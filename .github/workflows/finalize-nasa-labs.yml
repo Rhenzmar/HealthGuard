@@ -1,0 +1,44 @@
+name: Finalize Verified NASA Laboratory Tables
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/finalize-nasa-labs.yml'
+      - 'tools/finalize_nasa_lab_import.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  verified-source-import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Download original NASA OSDR tables from public S3
+        run: python -m tools.download_official_nasa_osdr
+      - name: Check original file hashes and normalize five assays
+        run: python -m tools.finalize_nasa_lab_import
+      - name: Upload verification and normalized data artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-osdr-five-assays
+          path: |
+            data/nasa/verified/
+            data/external/nasa_osdr/official_source_manifest.json
+          retention-days: 14
+      - name: Commit verified long-form NASA laboratory tables
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/nasa/verified/
+          if git diff --staged --quiet; then
+            echo "Verified source tables unchanged"
+          else
+            git commit -m "Import verified original NASA OSDR five-assay laboratory dataset"
+            git push origin HEAD:main
+          fi
