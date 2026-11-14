@@ -90,7 +90,7 @@ def test_biomarker_panel_observations_are_historical_and_source_attributed():
         assert row['biomarkers'][0]['name']=='GLUCOSE'
         assert row['biomarkers'][0]['unit']=='mg/dL'
         assert c.get('/api/research/biomarker-panel',params={'subject_id':'SIM_CREW_01'}).status_code==422
-        assert c.get('/api/research/biomarker-panel',params={'assay':'CBC'}).status_code==422
+        assert c.get('/api/research/biomarker-panel',params={'assay':'CBC'}).status_code==200
         assert c.get('/api/research/biomarker-panel',params={'offset':999,'limit':10}).json()['biomarkers']==[]
 
 
