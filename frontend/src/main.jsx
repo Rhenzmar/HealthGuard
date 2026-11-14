@@ -7,3 +7,4 @@ createRoot(document.getElementById('root')).render(<React.StrictMode><App /></Re
 import './redesign.css';
 import './healthguard.css';
 import './dashboard.css';
+import './navigation.css';

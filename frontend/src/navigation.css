@@ -1,0 +1,70 @@
+
+/* HealthGuard navigation v0.5: six always-visible primary destinations at the top. */
+.sidebar{
+  position:sticky;top:0;z-index:55;transform:none;
+  display:flex;flex-direction:row;align-items:center;
+  width:100%;min-width:0;height:72px;min-height:72px;
+  gap:22px;padding:0 clamp(14px,2.4vw,38px);
+  background:#081725f2;border-bottom:1px solid #274357;
+  backdrop-filter:blur(20px);box-shadow:0 8px 28px #00000028;
+}
+.sidebar .side-logo{height:100%;padding:0;flex:0 0 auto;gap:10px}
+.sidebar .side-logo strong{font-size:15px;letter-spacing:.25px}
+.sidebar .side-logo small{display:none}
+.sidebar .brand-mark{height:36px;width:36px}
+.sidebar .nav-wrapper{display:flex;min-width:0;flex:1;align-items:center;justify-content:center;padding:0;overflow:hidden}
+.sidebar .nav-wrapper nav{display:flex;gap:4px;align-items:center;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding:8px 0}
+.sidebar .nav-wrapper nav::-webkit-scrollbar{display:none}
+.sidebar .nav-item{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:7px;padding:11px 11px;min-height:43px;color:#a9c0cf;border:1px solid transparent;border-radius:8px;white-space:nowrap;transition:background .16s,border-color .16s,color .16s}
+.sidebar .nav-item strong{font-size:11px;font-weight:650;white-space:nowrap}
+.sidebar .nav-icon{height:19px;width:19px;flex:none;border:0;background:transparent;color:#8aafc0}
+.sidebar .nav-icon svg{width:17px;height:17px}
+.sidebar .nav-item:hover{background:#133044;color:#e8f8fa}
+.sidebar .nav-item:focus-visible{outline:2px solid #55d7df;outline-offset:2px}
+.sidebar .nav-active{background:#124356;border:1px solid #2f8496;color:#e9fbfa;box-shadow:none}
+.sidebar .nav-active .nav-icon{background:transparent;color:#62e2df}
+.sidebar .nav-item small,.sidebar .nav-indicator,.sidebar .nav-heading{display:none}
+.sidebar .sidebar-bottom{display:flex;align-items:center;gap:11px;margin:0;padding:0;flex:0 0 auto}
+.sidebar-bottom .sim-card,.sidebar-bottom .side-version{display:none}
+.hg-header-simulation{display:flex;align-items:center;gap:7px;font-size:9px;white-space:nowrap;color:#9bdac8;letter-spacing:.55px;font-weight:750}
+.hg-header-simulation i{width:6px;height:6px;border-radius:50%;background:#6bdfb9;display:inline-block}
+.sidebar .side-help{width:36px;height:36px;padding:0;display:grid;place-items:center;margin:0;border:1px solid #315168;border-radius:8px;background:#0d2636;color:#a6c9d2;font-size:0;line-height:0}
+.sidebar .side-help svg:first-child{width:19px;height:19px}
+.sidebar .side-help svg:last-child{display:none}
+.sidebar .sidebar-close,.mobile-scrim,.menu-toggle,.topbar{display:none!important}
+.work-area{width:100%;min-width:0;min-height:calc(100vh - 72px)}
+.hg-library-guide{background:#0d2736;border:1px solid #2f5668;border-radius:11px;padding:19px 23px;margin:0 0 18px;color:#bbd3dc;line-height:1.7}
+.hg-library-guide>div{display:flex;align-items:center;gap:10px;color:#dff8f8;font-size:14px;margin:0 0 9px}
+.hg-library-guide svg{color:#62d3da}
+.hg-library-guide p{margin:8px 0 0;max-width:1040px;font-size:12px}
+.hg-library-guide p strong{color:#d1f1f3}
+@media(max-width:1390px){
+ .sidebar{gap:13px;padding:0 18px}
+ .sidebar .nav-item{gap:6px;padding:10px 8px}
+ .sidebar .nav-item strong{font-size:10px}
+ .hg-header-simulation{font-size:8px}
+}
+@media(max-width:1080px){
+ .sidebar{gap:10px;padding:0 14px}
+ .sidebar .nav-wrapper{justify-content:flex-start}
+ .sidebar .nav-wrapper nav{justify-content:flex-start}
+ .sidebar .side-logo strong{font-size:13px}
+ .sidebar .sidebar-bottom{gap:7px}
+ .hg-header-simulation{display:none}
+}
+@media(max-width:680px){
+ .sidebar{height:62px;min-height:62px;gap:9px;padding:0 10px}
+ .sidebar .side-logo strong{font-size:12px}
+ .sidebar .brand-mark{width:31px;height:31px}
+ .sidebar .nav-wrapper nav{gap:3px;padding:6px 0}
+ .sidebar .nav-item{padding:9px;min-height:36px;gap:5px}
+ .sidebar .nav-item strong{font-size:10px}
+ .sidebar .nav-icon{width:16px;height:16px}
+ .sidebar .nav-icon svg{width:16px;height:16px}
+ .sidebar .side-help{height:31px;width:31px}
+ .work-area{min-height:calc(100vh - 62px)}
+ .hg-library-guide{padding:15px}
+}
+@media(max-width:410px){
+ .sidebar .side-logo strong{display:none}
+}

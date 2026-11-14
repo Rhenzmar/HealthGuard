@@ -9,6 +9,7 @@ const paths = {
   wind: <><path d="M3 8h12a3 3 0 1 0-3-3"/><path d="M2 12h17a3 3 0 1 1-3 3"/><path d="M4 16h7a3 3 0 1 1-3 3"/></>,
   thermometer: <><path d="M14 14.8V5a4 4 0 0 0-8 0v9.8a6 6 0 1 0 8 0Z"/><path d="M10 9v9"/></>,
   flask: <><path d="M9 3h6M10 3v7l-6.3 9.5A2 2 0 0 0 5.4 22h13.2a2 2 0 0 0 1.7-2.5L14 10V3"/><path d="M7 16h10"/></>,
+  book: <><path d="M12 6c-3-2-6-2.5-9-1.5v15c3-1 6-.5 9 1.5m0-15c3-2 6-2.5 9-1.5v15c-3-1-6-.5-9 1.5M12 6v15"/></>,
   satellite: <><rect x="9" y="9" width="6" height="6" rx="1"/><path d="m9 9-4-4 2-2 4 4m4 8 4 4-2 2-4-4M3 21h4m10-18h4"/><path d="M5 15 2 18l4 4 3-3M15 5l4-3 3 3-3 4"/></>,
   layers: <><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></>,
   shield: <><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></>,
