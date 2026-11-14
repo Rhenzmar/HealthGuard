@@ -61,3 +61,23 @@
 @media(max-width:1050px){.hg6-scenario-live-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.hg6-scenario-console{padding:13px}.hg6-scenario-heading,.hg6-scenario-timeline-top{align-items:flex-start;flex-direction:column}.hg6-scenario-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hg6-scenario-guidance{align-items:stretch;flex-direction:column}.hg6-scenario-actions button{flex:1}}
 @media(prefers-reduced-motion:reduce){.hg6-scenario-track>span{transition:none}}
+
+/* Four-level scripted training status, independent from the clinical research data. */
+.hg6-scenario-tier{border:1px solid #335d74;border-radius:10px;background:#092439;padding:11px 13px}
+.hg6-scenario-tier>strong{font-size:11px;display:block;margin-bottom:9px}
+.hg6-scenario-tier>div{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.hg6-scenario-tier span{font-size:10px;font-weight:750;padding:9px 6px;text-align:center;background:#102b41;border:1px solid #365b72;border-radius:7px;color:#94b3c2;opacity:.52}
+.hg6-scenario-tier .active{opacity:1;box-shadow:0 0 0 1px #ffffff1c;font-weight:800}
+.hg6-scenario-tier .hg6-tier-optimal.active{color:#a6e9c1;background:#164f40;border-color:#40b785}
+.hg6-scenario-tier .hg6-tier-check.active{color:#ffe3a0;background:#504025;border-color:#bc994a}
+.hg6-scenario-tier .hg6-tier-warning.active{color:#ffca94;background:#643827;border-color:#e18b54}
+.hg6-scenario-tier .hg6-tier-critical.active{color:#ffb4b7;background:#6b2335;border-color:#ed6372}
+.hg6-scenario-tier small{display:block;font-size:9px;color:#82aabb;margin-top:8px;line-height:1.4}
+.hg6-scenario-metric-check{background:#3a3421;border-color:#947a3f}
+.hg6-scenario-metric-check em{color:#f4de9b}
+.hg6-scenario-metric-warning{background:#533121;border-color:#d08a50}
+.hg6-scenario-metric-warning em,.hg6-scenario-metric-warning strong{color:#ffc291}
+.hg6-scenario-metric-critical{background:#672532;border-color:#ef737b;box-shadow:0 0 20px #dd33444a}
+.hg6-scenario-metric-critical em,.hg6-scenario-metric-critical strong{color:#ffc1b9}
+.hg6-state-danger{color:#ffc0c0!important;background:#5c222f!important;border-color:#ee6671!important}
+@media(max-width:540px){.hg6-scenario-tier span{font-size:9px;padding:8px 2px}}
