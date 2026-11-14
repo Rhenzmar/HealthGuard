@@ -273,7 +273,7 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
         <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
       </div>
       <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
-      <EngineeringTelemetry subjectId={activeCrew.subjectId} personName={activeCrew.name}/>
+      <EngineeringTelemetry subjectId={activeCrew.subjectId} personName={activeCrew.name} training={training}/>
       <div className="hg6-bottom-grid"><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/><Routine progress={progress} onOpen={onRoutine}/></div>
 
     </main>}
