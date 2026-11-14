@@ -27,6 +27,7 @@ from physiograph.research_api import router as research_router
 from physiograph.engineering_sim import engineering_snapshot, SIGNALS as ENGINEERING_SIGNALS, CREW_IDS as ENGINEERING_CREW_IDS
 from physiograph.biomarker_detection import evaluate_engineering, combined_live_review, scripted_environment_review
 from physiograph.candidate_17ch_numpy import load_candidate_monitor
+from physiograph.physioalert_unified import UnifiedReviewMonitor
 from physiograph.context_monitor import LiveQualityMonitor, ContextReviewMonitor, CHECK_INTERVAL_S
 from physiograph.live_telemetry import (
     LiveStore, METRICS, SOURCE, TelemetryError, ConflictError, validate_sample,
@@ -101,6 +102,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
     api.state.comparison = load_baseline(DEFAULT_BASELINE if baseline_path is None else baseline_path)
     api.state.latest_review: dict[str, dict] = {}
     api.state.multisystem_latest: dict[str, dict] = {}
+    api.state.unified = UnifiedReviewMonitor()
     api.state.quality = LiveQualityMonitor()
     api.state.context = ContextReviewMonitor()
     public_mode = os.getenv('PHYSIOGRAPH_PUBLIC_MODE','0').strip() == '1'
@@ -203,6 +205,22 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         if result is None:
             raise HTTPException(404,"No 17-channel candidate analysis received")
         return result
+
+    @api.get("/api/live/physioalert-unified/{subject_id}")
+    def unified_latest(subject_id: str):
+        if subject_id not in ENGINEERING_CREW_IDS:
+            raise HTTPException(404, "Unknown fictional crew subject")
+        result = api.state.unified.latest(subject_id)
+        if result is None:
+            raise HTTPException(404, "No unified simulated PhysioAlert review for this crew member")
+        return result
+
+    @api.get("/api/live/physioalert-unified/history/{subject_id}")
+    def unified_history(subject_id: str, limit: int = Query(120,ge=1,le=300)):
+        if subject_id not in ENGINEERING_CREW_IDS:
+            raise HTTPException(404, "Unknown fictional crew subject")
+        return {"subject_id": subject_id, "source": "SIMULATED_PHYSIOALERT_COMBINED",
+                "results": api.state.unified.history(subject_id,limit)}
 
     @api.get("/api/live/multisystem/{subject_id}")
     def multisystem(subject_id: str):
@@ -328,6 +346,23 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                 "model_role":"PARALLEL_CANDIDATE_NOT_CLINICAL_TRIAGE",
                 "reason":type(exc).__name__
             }
+        if sample.subject_id in ENGINEERING_CREW_IDS:
+            try:
+                unified=api.state.unified.process(
+                    sample.subject_id, sample.sequence, result["packet"],
+                    analysis, comparison, context_review, candidate17,
+                    engineering
+                )
+            except Exception as exc:
+                unified={
+                    "subject_id":sample.subject_id,"sequence":sample.sequence,
+                    "source":"SIMULATED_PHYSIOALERT_COMBINED",
+                    "status":"EVIDENCE_UNAVAILABLE","clinical_validation":False,
+                    "reason":f"Unified review unavailable: {type(exc).__name__}"
+                }
+            result["physioalert_unified"]=unified
+            if result.get("multisystem") is not None:
+                result["multisystem"]["physioalert_unified"]=unified
         result["candidate_17ch"]=candidate17
         if result.get("multisystem") is not None:
             result["multisystem"]["candidate_17ch"]=candidate17
@@ -340,7 +375,8 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                                      "comparison":comparison,"live_review":review,
                                      'context_review':context_review,
                                       'multisystem':result.get('multisystem'),
-                                      'candidate_17ch':result.get('candidate_17ch')})
+                                      'candidate_17ch':result.get('candidate_17ch'),
+                                      'physioalert_unified':result.get('physioalert_unified')})
         return result
 
     @api.post("/api/live/ingest", status_code=201)
