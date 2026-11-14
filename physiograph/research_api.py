@@ -312,6 +312,34 @@ def biomarker_panel(subject_id: str=Query(default='C001'),
     }
 
 
+@router.get('/biomarker-screening/{subject_id}')
+def biomarker_screening(subject_id: str, assay: str=Query(default='CMP',
+                                                     pattern=r'^(CMP|NULISA|CBC)
+def method():
+    return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
+            'data_domain':'HISTORICAL_OSD_575_SERUM_LAB_ASSAYS',
+            'core_property':'leave-one-baseline-out sign and screen consistency for sparse personal reference observations',
+            'headline_exploratory_observation':{'median_only_heuristic_flags':195,
+                 'baseline_sensitive_of_these_flags':68,'percent':34.87,
+                 'interpretation':'68 flags depend on omitted reference observations; they are NOT established false positives'},
+            'external_clinical_validation':False,
+            'documentation':'FINAL_APDRA_VALIDATION_REPORT.md',
+            'warning':'Do not apply this lab-panel method to simulated 1 Hz telemetry or interpret its screen as medical risk.'}
+),
+                        offset: int=Query(default=0,ge=0),
+                        limit: int=Query(default=250,ge=1,le=300)):
+    """Compare actual historical observations within participant and assay.
+
+    Returns numerical screening evidence, not medical risk or live telemetry.
+    """
+    from .biomarker_detection import screen_historical_biomarkers
+    _validate_subject(subject_id)
+    records=_cbc_measurements() if assay=='CBC' else _measurements()
+    report=screen_historical_biomarkers(records,subject_id=subject_id,assay=assay)
+    return {**report,'offset':offset,'limit':limit,
+            'biomarkers':report['biomarkers'][offset:offset+limit]}
+
+
 @router.get('/method')
 def method():
     return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
