@@ -13,3 +13,5 @@
 .hg-eng-issue{font-size:11px;color:#f4b0a8}
 @media(max-width:1120px){.hg-eng-cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.hg-eng-cards{grid-template-columns:1fr}.hg-eng-heading{flex-direction:column;align-items:stretch}}
+
+.hg-eng-item strong.hg-eng-flagged{color:#ffb1a8;text-shadow:0 0 10px #ef54566b}
