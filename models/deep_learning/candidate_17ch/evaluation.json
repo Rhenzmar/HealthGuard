@@ -1,6 +1,6 @@
 {
   "model_metadata": {
-    "version": "candidate-17ch-two-branch-v1",
+    "version": "candidate-17ch-two-branch-v2",
     "schema_version": "healthguard.17ch.synthetic.v1",
     "schema_sha256": "311901690a4c256ee9cc2cd8ade97f7a2fe537ea65153cb86f9cb8031e9a71ef",
     "feature_order": [
@@ -64,7 +64,7 @@
     "clinical_validation": false,
     "deployment_status": "CANDIDATE_NOT_ACTIVATED"
   },
-  "checkpoint_sha256": "26c3c441dd769c2ea27016a18a11b13a7c0fbaeb41ec78377bcf4ddc5a531d74",
+  "checkpoint_sha256": "c3f38e23665c628ef55c977c16a82266b1f1f2a2539e0641e11173d65f238e52",
   "dataset_manifest": {
     "seed": 1729,
     "schema_version": "healthguard.17ch.synthetic.v1",
@@ -274,28 +274,28 @@
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
         "physiological_mean_error": 1.2525137662887573,
-        "engineering_mean_error": 0.00024543210747651756,
+        "engineering_mean_error": 0.00024543204926885664,
         "overall_mean_error": 0.6632110476493835
       },
       "exertion": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
         "physiological_mean_error": 1.4914016723632812,
-        "engineering_mean_error": 0.003179839113727212,
+        "engineering_mean_error": 0.0031798400450497866,
         "overall_mean_error": 0.79106205701828
       },
       "thermal": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
         "physiological_mean_error": 1.4615427255630493,
-        "engineering_mean_error": 0.06304735690355301,
-        "overall_mean_error": 0.8034272789955139
+        "engineering_mean_error": 0.06304734945297241,
+        "overall_mean_error": 0.8034273982048035
       },
       "sensor": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
         "physiological_mean_error": 2.417280435562134,
-        "engineering_mean_error": 0.00018230306159239262,
+        "engineering_mean_error": 0.00018230301793664694,
         "overall_mean_error": 1.2798224687576294
       },
       "co2": {
@@ -315,7 +315,7 @@
       "radiation": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 0.2671397626399994,
+        "physiological_mean_error": 0.2671399414539337,
         "engineering_mean_error": 13193.1259765625,
         "overall_mean_error": 6208.67138671875
       }
@@ -327,17 +327,17 @@
   "training_history": [
     {
       "epoch": 1,
-      "training_loss": 0.04570518657565117,
-      "calibration_mean_error_for_early_stopping": 0.045843351632356644
+      "training_loss": 0.04570518583059311,
+      "calibration_mean_error_for_early_stopping": 0.04584335908293724
     },
     {
       "epoch": 2,
-      "training_loss": 0.04304697215557098,
+      "training_loss": 0.043046972900629046,
       "calibration_mean_error_for_early_stopping": 0.04525608941912651
     },
     {
       "epoch": 3,
-      "training_loss": 0.04214114472270012,
+      "training_loss": 0.04214114397764206,
       "calibration_mean_error_for_early_stopping": 0.04309145733714104
     },
     {
@@ -347,32 +347,32 @@
     },
     {
       "epoch": 5,
-      "training_loss": 0.031293566897511484,
+      "training_loss": 0.03129356615245342,
       "calibration_mean_error_for_early_stopping": 0.0342022180557251
     },
     {
       "epoch": 6,
-      "training_loss": 0.030541380122303962,
-      "calibration_mean_error_for_early_stopping": 0.03095674328505993
+      "training_loss": 0.030541379004716873,
+      "calibration_mean_error_for_early_stopping": 0.030956745147705078
     },
     {
       "epoch": 7,
-      "training_loss": 0.028900445997714998,
-      "calibration_mean_error_for_early_stopping": 0.030492981895804405
+      "training_loss": 0.028900444507598877,
+      "calibration_mean_error_for_early_stopping": 0.030492978170514107
     },
     {
       "epoch": 8,
-      "training_loss": 0.02734505943953991,
+      "training_loss": 0.02734506018459797,
       "calibration_mean_error_for_early_stopping": 0.027196938171982765
     },
     {
       "epoch": 9,
-      "training_loss": 0.02394632212817669,
+      "training_loss": 0.023946322873234747,
       "calibration_mean_error_for_early_stopping": 0.02353012003004551
     },
     {
       "epoch": 10,
-      "training_loss": 0.02140941470861435,
+      "training_loss": 0.021409415081143378,
       "calibration_mean_error_for_early_stopping": 0.022620106115937233
     },
     {
@@ -382,67 +382,67 @@
     },
     {
       "epoch": 12,
-      "training_loss": 0.0201480757445097,
+      "training_loss": 0.020148076117038727,
       "calibration_mean_error_for_early_stopping": 0.02096276544034481
     },
     {
       "epoch": 13,
-      "training_loss": 0.019479839131236076,
-      "calibration_mean_error_for_early_stopping": 0.020462147891521454
+      "training_loss": 0.019479839503765105,
+      "calibration_mean_error_for_early_stopping": 0.020462146028876305
     },
     {
       "epoch": 14,
-      "training_loss": 0.019002001732587814,
+      "training_loss": 0.019002002105116843,
       "calibration_mean_error_for_early_stopping": 0.020084373652935028
     },
     {
       "epoch": 15,
-      "training_loss": 0.01870802603662014,
-      "calibration_mean_error_for_early_stopping": 0.01985846273601055
+      "training_loss": 0.0187080267816782,
+      "calibration_mean_error_for_early_stopping": 0.019858460873365402
     },
     {
       "epoch": 16,
-      "training_loss": 0.018471793457865714,
+      "training_loss": 0.018471793830394746,
       "calibration_mean_error_for_early_stopping": 0.019572805613279343
     },
     {
       "epoch": 17,
       "training_loss": 0.018274401873350145,
-      "calibration_mean_error_for_early_stopping": 0.01942611299455166
+      "calibration_mean_error_for_early_stopping": 0.01942611113190651
     },
     {
       "epoch": 18,
-      "training_loss": 0.018148858845233918,
+      "training_loss": 0.018148858472704886,
       "calibration_mean_error_for_early_stopping": 0.019261278212070465
     },
     {
       "epoch": 19,
-      "training_loss": 0.018019820749759673,
+      "training_loss": 0.018019820004701613,
       "calibration_mean_error_for_early_stopping": 0.01914733462035656
     },
     {
       "epoch": 20,
-      "training_loss": 0.017916928976774216,
+      "training_loss": 0.017916929349303244,
       "calibration_mean_error_for_early_stopping": 0.019029268994927406
     },
     {
       "epoch": 21,
-      "training_loss": 0.017827561870217324,
+      "training_loss": 0.017827562242746352,
       "calibration_mean_error_for_early_stopping": 0.01895015500485897
     },
     {
       "epoch": 22,
-      "training_loss": 0.017740989103913307,
+      "training_loss": 0.017740989848971368,
       "calibration_mean_error_for_early_stopping": 0.018855908885598183
     },
     {
       "epoch": 23,
-      "training_loss": 0.017679448798298837,
+      "training_loss": 0.017679449170827866,
       "calibration_mean_error_for_early_stopping": 0.018785668537020683
     },
     {
       "epoch": 24,
-      "training_loss": 0.017613890767097472,
+      "training_loss": 0.017613891139626504,
       "calibration_mean_error_for_early_stopping": 0.01869073323905468
     },
     {
@@ -452,17 +452,17 @@
     },
     {
       "epoch": 26,
-      "training_loss": 0.017476477846503257,
+      "training_loss": 0.01747647821903229,
       "calibration_mean_error_for_early_stopping": 0.018554968759417534
     },
     {
       "epoch": 27,
-      "training_loss": 0.01741633266210556,
+      "training_loss": 0.01741633228957653,
       "calibration_mean_error_for_early_stopping": 0.01848422735929489
     },
     {
       "epoch": 28,
-      "training_loss": 0.01735113710165024,
+      "training_loss": 0.017351137474179268,
       "calibration_mean_error_for_early_stopping": 0.01842384785413742
     },
     {
@@ -477,13 +477,13 @@
     },
     {
       "epoch": 31,
-      "training_loss": 0.017197175323963164,
+      "training_loss": 0.017197175696492196,
       "calibration_mean_error_for_early_stopping": 0.018287690356373787
     },
     {
       "epoch": 32,
-      "training_loss": 0.017160021141171454,
-      "calibration_mean_error_for_early_stopping": 0.01823030412197113
+      "training_loss": 0.017160020768642426,
+      "calibration_mean_error_for_early_stopping": 0.01823030225932598
     }
   ],
   "comparison_note": "Existing 5-channel frozen CNN preserved, with no direct comparable 17-channel real-world benchmark."

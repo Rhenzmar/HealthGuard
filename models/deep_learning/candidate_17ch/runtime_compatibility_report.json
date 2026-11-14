@@ -1,9 +1,18 @@
 {
-  "candidate_version": "candidate-17ch-two-branch-v1",
+  "candidate_version": "candidate-17ch-two-branch-v2",
   "source": "SEPARATE_FICTIONAL_DEMO_REPLAY_NOT_NASA_OR_PATIENT_DATA",
   "profiles": {
     "SIM_CREW_01": {
       "normal": {
+        "mean_physiological_reconstruction_error": 0.013055346052631575,
+        "mean_engineering_reconstruction_error": 0.00016335657894736834,
+        "common_top_residual_channels": {
+          "etco2_mmhg": 76,
+          "systolic_bp_mmhg": 64,
+          "core_temp_c": 61,
+          "heart_rate_bpm": 24,
+          "diastolic_bp_mmhg": 3
+        },
         "evaluated_windows": 76,
         "flags": 0,
         "flag_fraction": 0.0,
@@ -11,6 +20,13 @@
         "max_reconstruction_error": 0.0109094
       },
       "excursion": {
+        "mean_physiological_reconstruction_error": 0.9613687394736843,
+        "mean_engineering_reconstruction_error": 0.00032900263157894735,
+        "common_top_residual_channels": {
+          "heart_rate_bpm": 76,
+          "spo2_percent": 76,
+          "respiratory_rate_bpm": 76
+        },
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
@@ -20,6 +36,16 @@
     },
     "SIM_CREW_02": {
       "normal": {
+        "mean_physiological_reconstruction_error": 0.010677107894736842,
+        "mean_engineering_reconstruction_error": 0.00045146447368421045,
+        "common_top_residual_channels": {
+          "core_temp_c": 64,
+          "etco2_mmhg": 53,
+          "heart_rate_bpm": 48,
+          "peripheral_temp_c": 20,
+          "systolic_bp_mmhg": 19,
+          "hrv_rmssd_ms": 16
+        },
         "evaluated_windows": 76,
         "flags": 0,
         "flag_fraction": 0.0,
@@ -27,6 +53,13 @@
         "max_reconstruction_error": 0.0070738
       },
       "excursion": {
+        "mean_physiological_reconstruction_error": 0.9819075592105264,
+        "mean_engineering_reconstruction_error": 0.0005035631578947372,
+        "common_top_residual_channels": {
+          "heart_rate_bpm": 76,
+          "spo2_percent": 76,
+          "respiratory_rate_bpm": 76
+        },
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
@@ -36,6 +69,14 @@
     },
     "SIM_CREW_03": {
       "normal": {
+        "mean_physiological_reconstruction_error": 0.016398884210526314,
+        "mean_engineering_reconstruction_error": 0.0006583052631578948,
+        "common_top_residual_channels": {
+          "etco2_mmhg": 76,
+          "systolic_bp_mmhg": 58,
+          "diastolic_bp_mmhg": 52,
+          "core_temp_c": 42
+        },
         "evaluated_windows": 76,
         "flags": 0,
         "flag_fraction": 0.0,
@@ -43,15 +84,32 @@
         "max_reconstruction_error": 0.0106331
       },
       "excursion": {
+        "mean_physiological_reconstruction_error": 0.9699037539473688,
+        "mean_engineering_reconstruction_error": 0.0006238789473684209,
+        "common_top_residual_channels": {
+          "heart_rate_bpm": 76,
+          "spo2_percent": 76,
+          "respiratory_rate_bpm": 76
+        },
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.6863629
+        "max_reconstruction_error": 0.686363
       }
     },
     "SIM_CREW_04": {
       "normal": {
+        "mean_physiological_reconstruction_error": 0.011938551315789473,
+        "mean_engineering_reconstruction_error": 0.00013445789473684214,
+        "common_top_residual_channels": {
+          "etco2_mmhg": 76,
+          "heart_rate_bpm": 63,
+          "core_temp_c": 55,
+          "diastolic_bp_mmhg": 21,
+          "peripheral_temp_c": 8,
+          "respiratory_rate_bpm": 5
+        },
         "evaluated_windows": 76,
         "flags": 0,
         "flag_fraction": 0.0,
@@ -59,6 +117,13 @@
         "max_reconstruction_error": 0.0093377
       },
       "excursion": {
+        "mean_physiological_reconstruction_error": 0.9362795605263159,
+        "mean_engineering_reconstruction_error": 0.0003761144736842104,
+        "common_top_residual_channels": {
+          "heart_rate_bpm": 76,
+          "spo2_percent": 76,
+          "respiratory_rate_bpm": 76
+        },
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
@@ -70,7 +135,7 @@
   "normal_replay_flag_fraction": 0.0,
   "normal_replay_evaluated_windows": 304,
   "promotion_ready": true,
-  "promotion_note": "Tentative engineering screening gate only; not clinical validation",
+  "promotion_note": "Tentative engineering screening gate only; not clinical validation. Original replay was consulted during model development, so do not call this an untouched external benchmark.",
   "scientific_limitations": "Demo replay is generated with different numerical assumptions from candidate training, but remains simulated, not independent real measurements.",
   "clinical_validation": false
 }
