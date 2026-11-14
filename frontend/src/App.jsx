@@ -205,6 +205,8 @@ export default function App() {
   const [selectedCrew,setSelectedCrew]=useState('C001'),[assay,setAssay]=useState('CMP'),[biomarker,setBiomarker]=useState('GLUCOSE');
   const [biomarkers,setBiomarkers]=useState([]),[measurements,setMeasurements]=useState(null),[reviews,setReviews]=useState(null),[researchBusy,setResearchBusy]=useState(false),[researchError,setResearchError]=useState('');
   const subjectRef=useRef(selected), wsRef=useRef(null);
+  // Change the routing ref immediately so new websocket packets follow the selection.
+  const selectSubject=useCallback(id=>{subjectRef.current=id;setSelected(id);setSamples([]);setReview(null);setCnn(null);setComparison(null);setVoice(null);setContextHistory([]);},[]);
   useEffect(()=>{ subjectRef.current=selected; },[selected]);
 
   useEffect(()=>{
@@ -227,7 +229,7 @@ export default function App() {
         if(cancelled)return;
         setSnapshot(r);setError('');
         const last=r?.subjects?.[subjectRef.current]?.latest;
-        if(last)setSamples(prev=>lastSamples(prev,last));
+        if(last)setSamples(prev=>lastSamples(prev.filter(x=>x.subject_id===last.subject_id),last));
       }catch(e){if(!cancelled)setError(e.message || 'Unable to fetch live telemetry');}
     };
     load();const t=setInterval(load,8000);return()=>{cancelled=true;clearInterval(t)};
@@ -242,11 +244,11 @@ export default function App() {
         socket.onopen=()=>{if(!closed)setConnection('connected')};
         socket.onmessage=e=>{
           let msg;try{msg=JSON.parse(e.data)}catch{return}
-          if(msg.type==='snapshot' && msg.data){setSnapshot(msg.data);const last=msg.data?.subjects?.[subjectRef.current]?.latest;if(last)setSamples(prev=>lastSamples(prev,last));}
+          if(msg.type==='snapshot' && msg.data){setSnapshot(msg.data);const last=msg.data?.subjects?.[subjectRef.current]?.latest;if(last)setSamples(prev=>lastSamples(prev.filter(x=>x.subject_id===last.subject_id),last));}
           if(msg.type==='telemetry' && msg.packet){
             const packet=msg.packet;
             setSnapshot(prev=>({...(prev||{}),mode:'SIMULATION_ONLY',subjects:{...(prev?.subjects||{}),[packet.subject_id]:{latest:packet,retained:((prev?.subjects||{})[packet.subject_id]?.retained||0)+1}}}));
-            if(packet.subject_id===subjectRef.current){setSamples(prev=>lastSamples(prev,packet));if(msg.context_review)setReview(msg.context_review);if(msg.deep_learning)setCnn(msg.deep_learning);if(msg.comparison)setComparison(msg.comparison);if(msg.context_review?.voice_ready_script)setVoice({text:msg.context_review.voice_ready_script,status:msg.context_review.status});}
+            if(packet.subject_id===subjectRef.current){setSamples(prev=>lastSamples(prev.filter(x=>x.subject_id===packet.subject_id),packet));if(msg.context_review)setReview(msg.context_review);if(msg.deep_learning)setCnn(msg.deep_learning);if(msg.comparison)setComparison(msg.comparison);if(msg.context_review?.voice_ready_script)setVoice({text:msg.context_review.voice_ready_script,status:msg.context_review.status});}
           }
         };
         socket.onerror=()=>{if(!closed)setConnection('reconnecting')};
@@ -264,7 +266,7 @@ export default function App() {
       const results=await Promise.allSettled(reqs.map(x=>readApi(x)));
       if(cancelled)return;
       const setters=[r=>setSamples(prev=>{
-        const merged=[...(r.samples||[]),...prev].sort((a,b)=>a.sequence-b.sequence);
+        const merged=[...(r.samples||[]),...prev.filter(x=>x.subject_id===selected)].sort((a,b)=>a.sequence-b.sequence);
         return [...new Map(merged.map(x=>[x.sequence,x])).values()].sort((a,b)=>a.sequence-b.sequence).slice(-160);
       }),setReview,setCnn,setComparison,setVoice,r=>setContextHistory(r.results||[])];
       results.forEach((r,i)=>{if(r.status==='fulfilled')setters[i](r.value)});
@@ -309,7 +311,7 @@ export default function App() {
     </aside>
     {sidebarOpen&&<button className="mobile-scrim" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}/>}
     <div className="work-area"><header className="topbar"><div className="topbar-start"><button type="button" className="menu-toggle" onClick={()=>setSidebarOpen(true)} aria-label="Open navigation"><Icon name="menu"/></button><span>MISSION CONTROL</span><Icon name="chevron" size={13}/><strong>{selectedName}</strong></div><div className="topbar-end"><span className="topbar-clock"><Icon name="clock" size={15}/>{new Date().getUTCFullYear()} · RESEARCH ENVIRONMENT</span><span className={`header-connection conn-${connection}`}><span/>{connection==='connected'?'BACKEND CONNECTED':'BACKEND CONNECTING'}</span><span className="topbar-avatar">HG</span></div></header>
-      <main id="main-content">{page==='dashboard'?<MissionDashboard loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={setSelected} samples={samples} review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')} onBody={()=>navTo('body')} onRoutine={()=>navTo('routine')} onHUD={()=>navTo('hud')} onMission={()=>navTo('mission')} environment={environment} onEnvironment={setEnvironment}/>:page==='body'?<BodyExplorer selected={selected} snapshot={snapshot} samples={samples} review={review} environment={environment} onEnvironment={setEnvironment}/>:page==='routine'?<HealthRoutine/>:page==='hud'?<MissionHUD selected={selected} snapshot={snapshot} samples={samples} review={review} connection={connection} environment={environment} onEnvironment={setEnvironment} onExit={()=>navTo('dashboard')}/>:page==='research'?<Research overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<><div className="hg-mission-environment"><EnvironmentPicker value={environment} onChange={setEnvironment}/><p>Mission setting updates the UI context only. The physiological stream and models remain unchanged.</p></div><Mission mission={mission} readiness={readiness} connection={connection}/></>:<Method readiness={readiness}/>}</main>
+      <main id="main-content">{page==='dashboard'?<MissionDashboard loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={selectSubject} samples={samples.filter(x=>x.subject_id===selected)} review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')} onBody={()=>navTo('body')} onRoutine={()=>navTo('routine')} onHUD={()=>navTo('hud')} onMission={()=>navTo('mission')} environment={environment} onEnvironment={setEnvironment}/>:page==='body'?<BodyExplorer selected={selected} snapshot={snapshot} samples={samples} review={review} environment={environment} onEnvironment={setEnvironment}/>:page==='routine'?<HealthRoutine/>:page==='hud'?<MissionHUD selected={selected} snapshot={snapshot} samples={samples} review={review} connection={connection} environment={environment} onEnvironment={setEnvironment} onExit={()=>navTo('dashboard')}/>:page==='research'?<Research overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<><div className="hg-mission-environment"><EnvironmentPicker value={environment} onChange={setEnvironment}/><p>Mission setting updates the UI context only. The physiological stream and models remain unchanged.</p></div><Mission mission={mission} readiness={readiness} connection={connection}/></>:<Method readiness={readiness}/>}</main>
       
     </div>
     {tour>=0 && <div className="tour-backdrop" role="dialog" aria-modal="true" aria-labelledby="tour-title"><div className="tour-modal"><div className="tour-step-mark">GUIDED TOUR <span>0{tour+1} / 0{tourSteps.length}</span></div><div className="tour-graphic"><div className="tour-core"><Icon name={['grid','pulse','flask','satellite'][tour]} size={42}/></div><span className="tour-ring tr1"/><span className="tour-ring tr2"/></div><h2 id="tour-title">{tourSteps[tour].title}</h2><p>{tourSteps[tour].body}</p><div className="tour-progress">{tourSteps.map((s,i)=><span key={i} className={i===tour?'active':''}/>)}</div><div className="tour-actions"><button className="text-btn" onClick={()=>setTour(-1)}>Skip tour</button><button className="primary-btn" onClick={()=>{if(tour===tourSteps.length-1){setTour(-1)}else{setTour(t=>t+1);navTo(tourSteps[tour+1].page)}}}>{tour===tourSteps.length-1?'Finish tour':'Continue'}<Icon name="arrow" size={17}/></button></div></div></div>}
