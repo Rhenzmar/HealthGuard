@@ -161,3 +161,73 @@ def scripted_environment_review(subject_id: str, scenario: str, second: int) -> 
         "engineering_review": evidence,
         "warning": "Scripted training thresholds only; not actual NASA readings, clinical limits, or operational procedures.",
     }
+
+def screen_historical_biomarkers(records: list[dict], *, subject_id: str,
+                                 assay: str) -> dict:
+    """Screen within-assay observed postflight changes, with no disease labels.
+
+    CBC is imported from a third-party mirror requiring source authentication;
+    OSD-575 CMP and NULISA come from bundled historical source tables.
+    Screens are analytic illustrations using pre-declared magnitude thresholds,
+    NOT probabilities, clinical reference change values or risk grades.
+    """
+    from statistics import median
+    if subject_id not in {'C001','C002','C003','C004'}:
+        raise ValueError("Historical participant identifier required")
+    if assay not in {'CBC','CMP','NULISA'}:
+        raise ValueError("Unsupported historical assay")
+    groups: dict[tuple[str,str], list[dict]]={}
+    for rec in records:
+        if rec.get('subject_id')!=subject_id or rec.get('assay')!=assay:
+            continue
+        key=(rec['biomarker'],rec['unit'])
+        groups.setdefault(key,[]).append(rec)
+    output=[]
+    for (name,unit),group in sorted(groups.items()):
+        baseline=[float(rec['value']) for rec in group
+                  if rec.get('phase')=='preflight' and
+                  isinstance(rec.get('value'),(float,int)) and
+                  isfinite(float(rec['value']))]
+        post=[rec for rec in group if rec.get('phase')=='postflight' and
+              isinstance(rec.get('value'),(float,int)) and
+              isfinite(float(rec['value']))]
+        post=sorted(post,key=lambda rec:int(str(rec['timepoint'])[2:]) if
+                    str(rec.get('timepoint','')).startswith('R+') else 10**9)
+        latest=post[-1] if post else None
+        center=median(baseline) if baseline else None
+        signal='NPQ' in unit.upper()
+        delta=(float(latest['value'])-center) if latest is not None and center is not None else None
+        percent=(100*delta/abs(center)) if delta is not None and center != 0 and not signal else None
+        flagged=(abs(delta)>=1.0 if signal else abs(percent)>=30.0) if (
+            delta is not None and (signal or percent is not None)) else None
+        status=('NO_POSTFLIGHT_OBSERVATION' if latest is None else
+                'NO_PERSONAL_BASELINE' if center is None else
+                'NO_COMPARABLE_BASELINE' if flagged is None else
+                'SCREENING_DEVIATION' if flagged else 'NO_SCREENING_DEVIATION')
+        output.append({
+            'biomarker':name,'unit':unit,'observations':len(group),
+            'baseline_n':len(baseline),'baseline_median':center,
+            'latest_postflight_value':latest['value'] if latest else None,
+            'latest_postflight_timepoint':latest['timepoint'] if latest else None,
+            'latest_sample_id':latest.get('sample_id') if latest else None,
+            'delta':round(delta,6) if delta is not None else None,
+            'percent_change':round(percent,3) if percent is not None else None,
+            'screening_status':status,'screening_method':(
+                'ABSOLUTE_1_LOG2_NPQ_DIFFERENCE' if signal else
+                'ABSOLUTE_30_PERCENT_CHANGE'),
+            'source':latest.get('source') if latest else group[0].get('source'),
+            'source_reference_interval_used_for_flag':False,
+            'clinical_validation':False,
+        })
+    return {
+        'subject_id':subject_id,'assay':assay,
+        'source_kind':('UNVERIFIED_THIRD_PARTY_CBC_MIRROR' if assay=='CBC'
+                       else 'NASA_OSD575_HISTORICAL_LABS'),
+        'scope':'HISTORICAL_SPARSE_BIOMARKER_SCREENING_NOT_LIVE',
+        'total_biomarkers':len(output),
+        'screening_deviations':sum(x['screening_status']=='SCREENING_DEVIATION' for x in output),
+        'biomarkers':output,'clinical_validation':False,
+        'warning':('Exploratory historical change screening only; not medical risk, '
+                   'a validated reference-change calculation, or clinical status. '
+                   'Third-party OSD-569 CBC mirror requires NASA source authentication.')
+    }
