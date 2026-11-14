@@ -220,7 +220,7 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
     if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
   };
   const startScenario=()=>{
-    if(!scenarioId)return;
+    if(!scenarioId||!training||scenarioPending)return;
     // Unlock browser audio during the user's explicit Start action.
     if(scenarioSound&&typeof window!=='undefined'){
       const Context=window.AudioContext||window.webkitAudioContext;
@@ -242,13 +242,13 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
     window.speechSynthesis.speak(utterance);
   };
   useEffect(()=>{
-    if(!scenarioRunning||!scenarioId)return;
+    if(!scenarioRunning||!scenarioId||scenarioPending)return;
     const timer=setInterval(()=>setScenarioSecond(v=>{
       if(v>=SCENARIO_LENGTH){setScenarioRunning(false);return v;}
       return v+1;
     }),1000);
     return()=>clearInterval(timer);
-  },[scenarioRunning,scenarioId]);
+  },[scenarioRunning,scenarioId,scenarioPending]);
   // Backend owns all seven scripted signals and their CNN model evaluations.
   // Never use the older browser-side generator as a model prediction fallback.
   useEffect(()=>{
@@ -278,8 +278,15 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
                   &&scenarioFrame?.elapsed_seconds===scenarioSecond)?scenarioFrame:null;
   const trainingHistory=training?.history||[];
   useEffect(()=>{
-    const newlyAlert=Boolean(training?.alert)&&!alarmRef.current;
-    alarmRef.current=Boolean(training?.alert);
+    // A pending backend request is not a recovery event. Never reset the
+    // alarm transition latch while waiting for the next valid frame.
+    if(!training||training.source!=='SERVER_SCRIPTED_TRAINING_SCENARIO')return;
+    const prior=alarmRef.current;
+    const newlyAlert=Boolean(training.alert)&&!prior;
+    alarmRef.current=Boolean(training.alert);
+    if(prior&&!training.alert&&typeof window!=='undefined'&&window.speechSynthesis){
+      window.speechSynthesis.cancel();
+    }
     if(!newlyAlert||!scenarioSound)return;
     if(audioRef.current){
       try{
