@@ -8,6 +8,6 @@ scipy>=1.11,<2
 
 # v1.0 simulated telemetry API (no deep-learning model yet)
 fastapi>=0.115,<1
-uvicorn>=0.30,<1
+uvicorn[standard]>=0.30,<1
 httpx>=0.27,<1
 pydantic>=2.8,<3
