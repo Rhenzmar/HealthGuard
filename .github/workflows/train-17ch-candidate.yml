@@ -1,0 +1,54 @@
+name: Train 17-Channel Candidate
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'physiograph/candidate_17ch.py'
+      - 'tools/train_17ch_candidate.py'
+      - 'tools/generate_17ch_dataset.py'
+      - 'tests/test_candidate_17ch.py'
+      - 'tests/test_17ch_dataset.py'
+      - 'data/synthetic_17ch/biomarker_schema.json'
+      - '.github/workflows/train-17ch-candidate.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  candidate-training:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install torch CPU and scientific requirements
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install 'numpy>=1.26,<3' pytest
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Verify generated data and model architecture
+        run: python -m pytest -q tests/test_17ch_dataset.py tests/test_candidate_17ch.py
+      - name: Train and calibrate candidate on disjoint synthetic subjects
+        run: python -m tools.train_17ch_candidate
+      - name: Preserve checkpoint, evaluation, dataset provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: healthguard-17ch-candidate
+          path: |
+            models/deep_learning/candidate_17ch/
+            models/deep_learning/candidate_17ch/generated/dataset_report.json
+            models/deep_learning/candidate_17ch/generated/split_manifest.json
+            models/deep_learning/candidate_17ch/generated/provenance.json
+          retention-days: 30
+      - name: Commit candidate model and synthetic evaluation, but do not deploy it
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add models/deep_learning/candidate_17ch/model.pt models/deep_learning/candidate_17ch/evaluation.json
+          if git diff --staged --quiet; then
+            echo "Candidate model unchanged"
+          else
+            git commit -m "Store 17-channel synthetic anomaly model candidate and held-out evaluation"
+            git push origin HEAD:main
+          fi
