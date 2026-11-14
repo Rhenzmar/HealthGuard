@@ -1,3 +1,9 @@
+# PhysioGraph | Mission Console v0.2
+
+The v0.2 redesign replaces the introductory marketing layout with a live, compact mission operations cockpit. It uses horizontal navigation, five selectable signal cards, a crew pod, waveform inspector, PhysioAlert evidence review, event log, and direct NASA research entry. The backend API and all scientific boundaries are unchanged.
+
+The application is a research simulation, not a medical device or clinical diagnosis tool. Simulated telemetry is distinct from the historical NASA OSD-575 data, and the models do not provide clinical risk estimates.
+
 # PhysioGraph frontend v0.1
 
 A React/Vite research demonstration dashboard for the existing PhysioGraph v1.5 backend.

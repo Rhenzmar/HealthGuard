@@ -71,19 +71,75 @@ function StatusPanel({ review, cnn, comparison, voice, onSpeak, speaking }) {
   </div>;
 }
 
-function Dashboard({ loading, error, readiness, snapshot, selected, setSelected, samples, review, cnn, comparison, voice, speaking, speak, connection, contextHistory }) {
+function Dashboard({ loading, error, readiness, snapshot, selected, setSelected, samples, review, cnn, comparison, voice, speaking, speak, connection, contextHistory, onResearch }) {
   const last = snapshot?.subjects?.[selected]?.latest || samples.at(-1) || null;
   const subjects = Object.keys(snapshot?.subjects || {});
   const [activeMetric, setActiveMetric] = useState(METRICS[0].key);
   const metric = METRICS.find(m => m.key === activeMetric) || METRICS[0];
-  return <div className="page-content dashboard-page">
-    <div className="page-intro"><div><p className="eyebrow">MISSION OPERATIONS / RESEARCH PROTOTYPE</p><h1>Physiological overview<span className="accent-punct">.</span></h1><p className="page-desc">Real-time experimental pattern monitoring for a fictional crew member.</p></div><div className="intro-tags"><Tag tone="cyan" dot>SIMULATED LIVE</Tag><Tag tone={connection === 'connected' ? 'mint' : 'amber'} dot>{connection === 'connected' ? 'STREAM CONNECTED' : 'RECONNECTING / POLLING'}</Tag></div></div>
-    {error && <div className="notice notice-warning"><Icon name="alert" size={18}/><span>Backend request issue: {error}. Retrying automatically; unavailable data is not replaced with invented values.</span></div>}
-    <section className="hero-panel"><div className="hero-copy"><span className="eyebrow hero-eyebrow">CREW TELEMETRY / LIVE DEMONSTRATION</span><h2>One astronaut.<br/><span>Five vital signals.</span><br/>A clearer picture.</h2><p>PhysioGraph combines synthetic-trained anomaly comparisons with declared activity and measurement-quality checks. It prompts evidence review, never a clinical diagnosis.</p><div className="crew-row"><div className="crew-avatar">01</div><div><strong>{subjects.length ? selected.replaceAll('_',' ') : 'SIM CREW 01'}</strong><small>Fictional simulator identity</small></div><span className="crew-divider"/><label htmlFor="crew-select" className="sr-only">Select simulated crew</label><select id="crew-select" className="crew-select" value={selected} onChange={e=>setSelected(e.target.value)}>{(subjects.length?subjects:['SIM_CREW_01']).map(s=><option key={s} value={s}>{s}</option>)}</select></div></div><MissionVisual/></section>
-    <div className="content-separator"><div><p className="eyebrow">01 / LIVE TELEMETRY</p><h2>Vital-sign stream</h2></div><div className="sample-stats"><Icon name="clock" size={16}/> Fictional timestamp: <strong>{timelineLabel(last?.timestamp)}</strong><span className="small-sep"/> Sample <strong>#{last?.sequence ?? '—'}</strong></div></div>
-    <div className="metric-grid">{METRICS.map(m=><button key={m.key} type="button" className={`metric-card ${activeMetric===m.key?'metric-selected':''}`} style={{'--metric-color':m.color}} onClick={()=>setActiveMetric(m.key)} aria-pressed={activeMetric===m.key}><div className="metric-top"><span>{m.short}</span><span className="metric-icon"><Icon name={m.glyph} size={18}/></span></div><div className="metric-main"><strong>{formatValue(last?.values?.[m.key],m.digits)}</strong><span>{m.unit}</span></div><div className="metric-bottom"><span>SIMULATED READING</span><MiniTrend data={samples} metric={m.key} color={m.color}/></div></button>)}</div>
-    <div className="dash-columns"><div className="left-stack"><div className="panel chart-panel"><div className="panel-head"><div><p className="eyebrow">STREAM INSPECTOR</p><h3>{metric.label} <span className="subtle">· {metric.unit}</span></h3></div><Tag tone="cyan"><Icon name="pulse" size={13}/> LIVE SIGNAL</Tag></div><VitalChart data={samples} metric={metric}/><div className="chart-footer"><span><span className="legend-line" style={{background:metric.color}}/> Raw fictional measurements</span><span>Last {samples.length} retained samples</span></div></div><div className="panel process-panel"><div className="panel-head"><div><p className="eyebrow">EXPERIMENTAL PROCESSING</p><h3>Analysis pipeline</h3></div><Tag tone={readiness?.models_loaded ? 'mint':'amber'}>{readiness?.models_loaded?'MODELS LOADED':'CHECKING MODELS'}</Tag></div><div className="flow-line"><div><span className="flow-node"><Icon name="radio" size={20}/></span><strong>Telemetry</strong><small>Simulation</small></div><Icon name="arrow" size={18}/><div><span className="flow-node"><Icon name="activity" size={20}/></span><strong>Novelty</strong><small>CNN + covariance</small></div><Icon name="arrow" size={18}/><div><span className="flow-node"><Icon name="shield" size={20}/></span><strong>Review</strong><small>Quality + context</small></div></div><p>Each detector's raw output is retained. APDRA does not run on this live simulation.</p></div></div><div className="right-stack"><StatusPanel review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} onSpeak={speak}/><div className="panel events-panel"><div className="panel-head"><div><p className="eyebrow">EVENT STREAM</p><h3>Recent reviews</h3></div><Icon name="clock" size={18}/></div>{contextHistory.length? <div className="event-list">{contextHistory.slice(-5).reverse().map((e,i)=><div className="event" key={`${e.sequence}-${i}`}><span className={`event-point event-${statusTone(e.status)}`}/><div><strong>{friendlyStatus(e.status)}</strong><small>Fictional sequence #{e.sequence} · {e.activity_state || 'UNKNOWN'} declaration</small></div></div>)}</div> : <Placeholder message="Review events appear as samples are processed."/>}</div></div></div>
-    <div className="source-note"><Icon name="shield" size={16}/><span>Research demonstration only. Live vital signs are simulated. Model flags indicate numerical novelty, not medical risk, astronaut health status or a diagnostic result.</span></div>
+  return <div className="page-content dashboard-page mission-console">
+    <div className="console-titlebar">
+      <div>
+        <div className="console-kicker"><span className="console-kicker-line"/> FLIGHT OPERATIONS <span className="console-kicker-divider">/</span> PHYSIOLOGICAL SYSTEMS <span className="console-kicker-divider">/</span> 01</div>
+        <h1>Crew health <span>console</span><span className="accent-punct">.</span></h1>
+        <p>Live physiological signal review for a fictional mission crew member.</p>
+      </div>
+      <div className="console-session">
+        <div className="session-ring"><Icon name="satellite" size={19}/></div>
+        <div><span>MISSION ENVIRONMENT</span><strong>RESEARCH SIMULATION</strong></div>
+        <Tag tone={connection==='connected'?'mint':'amber'} dot>{connection==='connected'?'LINK ACTIVE':'RECONNECTING'}</Tag>
+      </div>
+    </div>
+    {error && <div className="notice notice-warning"><Icon name="alert" size={18}/><span>Backend request issue: {error}. Retrying automatically. Missing values are not replaced with estimates.</span></div>}
+    <div className="console-statusbar">
+      <div className="statusbar-live"><span className="live-led"/> LIVE <strong>SIMULATED DATA</strong><span className="statusbar-mini-dots"><i/><i/><i/><i/></span></div>
+      <div><span>MISSION SUBJECT</span><strong>{selected.replaceAll('_',' ')}</strong></div>
+      <div><span>LATEST PACKET</span><strong>#{last?.sequence ?? '—'}</strong></div>
+      <div><span>SIMULATED TIMESTAMP</span><strong>{timelineLabel(last?.timestamp)}</strong></div>
+      <div><span>MODEL ENGINE</span><strong>{readiness?.models_loaded?'READY':'AWAITING STATUS'}</strong></div>
+    </div>
+    <div className="console-section-heading"><div><span className="section-index">01</span><div><p className="eyebrow">CONTINUOUS SIGNAL TELEMETRY</p><h2>Five physiological channels</h2></div></div><span className="section-aside">SELECT A CHANNEL TO INSPECT ITS SIGNAL</span></div>
+    <div className="console-metrics">
+      {METRICS.map((m,i)=><button key={m.key} type="button" aria-pressed={activeMetric===m.key} onClick={()=>setActiveMetric(m.key)} className={`console-metric ${activeMetric===m.key?'selected':''}`} style={{'--signal':m.color}}>
+        <div className="console-metric-top"><span className="console-signal-index">0{i+1}</span><span className="metric-glyph"><Icon name={m.glyph} size={18}/></span></div>
+        <span className="console-metric-label">{m.label}</span>
+        <div className="console-metric-value"><strong>{formatValue(last?.values?.[m.key],m.digits)}</strong><small>{m.unit}</small></div>
+        <div className="console-metric-footer"><MiniTrend data={samples} metric={m.key} color={m.color}/><span>SIM FEED</span></div>
+      </button>)}
+    </div>
+    <div className="console-section-heading second-heading"><div><span className="section-index">02</span><div><p className="eyebrow">INTEGRATED SIGNAL WORKSPACE</p><h2>Observe, compare, review</h2></div></div><Tag tone="cyan">NO DIAGNOSTIC INFERENCE</Tag></div>
+    <div className="console-grid">
+      <div className="console-person-panel panel">
+        <div className="console-panel-label"><span>ACTIVE CREW PROFILE</span><Icon name="radio" size={17}/></div>
+        <div className="console-person-visual"><MissionVisual/></div>
+        <div className="console-person-details">
+          <div className="crew-identity"><div className="crew-avatar">01</div><div><span>SIMULATED SUBJECT</span><strong>{selected.replaceAll('_',' ')}</strong></div></div>
+          <label htmlFor="console-subject-select">SELECT DATA SOURCE</label>
+          <select id="console-subject-select" className="crew-select" value={selected} onChange={e=>setSelected(e.target.value)}>{(subjects.length?subjects:['SIM_CREW_01']).map(id=><option key={id} value={id}>{id}</option>)}</select>
+          <div className="crew-details-grid"><div><span>SOURCE</span><strong>Simulator</strong></div><div><span>CADENCE</span><strong>1 Hz fictional</strong></div></div>
+        </div>
+        <div className="console-panel-foot"><Icon name="shield" size={15}/> Not a real astronaut profile</div>
+      </div>
+      <div className="console-trend-column">
+        <div className="panel console-trend-panel">
+          <div className="console-panel-head"><div><p className="eyebrow">PRIMARY SIGNAL / LIVE INSPECTOR</p><h3>{metric.label}<span> / {metric.unit}</span></h3></div><Tag tone="cyan" dot>STREAMING</Tag></div>
+          <VitalChart data={samples} metric={metric}/>
+          <div className="console-trend-foot"><span><i style={{background:metric.color}}/> Raw fictional signal</span><span>{samples.length} samples retained</span></div>
+        </div>
+        <div className="panel console-method-strip">
+          <div className="console-panel-label"><span>COMPUTATIONAL WORKFLOW</span><Tag tone={readiness?.models_loaded?'mint':'amber'}>{readiness?.models_loaded?'MODELS LOADED':'CHECKING'}</Tag></div>
+          <div className="method-strip-track"><div><Icon name="radio" size={17}/><strong>Telemetry</strong><small>5 channels</small></div><Icon name="arrow" size={16}/><div><Icon name="pulse" size={17}/><strong>Novelty</strong><small>CNN + covariance</small></div><Icon name="arrow" size={16}/><div><Icon name="shield" size={17}/><strong>PhysioAlert</strong><small>Context + quality</small></div></div>
+          <p>APDRA operates separately on historical NASA laboratory records.</p>
+        </div>
+      </div>
+      <div className="console-review-column">
+        <StatusPanel review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} onSpeak={speak}/>
+      </div>
+    </div>
+    <div className="console-bottom-row">
+      <div className="panel console-events"><div className="console-panel-head"><div><p className="eyebrow">CONTEXT REVIEW / LOG</p><h3>Recent events</h3></div><Icon name="clock" size={19}/></div>{contextHistory.length?<div className="console-events-list">{contextHistory.slice(-4).reverse().map((e,i)=><div className="console-event" key={`${e.sequence}-${i}`}><span className={`event-point event-${statusTone(e.status)}`}/><div><strong>{friendlyStatus(e.status)}</strong><small>Sequence #{e.sequence} · {e.activity_state||'UNKNOWN'} declared activity</small></div><span className="console-event-code">{String(i+1).padStart(2,'0')}</span></div>)}</div>:<Placeholder message="Review events will appear when simulated windows have been processed."/>}</div>
+      <div className="panel console-research-teaser"><div className="console-panel-head"><div><p className="eyebrow">RESEARCH TRACK / NASA OSD-575</p><h3>Historical evidence library</h3></div><Icon name="database" size={19}/></div><p>Independent preflight and postflight laboratory measurements with APDRA baseline-sensitivity analysis.</p><button className="console-research-link" type="button" onClick={onResearch}>Explore NASA data <Icon name="arrow" size={16}/></button><span>Real records, separate from simulated streaming</span></div>
+    </div>
+    <div className="source-note console-boundary"><Icon name="shield" size={16}/><span>RESEARCH PROTOTYPE: All live measurements are simulated. Anomaly flags indicate numerical novelty, not disease, medical risk, or emergency triage. This application is not intended for clinical decision-making.</span></div>
   </div>;
 }
 
@@ -233,11 +289,11 @@ export default function App() {
   return <div className="app-shell">
     <aside className={`sidebar ${sidebarOpen?'sidebar-open':''}`}><div className="side-logo"><span className="brand-mark"><svg viewBox="0 0 50 50" fill="none"><path d="M5 26h9l5-11 9 22 6-12h11" stroke="currentColor" strokeWidth="3.1" strokeLinecap="round" strokeLinejoin="round"/><circle cx="25" cy="25" r="23" stroke="currentColor" strokeWidth="1.1" opacity=".45"/></svg></span><div><strong>PHYSIO<span>GRAPH</span></strong><small>MISSION HEALTH OBSERVATORY</small></div><button type="button" className="sidebar-close" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}><Icon name="x"/></button></div>
       <div className="nav-wrapper"><span className="nav-heading">WORKSPACE</span><nav aria-label="Primary navigation">{NAV.map(item=><button type="button" key={item.id} className={`nav-item ${item.id===page?'nav-active':''}`} onClick={()=>navTo(item.id)} aria-current={item.id===page?'page':undefined}><span className="nav-icon"><Icon name={item.icon} size={19}/></span><span><strong>{item.name}</strong><small>{item.caption}</small></span>{item.id===page&&<span className="nav-indicator"/>}</button>)}</nav></div>
-      <div className="sidebar-bottom"><div className="sim-card"><span className="sim-decoration"><Icon name="satellite" size={18}/></span><small>ACTIVE WORKSPACE</small><strong>Research simulation</strong><span>OSD-575 historical data + independent synthetic telemetry</span><Tag tone="cyan" dot>NON-CLINICAL DEMO</Tag></div><button type="button" className="side-help" onClick={()=>{setTour(0);navTo('dashboard')}}><Icon name="help" size={17}/> Take a guided tour <Icon name="arrow" size={16}/></button><span className="side-version">PHYSIOGRAPH v1.5 / FRONTEND v0.1</span></div>
+      <div className="sidebar-bottom"><div className="sim-card"><span className="sim-decoration"><Icon name="satellite" size={18}/></span><small>ACTIVE WORKSPACE</small><strong>Research simulation</strong><span>OSD-575 historical data + independent synthetic telemetry</span><Tag tone="cyan" dot>NON-CLINICAL DEMO</Tag></div><button type="button" className="side-help" onClick={()=>{setTour(0);navTo('dashboard')}}><Icon name="help" size={17}/> Take a guided tour <Icon name="arrow" size={16}/></button><span className="side-version">PHYSIOGRAPH v1.5 / FRONTEND v0.2</span></div>
     </aside>
     {sidebarOpen&&<button className="mobile-scrim" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}/>}
     <div className="work-area"><header className="topbar"><div className="topbar-start"><button type="button" className="menu-toggle" onClick={()=>setSidebarOpen(true)} aria-label="Open navigation"><Icon name="menu"/></button><span>MISSION CONTROL</span><Icon name="chevron" size={13}/><strong>{selectedName}</strong></div><div className="topbar-end"><span className="topbar-clock"><Icon name="clock" size={15}/>{new Date().getUTCFullYear()} · RESEARCH ENVIRONMENT</span><span className={`header-connection conn-${connection}`}><span/>{connection==='connected'?'BACKEND CONNECTED':'BACKEND CONNECTING'}</span><span className="topbar-avatar">PG</span></div></header>
-      <main id="main-content">{page==='dashboard'?<Dashboard loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={setSelected} samples={samples} review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory}/>:page==='research'?<Research overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<Mission mission={mission} readiness={readiness} connection={connection}/>:<Method readiness={readiness}/>}</main>
+      <main id="main-content">{page==='dashboard'?<Dashboard loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={setSelected} samples={samples} review={review} cnn={cnn} comparison={comparison} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')}/>:page==='research'?<Research overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<Mission mission={mission} readiness={readiness} connection={connection}/>:<Method readiness={readiness}/>}</main>
       <footer className="global-footer"><span>© 2026 PHYSIOGRAPH · RESEARCH PROTOTYPE</span><span>Simulation is not clinical care. NASA data remains historical and source-labeled.</span><a href={`${API_BASE}/docs`} target="_blank" rel="noreferrer">API docs <Icon name="external" size={13}/></a></footer>
     </div>
     {tour>=0 && <div className="tour-backdrop" role="dialog" aria-modal="true" aria-labelledby="tour-title"><div className="tour-modal"><div className="tour-step-mark">GUIDED TOUR <span>0{tour+1} / 0{tourSteps.length}</span></div><div className="tour-graphic"><div className="tour-core"><Icon name={['grid','pulse','flask','satellite'][tour]} size={42}/></div><span className="tour-ring tr1"/><span className="tour-ring tr2"/></div><h2 id="tour-title">{tourSteps[tour].title}</h2><p>{tourSteps[tour].body}</p><div className="tour-progress">{tourSteps.map((s,i)=><span key={i} className={i===tour?'active':''}/>)}</div><div className="tour-actions"><button className="text-btn" onClick={()=>setTour(-1)}>Skip tour</button><button className="primary-btn" onClick={()=>{if(tour===tourSteps.length-1){setTour(-1)}else{setTour(t=>t+1);navTo(tourSteps[tour+1].page)}}}>{tour===tourSteps.length-1?'Finish tour':'Continue'}<Icon name="arrow" size={17}/></button></div></div></div>}
