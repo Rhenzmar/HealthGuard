@@ -2,7 +2,7 @@
   "model_version": "candidate-17ch-two-branch-v1",
   "cpu_export": "/home/runner/work/PhysioGraph/PhysioGraph/models/deep_learning/candidate_17ch/model_numpy.npz",
   "parity_examples": 12,
-  "max_abs_reconstruction_delta": 4.76837158203125e-07,
+  "max_abs_reconstruction_delta": 4.172325134277344e-07,
   "tolerance": 0.0001,
   "clinical_validation": false,
   "training_domain": "FULLY_SYNTHETIC_NORMAL_ONLY"

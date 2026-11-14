@@ -49,7 +49,7 @@
     "window_points": 60,
     "cadence_hz": 1,
     "seed": 1729,
-    "calibration_threshold": 0.007730300538241863,
+    "calibration_threshold": 0.026408124715089798,
     "threshold_source": "95TH_PERCENTILE_DISJOINT_SYNTHETIC_NORMAL_CALIBRATION",
     "training_domain": "FULLY_SYNTHETIC_NORMAL_ONLY",
     "training_episodes": 320,
@@ -64,7 +64,7 @@
     "clinical_validation": false,
     "deployment_status": "CANDIDATE_NOT_ACTIVATED"
   },
-  "checkpoint_sha256": "fe769bb9daa0d6e5b77c3a36bba2cff33007aec37e8d8909298257584069ce7c",
+  "checkpoint_sha256": "26c3c441dd769c2ea27016a18a11b13a7c0fbaeb41ec78377bcf4ddc5a531d74",
   "dataset_manifest": {
     "seed": 1729,
     "schema_version": "healthguard.17ch.synthetic.v1",
@@ -95,7 +95,7 @@
           17,
           60
         ],
-        "sha256": "0baeb8417d1705f7b4653b1a0a267a6a45cc49479d771e88a35c91f352b08a6e",
+        "sha256": "ba237ffc3892cdcb6bafe31a6e63441317030ff94675018b53595b6627e8b49c",
         "file": "train.npz"
       },
       "calibration": {
@@ -113,7 +113,7 @@
           17,
           60
         ],
-        "sha256": "0ba5ca09f161ab1173fd94ae560be4f301ebefcc163c2621066287f29ef52b17",
+        "sha256": "0d8636fb381c50b473f9cc8ae5ecda0ae5c9beefcffd4132dbeb16ce6220f3b0",
         "file": "calibration.npz"
       },
       "test_normal": {
@@ -131,7 +131,7 @@
           17,
           60
         ],
-        "sha256": "c30a78ff186725328e30447168a70b477efddf63681926cc2556c49a7108668d",
+        "sha256": "778adfdb7bb10ae578e69a3377e55972fcc8ce51804a85d9135157a92ed5b517",
         "file": "test_normal.npz"
       },
       "test_oxygenation": {
@@ -149,7 +149,7 @@
           17,
           60
         ],
-        "sha256": "92ab0858f537840076246bb1575023df4380ad395b7cba50558674a9632ac8bd",
+        "sha256": "38d8d1f2b4b097d9b5a5c044767f8803a4c6b9d697a7e9d27f4a134b59402bdd",
         "file": "test_oxygenation.npz"
       },
       "test_exertion": {
@@ -167,7 +167,7 @@
           17,
           60
         ],
-        "sha256": "90c728bbb6bd6ea53f79b552944bb008e517fd30a7288166b7829939c2b1cf1a",
+        "sha256": "76138ae647f954ad9688182349623a7db00e3d222828c1fffca7b853c13e9e5b",
         "file": "test_exertion.npz"
       },
       "test_thermal": {
@@ -185,7 +185,7 @@
           17,
           60
         ],
-        "sha256": "98dca846784870b0e19f20f1f37d8a1af9c9aeb1173f13f3e5bbc522ae7a67c4",
+        "sha256": "838602834fe77cae0bbffa01d72967bb7600925f40a660ae7d1be5a87ea1da00",
         "file": "test_thermal.npz"
       },
       "test_sensor": {
@@ -203,7 +203,7 @@
           17,
           60
         ],
-        "sha256": "69e1bad37bcad381b9c8ba232af554e49a18523a82fd03d0dd96a09f24a3b589",
+        "sha256": "7e115c1234e22203dde8a603be442e535742b1ebfdd9fbd1fdc7338732ad6e5c",
         "file": "test_sensor.npz"
       },
       "test_co2": {
@@ -221,7 +221,7 @@
           17,
           60
         ],
-        "sha256": "626898f8f58c2624ff2e140c60391f266708a3a49274ca0c18dd9152c08d7b7b",
+        "sha256": "30108e125b2810e8d7becc97502c66e7f81d04284533b17fb8fc08bd4ea4cf55",
         "file": "test_co2.npz"
       },
       "test_cabin_leak": {
@@ -239,7 +239,7 @@
           17,
           60
         ],
-        "sha256": "374cf58c81a48bea587eef4d2670449b41dad528ce4acb43b69ca0b08c167677",
+        "sha256": "b6a13cef05274bc49081c34e3ad3dfcca7ffc7503c66f695df569518d6e3a50f",
         "file": "test_cabin_leak.npz"
       },
       "test_radiation": {
@@ -257,7 +257,7 @@
           17,
           60
         ],
-        "sha256": "87bde088ac116398f4c6c62fabfc0c6f16d4bae250afb017c46ee06fc53eda60",
+        "sha256": "8eebab0a719a7cc260dd05cfca83baafd1aeacdac49d2a7f6fd34e53723ac256",
         "file": "test_radiation.npz"
       }
     }
@@ -266,58 +266,58 @@
     "synthetic_roc_auc_overall": 1.0,
     "normal_test_n": 96,
     "abnormal_test_n": 168,
-    "normal_test_false_flag_rate": 0.010416666666666666,
-    "normal_mean_error": 0.006512188818305731,
-    "abnormal_mean_error": 888.0595092773438,
+    "normal_test_false_flag_rate": 0.041666666666666664,
+    "normal_mean_error": 0.018626922741532326,
+    "abnormal_mean_error": 888.0635986328125,
     "by_scripted_scenario": {
       "oxygenation": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 1.2389806509017944,
-        "engineering_mean_error": 0.00038035635952837765,
-        "overall_mean_error": 0.6561099290847778
+        "physiological_mean_error": 1.2525137662887573,
+        "engineering_mean_error": 0.00024543210747651756,
+        "overall_mean_error": 0.6632110476493835
       },
       "exertion": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 1.5644416809082031,
-        "engineering_mean_error": 0.003695891937240958,
-        "overall_mean_error": 0.829973042011261
+        "physiological_mean_error": 1.4914016723632812,
+        "engineering_mean_error": 0.003179839113727212,
+        "overall_mean_error": 0.79106205701828
       },
       "thermal": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 1.5369621515274048,
-        "engineering_mean_error": 0.06350045651197433,
-        "overall_mean_error": 0.8435683250427246
+        "physiological_mean_error": 1.4615427255630493,
+        "engineering_mean_error": 0.06304735690355301,
+        "overall_mean_error": 0.8034272789955139
       },
       "sensor": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 2.408799171447754,
-        "engineering_mean_error": 0.00046386002213694155,
-        "overall_mean_error": 1.2754648923873901
+        "physiological_mean_error": 2.417280435562134,
+        "engineering_mean_error": 0.00018230306159239262,
+        "overall_mean_error": 1.2798224687576294
       },
       "co2": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 0.5290088057518005,
-        "engineering_mean_error": 5.348411560058594,
-        "overall_mean_error": 2.7969629764556885
+        "physiological_mean_error": 0.531963586807251,
+        "engineering_mean_error": 5.352366924285889,
+        "overall_mean_error": 2.8003883361816406
       },
       "cabin_leak": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 1.229902744293213,
-        "engineering_mean_error": 1.6173423528671265,
-        "overall_mean_error": 1.4122272729873657
+        "physiological_mean_error": 1.2737377882003784,
+        "engineering_mean_error": 1.6181367635726929,
+        "overall_mean_error": 1.4358078241348267
       },
       "radiation": {
         "n": 24,
         "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
-        "physiological_mean_error": 0.10295004397630692,
-        "engineering_mean_error": 13193.1630859375,
-        "overall_mean_error": 6208.6015625
+        "physiological_mean_error": 0.2671397626399994,
+        "engineering_mean_error": 13193.1259765625,
+        "overall_mean_error": 6208.67138671875
       }
     },
     "synthetic_only": true,
@@ -327,163 +327,163 @@
   "training_history": [
     {
       "epoch": 1,
-      "training_loss": 0.026041415706276893,
-      "calibration_mean_error_for_early_stopping": 0.026312440633773804
+      "training_loss": 0.04570518657565117,
+      "calibration_mean_error_for_early_stopping": 0.045843351632356644
     },
     {
       "epoch": 2,
-      "training_loss": 0.02361849173903465,
-      "calibration_mean_error_for_early_stopping": 0.025634944438934326
+      "training_loss": 0.04304697215557098,
+      "calibration_mean_error_for_early_stopping": 0.04525608941912651
     },
     {
       "epoch": 3,
-      "training_loss": 0.022711264342069624,
-      "calibration_mean_error_for_early_stopping": 0.023364232853055
+      "training_loss": 0.04214114472270012,
+      "calibration_mean_error_for_early_stopping": 0.04309145733714104
     },
     {
       "epoch": 4,
-      "training_loss": 0.01883159503340721,
-      "calibration_mean_error_for_early_stopping": 0.0162174254655838
+      "training_loss": 0.03816232308745384,
+      "calibration_mean_error_for_early_stopping": 0.035581815987825394
     },
     {
       "epoch": 5,
-      "training_loss": 0.013553950376808644,
-      "calibration_mean_error_for_early_stopping": 0.016237931326031685
+      "training_loss": 0.031293566897511484,
+      "calibration_mean_error_for_early_stopping": 0.0342022180557251
     },
     {
       "epoch": 6,
-      "training_loss": 0.012954258918762207,
-      "calibration_mean_error_for_early_stopping": 0.014100652188062668
+      "training_loss": 0.030541380122303962,
+      "calibration_mean_error_for_early_stopping": 0.03095674328505993
     },
     {
       "epoch": 7,
-      "training_loss": 0.012503905780613422,
-      "calibration_mean_error_for_early_stopping": 0.014334325678646564
+      "training_loss": 0.028900445997714998,
+      "calibration_mean_error_for_early_stopping": 0.030492981895804405
     },
     {
       "epoch": 8,
-      "training_loss": 0.01222433876246214,
-      "calibration_mean_error_for_early_stopping": 0.013679444789886475
+      "training_loss": 0.02734505943953991,
+      "calibration_mean_error_for_early_stopping": 0.027196938171982765
     },
     {
       "epoch": 9,
-      "training_loss": 0.011901245079934597,
-      "calibration_mean_error_for_early_stopping": 0.013739312998950481
+      "training_loss": 0.02394632212817669,
+      "calibration_mean_error_for_early_stopping": 0.02353012003004551
     },
     {
       "epoch": 10,
-      "training_loss": 0.011761587671935558,
-      "calibration_mean_error_for_early_stopping": 0.013510883785784245
+      "training_loss": 0.02140941470861435,
+      "calibration_mean_error_for_early_stopping": 0.022620106115937233
     },
     {
       "epoch": 11,
-      "training_loss": 0.011658485978841782,
-      "calibration_mean_error_for_early_stopping": 0.013362615369260311
+      "training_loss": 0.020911291241645813,
+      "calibration_mean_error_for_early_stopping": 0.021703563630580902
     },
     {
       "epoch": 12,
-      "training_loss": 0.011451775953173638,
-      "calibration_mean_error_for_early_stopping": 0.01312993373721838
+      "training_loss": 0.0201480757445097,
+      "calibration_mean_error_for_early_stopping": 0.02096276544034481
     },
     {
       "epoch": 13,
-      "training_loss": 0.011084597185254097,
-      "calibration_mean_error_for_early_stopping": 0.012625868432223797
+      "training_loss": 0.019479839131236076,
+      "calibration_mean_error_for_early_stopping": 0.020462147891521454
     },
     {
       "epoch": 14,
-      "training_loss": 0.010840455256402492,
-      "calibration_mean_error_for_early_stopping": 0.012492368929088116
+      "training_loss": 0.019002001732587814,
+      "calibration_mean_error_for_early_stopping": 0.020084373652935028
     },
     {
       "epoch": 15,
-      "training_loss": 0.010689216479659081,
-      "calibration_mean_error_for_early_stopping": 0.012397455982863903
+      "training_loss": 0.01870802603662014,
+      "calibration_mean_error_for_early_stopping": 0.01985846273601055
     },
     {
       "epoch": 16,
-      "training_loss": 0.010608943365514278,
-      "calibration_mean_error_for_early_stopping": 0.01227914821356535
+      "training_loss": 0.018471793457865714,
+      "calibration_mean_error_for_early_stopping": 0.019572805613279343
     },
     {
       "epoch": 17,
-      "training_loss": 0.010476488806307315,
-      "calibration_mean_error_for_early_stopping": 0.012052019126713276
+      "training_loss": 0.018274401873350145,
+      "calibration_mean_error_for_early_stopping": 0.01942611299455166
     },
     {
       "epoch": 18,
-      "training_loss": 0.01027123760432005,
-      "calibration_mean_error_for_early_stopping": 0.011649406515061855
+      "training_loss": 0.018148858845233918,
+      "calibration_mean_error_for_early_stopping": 0.019261278212070465
     },
     {
       "epoch": 19,
-      "training_loss": 0.009844578802585602,
-      "calibration_mean_error_for_early_stopping": 0.010670769028365612
+      "training_loss": 0.018019820749759673,
+      "calibration_mean_error_for_early_stopping": 0.01914733462035656
     },
     {
       "epoch": 20,
-      "training_loss": 0.008864476718008519,
-      "calibration_mean_error_for_early_stopping": 0.008953722193837166
+      "training_loss": 0.017916928976774216,
+      "calibration_mean_error_for_early_stopping": 0.019029268994927406
     },
     {
       "epoch": 21,
-      "training_loss": 0.007634868007153272,
-      "calibration_mean_error_for_early_stopping": 0.008036329410970211
+      "training_loss": 0.017827561870217324,
+      "calibration_mean_error_for_early_stopping": 0.01895015500485897
     },
     {
       "epoch": 22,
-      "training_loss": 0.007208007574081421,
-      "calibration_mean_error_for_early_stopping": 0.007526790257543325
+      "training_loss": 0.017740989103913307,
+      "calibration_mean_error_for_early_stopping": 0.018855908885598183
     },
     {
       "epoch": 23,
-      "training_loss": 0.006848382018506527,
-      "calibration_mean_error_for_early_stopping": 0.007446382660418749
+      "training_loss": 0.017679448798298837,
+      "calibration_mean_error_for_early_stopping": 0.018785668537020683
     },
     {
       "epoch": 24,
-      "training_loss": 0.006785537209361791,
-      "calibration_mean_error_for_early_stopping": 0.007280632387846708
+      "training_loss": 0.017613890767097472,
+      "calibration_mean_error_for_early_stopping": 0.01869073323905468
     },
     {
       "epoch": 25,
-      "training_loss": 0.006610068120062351,
-      "calibration_mean_error_for_early_stopping": 0.007081225514411926
+      "training_loss": 0.017544780671596528,
+      "calibration_mean_error_for_early_stopping": 0.01862444542348385
     },
     {
       "epoch": 26,
-      "training_loss": 0.006508569139987231,
-      "calibration_mean_error_for_early_stopping": 0.006971443071961403
+      "training_loss": 0.017476477846503257,
+      "calibration_mean_error_for_early_stopping": 0.018554968759417534
     },
     {
       "epoch": 27,
-      "training_loss": 0.006436790432780981,
-      "calibration_mean_error_for_early_stopping": 0.0069110882468521595
+      "training_loss": 0.01741633266210556,
+      "calibration_mean_error_for_early_stopping": 0.01848422735929489
     },
     {
       "epoch": 28,
-      "training_loss": 0.006386678852140904,
-      "calibration_mean_error_for_early_stopping": 0.006837805267423391
+      "training_loss": 0.01735113710165024,
+      "calibration_mean_error_for_early_stopping": 0.01842384785413742
     },
     {
       "epoch": 29,
-      "training_loss": 0.006330669857561588,
-      "calibration_mean_error_for_early_stopping": 0.006792543455958366
+      "training_loss": 0.01729881130158901,
+      "calibration_mean_error_for_early_stopping": 0.018364695832133293
     },
     {
       "epoch": 30,
-      "training_loss": 0.006298324465751648,
-      "calibration_mean_error_for_early_stopping": 0.006757006049156189
+      "training_loss": 0.017247000709176064,
+      "calibration_mean_error_for_early_stopping": 0.018328217789530754
     },
     {
       "epoch": 31,
-      "training_loss": 0.006264961883425712,
-      "calibration_mean_error_for_early_stopping": 0.0067155552096664906
+      "training_loss": 0.017197175323963164,
+      "calibration_mean_error_for_early_stopping": 0.018287690356373787
     },
     {
       "epoch": 32,
-      "training_loss": 0.006241038162261248,
-      "calibration_mean_error_for_early_stopping": 0.006692320108413696
+      "training_loss": 0.017160021141171454,
+      "calibration_mean_error_for_early_stopping": 0.01823030412197113
     }
   ],
   "comparison_note": "Existing 5-channel frozen CNN preserved, with no direct comparable 17-channel real-world benchmark."

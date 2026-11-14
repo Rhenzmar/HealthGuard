@@ -5,17 +5,17 @@
     "SIM_CREW_01": {
       "normal": {
         "evaluated_windows": 76,
-        "flags": 28,
-        "flag_fraction": 0.3684210526315789,
+        "flags": 0,
+        "flag_fraction": 0.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.0116324
+        "max_reconstruction_error": 0.0109094
       },
       "excursion": {
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.7049687
+        "max_reconstruction_error": 0.6765243
       }
     },
     "SIM_CREW_02": {
@@ -24,52 +24,52 @@
         "flags": 0,
         "flag_fraction": 0.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.006956
+        "max_reconstruction_error": 0.0070738
       },
       "excursion": {
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.7176197
+        "max_reconstruction_error": 0.6915909
       }
     },
     "SIM_CREW_03": {
       "normal": {
         "evaluated_windows": 76,
-        "flags": 57,
-        "flag_fraction": 0.75,
+        "flags": 0,
+        "flag_fraction": 0.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.0103945
+        "max_reconstruction_error": 0.0106331
       },
       "excursion": {
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.7131048
+        "max_reconstruction_error": 0.6863629
       }
     },
     "SIM_CREW_04": {
       "normal": {
         "evaluated_windows": 76,
-        "flags": 18,
-        "flag_fraction": 0.23684210526315788,
+        "flags": 0,
+        "flag_fraction": 0.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.0091793
+        "max_reconstruction_error": 0.0093377
       },
       "excursion": {
         "evaluated_windows": 76,
         "flags": 76,
         "flag_fraction": 1.0,
         "first_evaluated_sequence": 104,
-        "max_reconstruction_error": 0.6937718
+        "max_reconstruction_error": 0.6669291
       }
     }
   },
-  "normal_replay_flag_fraction": 0.33881578947368424,
+  "normal_replay_flag_fraction": 0.0,
   "normal_replay_evaluated_windows": 304,
-  "promotion_ready": false,
+  "promotion_ready": true,
   "promotion_note": "Tentative engineering screening gate only; not clinical validation",
   "scientific_limitations": "Demo replay is generated with different numerical assumptions from candidate training, but remains simulated, not independent real measurements.",
   "clinical_validation": false
