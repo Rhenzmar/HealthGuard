@@ -12,3 +12,4 @@ import './missionDashboard.css';
 import './missionDashboardV2.css';
 import './approvedDashboardOverrides.css';
 import './crewPortraits.css';
+import './missionDashboardPolish.css';
