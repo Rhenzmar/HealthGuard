@@ -349,6 +349,39 @@ def biomarker_screening(subject_id:str,
     return {**report,'offset':offset,'limit':limit,
             'biomarkers':report['biomarkers'][offset:offset+limit]}
 
+@lru_cache(maxsize=1)
+def _nasa_evaluation_report():
+    import json
+    path=ROOT/'research/nasa_real_data_evaluation/evaluation.json'
+    if not path.is_file():
+        raise FileNotFoundError('Real NASA retrospective evaluation has not been published')
+    report=json.loads(path.read_text(encoding='utf-8'))
+    if report.get('evaluation_kind')!='REAL_NASA_HISTORICAL_OBSERVATIONAL_DATA' or report.get('clinical_validation') is not False:
+        raise ValueError('Invalid provenance or unsupported clinical evaluation claim')
+    return report
+
+
+@router.get('/evaluation/nasa-original')
+def nasa_original_evaluation():
+    """Authentic NASA records: retrospective screen stability, not CNN accuracy."""
+    return _nasa_evaluation_report()
+
+
+@router.get('/evaluation/nasa-original/{assay}')
+def nasa_original_assay_evaluation(assay: str):
+    report=_nasa_evaluation_report()
+    if assay not in report['assays']:
+        raise HTTPException(422,'Only five verified original NASA assay panels are available')
+    return {
+        'assay':assay,
+        'evaluation_kind':report['evaluation_kind'],
+        'data':report['assays'][assay],
+        'clinical_validation':False,
+        'real_nasa_validation_of_continuous_17ch_cnn':False,
+        'warning':'These screens are based on real historical laboratory values but lack medical ground truth.',
+    }
+
+
 @router.get('/method')
 def method():
     return {'algorithm':'APDRA','version':'0.7 FROZEN',
