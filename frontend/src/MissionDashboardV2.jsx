@@ -1,6 +1,7 @@
 
 import React,{Suspense,useEffect,useMemo,useRef,useState} from 'react';
 import ScenarioConsole from './ScenarioConsole.jsx';
+import TelemetryBiomarkerHub from './TelemetryBiomarkerHub.jsx';
 import {SCENARIOS,SCENARIO_LENGTH,scenarioAt,scenarioHistory} from './scenarioSimulator.js';
 import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel} from './api.js';
 import {Icon,VitalChart} from './viz.jsx';
@@ -270,6 +271,7 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
         <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey}/>
         <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
       </div>
+      <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
       <div className="hg6-bottom-grid"><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/><Routine progress={progress} onOpen={onRoutine}/></div>
 
     </main>}
