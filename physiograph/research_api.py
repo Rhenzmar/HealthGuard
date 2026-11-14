@@ -73,82 +73,73 @@ def _rows_with_filters(rows,subject_id,assay,biomarker):
             and (biomarker is None or r['biomarker']==biomarker)]
 
 
-# Mirror of the public OSD-569 CBC TRANSFORMED table obtained from
-# github.com/ibeastmanish/ASCLEPIUS, not independently checksum-verified
-# against NASA's official object. Do not present it as an authenticated NASA
-# download. C003 L-92 has documented column displacement; exclude the full
-# observation rather than silently correcting or fabricating values.
-CBC_MIRROR=ROOT/'data/nasa/osd569_cbc_raw_mirror.csv'
-CBC_MIRROR_URL=('https://github.com/ibeastmanish/ASCLEPIUS/blob/main/'
-                'data/raw/LSDS-7_Complete_Blood_Count_CBC_TRANSFORMED.csv')
-CBC_QUARANTINED_SAMPLES={'C003_whole-blood_L-92_cbc'}
-CBC_UNITS={'cells_per_microliter':'cells/µL',
-           'percent':'%','picogram':'pg',
-           'grams_per_deciliter':'g/dL','femtoliter':'fL',
-           'thousand_per_microliter':'10³/µL',
-           'million_per_microliter':'10⁶/µL'}
+# The frozen APDRA v0.7 / legacy OSD-575 reviews above remain unchanged.
+# All expanded 5-assay endpoints below use checksum-pinned NASA S3 originals.
+# Do not silently fall back to the former third-party OSD-569 CBC mirror.
+VERIFIED=ROOT/'data/nasa/verified'
+VERIFIED_ASSAYS=('CBC','CMP','EVE_IMMUNE','EVE_CARDIOVASCULAR','ALAMAR_NPQ')
+ALIASES={'NULISA':'ALAMAR_NPQ'}
+COUNT_EXPECTED={'CBC':20,'CMP':19,'EVE_IMMUNE':71,
+                'EVE_CARDIOVASCULAR':9,'ALAMAR_NPQ':203}
+
+def _assay_name(assay: str | None) -> str | None:
+    if assay is None:return None
+    return ALIASES.get(assay,assay)
 
 @lru_cache(maxsize=1)
+def _verified():
+    manifest_path=VERIFIED/'verified_manifest.json'
+    if not manifest_path.is_file():
+        raise FileNotFoundError('Verified NASA original assay import is missing: run source import workflow')
+    import json
+    manifest=json.loads(manifest_path.read_text(encoding='utf-8'))
+    if not manifest.get('file_hashes_verified_against_nasa_s3_runner'):
+        raise ValueError('Source provenance verification flag missing')
+    result={}
+    for assay in VERIFIED_ASSAYS:
+        path=VERIFIED/f'{assay.lower()}.csv'
+        if not path.is_file():
+            raise FileNotFoundError(f'Verified NASA table missing: {path.name}')
+        with path.open(encoding='utf-8',newline='') as f:
+            records=[]
+            for line in csv.DictReader(f):
+                row=dict(line)
+                for key in ('value','ref_low','ref_high'):
+                    row[key]=_scalar(row.get(key))
+                if row['assay']!=assay:
+                    raise ValueError(f'Mismatched assay source row in {path.name}')
+                records.append(row)
+        if len({x['biomarker'] for x in records})!=COUNT_EXPECTED[assay]:
+            raise ValueError(f'{assay} biomarker count mismatch')
+        result[assay]=tuple(records)
+    return result
+
+def _verified_rows(assay: str|None=None) -> tuple[dict,...]:
+    data=_verified()
+    canonical=_assay_name(assay)
+    if canonical is not None:
+        return data[canonical]
+    return tuple(row for name in VERIFIED_ASSAYS for row in data[name])
+
 def _cbc_measurements():
-    if not CBC_MIRROR.is_file():
-        raise FileNotFoundError('OSD-569 CBC mirror table not bundled')
-    rows=[]
-    quarantined=[]
-    with CBC_MIRROR.open(encoding='utf-8-sig',newline='') as fh:
-        reader=csv.DictReader(fh)
-        if not reader.fieldnames or 'Sample Name' not in reader.fieldnames:
-            raise ValueError('CBC mirror missing sample identifier')
-        fields=[name for name in reader.fieldnames if '_value_' in name]
-        if len(fields)!=20:
-            raise ValueError(f'Unexpected CBC panel shape: {len(fields)} measurements')
-        for rec in reader:
-            sample=rec.get('Sample Name','')
-            import re
-            match=re.fullmatch(r'(C00[1-4])_whole-blood_(L-\d+|R\+\d+)_cbc',sample)
-            if not match:
-                raise ValueError(f'Unexpected CBC sample identifier: {sample}')
-            if sample in CBC_QUARANTINED_SAMPLES:
-                quarantined.append(sample)
-                continue
-            subject,timepoint=match.groups()
-            for field in fields:
-                marker,unit_code=field.split('_value_',1)
-                unit=CBC_UNITS.get(unit_code)
-                if not unit:
-                    raise ValueError(f'Unsupported CBC source units: {unit_code}')
-                value=_scalar(rec.get(field))
-                if not isinstance(value,float):
-                    # Preserve absent cells as missing instead of imputing.
-                    continue
-                low=_scalar(rec.get(f'{marker}_range_min_{unit_code}'))
-                high=_scalar(rec.get(f'{marker}_range_max_{unit_code}'))
-                rows.append({
-                    'assay':'CBC','subject_id':subject,'timepoint':timepoint,
-                    'biomarker':marker.upper().replace('_',' '),
-                    'value':value,'unit':unit,
-                    'system':'Complete blood count',
-                    'phase':'preflight' if timepoint.startswith('L-') else 'postflight',
-                    'source':'OSD-569-labelled CBC / unverified public mirror',
-                    'source_assay':'CBC',
-                    'sample_id':sample,
-                    'ref_low':low,'ref_high':high,
-                    'qc_note':'Public third-party mirror, not independently authenticated against official NASA file. '
-                              'Source intervals are not spacecraft medical limits.'})
-    if set(quarantined)!=CBC_QUARANTINED_SAMPLES:
-        raise ValueError('Known malformed CBC record missing: review mirror integrity')
-    return tuple(rows)
+    return _verified_rows('CBC')
 
 @router.get('/cbc/quality')
 def cbc_quality():
-    observations=_cbc_measurements()
+    records=_cbc_measurements()
+    flagged=[x for x in records if x['qc_status']=='SOURCE_OUTLIER_REQUIRES_REVIEW']
     return {
-        'dataset':'OSD-569 CBC public mirror','source':CBC_MIRROR_URL,
+        'dataset':'OSD-569 original transformed CBC from NASA-managed public S3',
+        'source':'s3://nasa-osdr/OSD-569/version-4/Complete_Blood_Count/',
         'nasa_study':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-569',
-        'observation_count':len(observations),
-        'biomarker_types':len({r['biomarker'] for r in observations}),
-        'participant_ids':sorted({r['subject_id'] for r in observations}),
-        'quarantined_source_samples':sorted(CBC_QUARANTINED_SAMPLES),
-        'independent_nasa_checksum_verification':False,
+        'observation_count':sum(isinstance(x['value'],float) for x in records),
+        'rows_including_missing':len(records),
+        'biomarker_types':len({r['biomarker'] for r in records}),
+        'participant_ids':sorted({r['subject_id'] for r in records}),
+        'quality_review_samples':sorted({x['sample_id'] for x in flagged}),
+        'quality_review_rows':len(flagged),
+        'quarantined_source_samples':[],
+        'independent_nasa_checksum_verification':True,
         'sample_character':'HISTORICAL_DISCRETE_NOT_REAL_TIME',
         'clinical_validation':False
     }
@@ -159,52 +150,67 @@ def cbc_measurements(subject_id: str=Query(default='C001'),
                      offset:int=Query(default=0,ge=0),
                      limit:int=Query(default=200,ge=1,le=500)):
     _validate_subject(subject_id)
-    rows=_rows_with_filters(_cbc_measurements(),subject_id,'CBC',biomarker)
+    records=_rows_with_filters(_cbc_measurements(),subject_id,'CBC',biomarker)
     return {
-        'source':'OSD-569 public mirrored table (independent authentication pending)',
-        'source_kind':'HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE',
-        'quarantined_samples':sorted(CBC_QUARANTINED_SAMPLES),
-        'total':len(rows),'rows':rows[offset:offset+limit],
-        'warning':'CBC samples from public repository mirror; verify against NASA master file before scientific citation.'
+        'source':'Original NASA OSD-569 transformed CBC',
+        'source_kind':'NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE',
+        'quality_flags_preserved':True,'quarantined_samples':[],
+        'total':len(records),'offset':offset,'rows':records[offset:offset+limit],
+        'warning':'C003 L-92 source outliers are retained and flagged for review; no medical severity assigned.'
     }
 
 @router.get('/overview')
 def overview():
-    data=_measurements()
-    phase=Counter(row['phase'] for row in data)
-    assays={name:{'observations':sum(row['assay']==name for row in data),
-                  'biomarkers':len({row['biomarker'] for row in data if row['assay']==name})}
-            for name in DATA}
-    return {'source':'NASA OSD-575 / Inspiration4',
-            'study_url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-575',
-            'data_kind':'HISTORICAL_PREFLIGHT_POSTFLIGHT_LABORATORY_ASSAYS',
-            'continuous_real_time':False,
-            'observations':len(data),'astronauts':len({r['subject_id'] for r in data}),
-            'subject_ids':sorted({r['subject_id'] for r in data}),
-            'phase_counts':dict(phase),'assays':assays,
-            'measurement_review_rows':len(_reviews()),
-            'apdra':'FROZEN_RESEARCH_METHOD_NOT_APPLIED_TO_LIVE_TELEMETRY',
-            'clinical_validation':False,
-            'limitations':'Four crew members; correlated repeated observations; research screening is not a diagnosis or emergency classification.'}
-
+    legacy=_measurements()
+    phases=Counter(row['phase'] for row in legacy)
+    legacy_assays={name:{'observations':sum(row['assay']==name for row in legacy),
+                        'biomarkers':len({row['biomarker'] for row in legacy if row['assay']==name})}
+                   for name in DATA}
+    all_new=_verified()
+    expanded={key:{
+        'rows_including_missing':len(data),
+        'observations':sum(isinstance(x['value'],float) for x in data),
+        'biomarkers':len({row['biomarker'] for row in data}),
+        'flagged':sum(row['qc_status']=='SOURCE_OUTLIER_REQUIRES_REVIEW' for row in data)
+    } for key,data in all_new.items()}
+    return {
+        'source':'NASA OSDR OSD-569 and OSD-575 / Inspiration4',
+        'study_url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-575',
+        'data_kind':'HISTORICAL_PREFLIGHT_POSTFLIGHT_LABORATORY_ASSAYS',
+        'continuous_real_time':False,
+        'observations':len(legacy),'astronauts':len({r['subject_id'] for r in legacy}),
+        'subject_ids':sorted({r['subject_id'] for r in legacy}),
+        'phase_counts':dict(phases),'assays':legacy_assays,
+        'verified_assays':expanded,
+        'verified_numeric_observations':sum(v['observations'] for v in expanded.values()),
+        'verified_biomarker_types':sum(v['biomarkers'] for v in expanded.values()),
+        'measurement_review_rows':len(_reviews()),
+        'apdra':'FROZEN_RESEARCH_METHOD_NOT_APPLIED_TO_LIVE_TELEMETRY',
+        'clinical_validation':False,
+        'limitations':'Historical sparse labs, separate from all fictional crew telemetry. CBC outliers preserved and marked for review.'
+    }
 
 @router.get('/biomarkers')
-def biomarkers(assay: str | None = Query(default=None,pattern='^(CMP|NULISA|CBC)$')):
-    data=_rows_with_filters(_cbc_measurements() if assay=='CBC' else _measurements(),None,assay,None)
+def biomarkers(assay: str | None=Query(default=None,
+          pattern=r'^(CBC|CMP|NULISA|ALAMAR_NPQ|EVE_IMMUNE|EVE_CARDIOVASCULAR)$')):
+    data=_verified_rows(assay)
     groups={}
     for row in data:
-        key=(row['assay'],row['biomarker'],row['unit'],row['source'])
+        key=(_assay_name(row['assay']),row['biomarker'],row['unit'],row['source'])
         groups[key]=groups.get(key,0)+1
-    return {'source':'NASA OSD-575',
+    return {'source':'Official NASA OSDR study files',
             'biomarkers':[{'assay':a,'name':b,'unit':u,'source':s,'observations':n}
-                          for (a,b,u,s),n in sorted(groups.items())]}
-
+                         for (a,b,u,s),n in sorted(groups.items())]}
 
 @router.get('/measurements')
 def measurements(subject_id: str | None=None,
-                 assay: str | None=Query(default=None,pattern='^(CMP|NULISA)$'),
+                 assay: str | None=Query(default=None,pattern=r'^(CMP|NULISA)$'),
                  biomarker: str | None=Query(default=None,max_length=128),
-                 offset: int=Query(default=0,ge=0),limit:int=Query(default=200,ge=1,le=500)):
+                 offset: int=Query(default=0,ge=0),
+                 limit:int=Query(default=200,ge=1,le=500)):
+    """Backward-compatible frozen OSD-575 measurements for legacy APDRA.
+    The verified source routes below expose all five new assays.
+    """
     _validate_subject(subject_id)
     rows=_rows_with_filters(_measurements(),subject_id,assay,biomarker)
     return {'source':'NASA OSD-575','source_kind':'HISTORICAL_NOT_REAL_TIME',
@@ -212,10 +218,29 @@ def measurements(subject_id: str | None=None,
             'total':len(rows),'offset':offset,'limit':limit,'rows':rows[offset:offset+limit],
             'warning':'Discrete pre/postflight laboratory assays. No live astronaut sensor telemetry.'}
 
+@router.get('/verified/measurements')
+def verified_measurements(subject_id: str | None=None,
+                     assay: str | None=Query(default=None,
+                         pattern=r'^(CBC|CMP|NULISA|ALAMAR_NPQ|EVE_IMMUNE|EVE_CARDIOVASCULAR)$'),
+                     biomarker: str|None=Query(default=None,max_length=128),
+                     offset:int=Query(default=0,ge=0),
+                     limit:int=Query(default=200,ge=1,le=500)):
+    _validate_subject(subject_id)
+    data=_verified_rows(assay)
+    rows=[x for x in data if (subject_id is None or x['subject_id']==subject_id)
+          and (biomarker is None or x['biomarker']==biomarker)]
+    return {
+        'source':'Verified original NASA OSD-569 / OSD-575 S3 laboratory files',
+        'source_kind':'NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE',
+        'subject_id':subject_id,'assay':_assay_name(assay),
+        'total':len(rows),'offset':offset,'limit':limit,
+        'rows':rows[offset:offset+limit],
+        'warning':'Historical labs only. No measurements are assigned to simulated astronaut profiles.'
+    }
 
 @router.get('/review')
 def review(subject_id: str | None=None,
-           assay: str | None=Query(default=None,pattern='^(CMP|NULISA)$'),
+           assay: str | None=Query(default=None,pattern=r'^(CMP|NULISA)$'),
            biomarker: str | None=Query(default=None,max_length=128),
            offset:int=Query(default=0,ge=0),limit:int=Query(default=100,ge=1,le=300)):
     _validate_subject(subject_id)
@@ -224,21 +249,18 @@ def review(subject_id: str | None=None,
             'source_kind':'HISTORICAL_APDRA_DERIVED',
             'algorithm':'FROZEN_APDRA_v0.7_NO_RECOMPUTATION',
             'total':len(rows),'offset':offset,'limit':limit,'rows':rows[offset:offset+limit],
-            'warning':'Review queue is an exploratory measurement-check prompt. No medical diagnosis or verified risk.'}
+            'warning':'Exploratory review only. No medical diagnosis or verified risk.'}
 
-
-
-# Distinguish availability of bundled historical data from NASA context-only
-# research pages. These sources are not live sensors or fictional crew profiles.
-NASA_SOURCE_CATALOG = (
-    {'id':'OSD-575','title':'Inspiration4 serum chemistry and immune protein panels',
+NASA_SOURCE_CATALOG=(
+    {'id':'OSD-575','title':'Inspiration4 chemistry, Eve immune/cardiovascular and Alamar protein assays',
      'url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-575',
-     'availability':'BUNDLED_HISTORICAL_OBSERVATIONS',
-     'assays':['CMP','NULISA']},
-    {'id':'OSD-569','title':'Inspiration4 whole blood and complete blood count',
+     'availability':'NASA_S3_CHECKSUM_VERIFIED',
+     'assays':['CMP','EVE_IMMUNE','EVE_CARDIOVASCULAR','ALAMAR_NPQ']},
+    {'id':'OSD-569','title':'Inspiration4 whole-blood CBC',
      'url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-569',
-     'availability':'PUBLIC_MIRROR_QUARANTINED_QC_PENDING','assays':['CBC']},
-    {'id':'NASA-CVL','title':'Cardiovascular adaptations and headward fluid shifts',
+     'availability':'NASA_S3_CHECKSUM_VERIFIED_WITH_QC_REVIEW',
+     'assays':['CBC']},
+    {'id':'NASA-CVL','title':'Cardiovascular and vision / fluid-shift background research',
      'url':'https://www.nasa.gov/directorates/esdmd/hhp/cardiovascular-and-vision/',
      'availability':'RESEARCH_CONTEXT_ONLY','assays':[]},
     {'id':'NASA-SANS','title':'Risk of spaceflight associated neuro-ocular syndrome',
@@ -246,13 +268,13 @@ NASA_SOURCE_CATALOG = (
      'availability':'RESEARCH_CONTEXT_ONLY','assays':[]},
 )
 
-def _flight_order(record):
-    timepoint = str(record.get('timepoint') or '')
-    if timepoint.startswith('L-'):
-        try:return -int(timepoint[2:])
+def _flight_order(row):
+    tp=str(row.get('timepoint') or '')
+    if tp.startswith('L-'):
+        try:return -int(tp[2:])
         except ValueError:return -999999
-    if timepoint.startswith('R+'):
-        try:return int(timepoint[2:])
+    if tp.startswith('R+'):
+        try:return int(tp[2:])
         except ValueError:return -999999
     return -999999
 
@@ -262,92 +284,80 @@ def source_catalog():
         'sources':list(NASA_SOURCE_CATALOG),
         'live_sensor_integration':False,
         'historical_cohort_is_fictional_crew':False,
-        'warning':'OSD-569 CBC currently uses a third-party public mirror with one quarantined record; independently verify with NASA. CVL and SANS are background research.'
+        'warning':'NASA OSD-569/575 transformed original files verified against S3 hashes; C003 CBC outliers retained and labeled; CVL/SANS pages are background research.'
     }
 
 @router.get('/biomarker-panel')
 def biomarker_panel(subject_id: str=Query(default='C001'),
-                    assay: str | None=Query(default=None, pattern=r'^(CMP|NULISA|CBC)$'),
-                    search: str | None=Query(default=None,max_length=120),
-                    offset:int=Query(default=0,ge=0),
-                    limit:int=Query(default=250,ge=1,le=300)):
-    """Latest *observed* sample per NASA biomarker for a selected historical
-    participant. These are not current physiology, extrapolated lab values,
-    or severity classifications. Unit, collection timepoint and sample ID
-    remain exactly as recorded.
-    """
+         assay: str|None=Query(default=None,
+             pattern=r'^(CBC|CMP|NULISA|ALAMAR_NPQ|EVE_IMMUNE|EVE_CARDIOVASCULAR)$'),
+         search: str|None=Query(default=None,max_length=120),
+         offset:int=Query(default=0,ge=0),
+         limit:int=Query(default=250,ge=1,le=300)):
     _validate_subject(subject_id)
-    groups={}
-    for rec in (_cbc_measurements() if assay=='CBC' else _measurements()):
-        if rec['subject_id']!=subject_id or (assay and rec['assay']!=assay):
-            continue
-        if search and search.casefold() not in rec['biomarker'].casefold():
-            continue
+    rows=_verified_rows(assay)
+    grouped={}
+    for rec in rows:
+        if rec['subject_id']!=subject_id:continue
+        if search and search.casefold() not in rec['biomarker'].casefold():continue
         key=(rec['assay'],rec['biomarker'],rec['unit'])
-        group=groups.setdefault(key,{'observations':0,'latest':None})
+        group=grouped.setdefault(key,{'observations':0,'latest':None,'missing':0,'qc_flags':0})
+        if not isinstance(rec['value'],float):
+            group['missing']+=1
+            continue
         group['observations']+=1
+        if rec['qc_status']=='SOURCE_OUTLIER_REQUIRES_REVIEW':
+            group['qc_flags']+=1
         if group['latest'] is None or _flight_order(rec)>_flight_order(group['latest']):
             group['latest']=rec
     items=[]
-    for (a,name,unit),group in sorted(groups.items()):
-        latest=group['latest']
-        items.append({
-            'assay':a,'name':name,'unit':unit,'observations':group['observations'],
-            'latest':{
-                'value':latest['value'],'timepoint':latest['timepoint'],
-                'phase':latest['phase'],'sample_id':latest['sample_id'],
-                'ref_low':latest['ref_low'],'ref_high':latest['ref_high'],
-                'qc_note':latest['qc_note'],'source':latest['source']
-            }
-        })
+    for (a,name,unit),data in sorted(grouped.items()):
+        rec=data['latest']
+        items.append({'assay':a,'name':name,'unit':unit,
+                      'observations':data['observations'],
+                      'missing':data['missing'],'quality_flagged_observations':data['qc_flags'],
+                      'latest':({
+                          'value':rec['value'],'timepoint':rec['timepoint'],'phase':rec['phase'],
+                          'sample_id':rec['sample_id'],'ref_low':rec['ref_low'],
+                          'ref_high':rec['ref_high'],'qc_note':rec['qc_note'],
+                          'qc_status':rec['qc_status'],'source':rec['source'],
+                          'source_sha256':rec['source_sha256']
+                      } if rec is not None else None)})
     return {
-        'source':'NASA OSD-575 / Inspiration4',
-        'study_url':NASA_SOURCE_CATALOG[0]['url'],
-        'source_kind':'HISTORICAL_THIRD_PARTY_MIRROR_NOT_LIVE' if assay=='CBC' else 'HISTORICAL_DISCRETE_SAMPLES_NOT_LIVE',
-        'subject_id':subject_id,'total_biomarkers':len(items),
-        'offset':offset,'limit':limit,'biomarkers':items[offset:offset+limit],
+        'source':'Verified original NASA OSDR OSD-569 and OSD-575',
+        'study_url':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-569' if _assay_name(assay)=='CBC'
+                    else 'https://osdr.nasa.gov/bio/repo/data/studies/OSD-575',
+        'source_kind':'NASA_OSDR_VERIFIED_HISTORICAL_LAB_NOT_LIVE',
+        'subject_id':subject_id,'assay':_assay_name(assay),
+        'total_biomarkers':len(items),'offset':offset,'limit':limit,
+        'biomarkers':items[offset:offset+limit],
         'classification':'NOT_EVALUATED',
-        'cbc_mirror_qc':'ONE_RECORD_QUARANTINED_SOURCE_UNVERIFIED' if assay=='CBC' else None,
-        'warning':'Last available sample by study timepoint, not a current reading. Source intervals are lab metadata, not mission emergency thresholds. No extrapolation or linkage to fictional simulator crew.'
+        'warning':'Most recent observed lab timepoint, not a live value. Source QC flags are preserved. Do not interpret as current astronaut health.'
     }
 
-
 @router.get('/biomarker-screening/{subject_id}')
-def biomarker_screening(subject_id: str, assay: str=Query(default='CMP',
-                                                     pattern=r'^(CMP|NULISA|CBC)
-def method():
-    return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
-            'data_domain':'HISTORICAL_OSD_575_SERUM_LAB_ASSAYS',
-            'core_property':'leave-one-baseline-out sign and screen consistency for sparse personal reference observations',
-            'headline_exploratory_observation':{'median_only_heuristic_flags':195,
-                 'baseline_sensitive_of_these_flags':68,'percent':34.87,
-                 'interpretation':'68 flags depend on omitted reference observations; they are NOT established false positives'},
-            'external_clinical_validation':False,
-            'documentation':'FINAL_APDRA_VALIDATION_REPORT.md',
-            'warning':'Do not apply this lab-panel method to simulated 1 Hz telemetry or interpret its screen as medical risk.'}
-),
-                        offset: int=Query(default=0,ge=0),
-                        limit: int=Query(default=250,ge=1,le=300)):
-    """Compare actual historical observations within participant and assay.
-
-    Returns numerical screening evidence, not medical risk or live telemetry.
-    """
+def biomarker_screening(subject_id:str,
+          assay: str=Query(default='CMP',
+                pattern=r'^(CBC|CMP|NULISA|ALAMAR_NPQ|EVE_IMMUNE|EVE_CARDIOVASCULAR)$'),
+          offset:int=Query(default=0,ge=0),
+          limit:int=Query(default=250,ge=1,le=300)):
     from .biomarker_detection import screen_historical_biomarkers
     _validate_subject(subject_id)
-    records=_cbc_measurements() if assay=='CBC' else _measurements()
-    report=screen_historical_biomarkers(records,subject_id=subject_id,assay=assay)
+    canonical=_assay_name(assay)
+    report=screen_historical_biomarkers(list(_verified_rows(canonical)),
+                                        subject_id=subject_id,assay=canonical)
     return {**report,'offset':offset,'limit':limit,
             'biomarkers':report['biomarkers'][offset:offset+limit]}
 
-
 @router.get('/method')
 def method():
-    return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
+    return {'algorithm':'APDRA','version':'0.7 FROZEN',
             'data_domain':'HISTORICAL_OSD_575_SERUM_LAB_ASSAYS',
             'core_property':'leave-one-baseline-out sign and screen consistency for sparse personal reference observations',
-            'headline_exploratory_observation':{'median_only_heuristic_flags':195,
-                 'baseline_sensitive_of_these_flags':68,'percent':34.87,
-                 'interpretation':'68 flags depend on omitted reference observations; they are NOT established false positives'},
+            'headline_exploratory_observation':{
+                'median_only_heuristic_flags':195,'baseline_sensitive_of_these_flags':68,
+                'percent':34.87,
+                'interpretation':'68 flags depend on omitted reference observations; they are NOT established false positives'},
             'external_clinical_validation':False,
             'documentation':'FINAL_APDRA_VALIDATION_REPORT.md',
             'warning':'Do not apply this lab-panel method to simulated 1 Hz telemetry or interpret its screen as medical risk.'}
