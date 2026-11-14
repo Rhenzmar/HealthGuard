@@ -172,18 +172,7 @@ def source_catalog():
 
 @router.get('/biomarker-panel')
 def biomarker_panel(subject_id: str=Query(default='C001'),
-                    assay: str | None=Query(default=None, pattern='^(CMP|NULISA)
-def method():
-    return {'algorithm':'APDRA', 'version':'0.7 FROZEN',
-            'data_domain':'HISTORICAL_OSD_575_SERUM_LAB_ASSAYS',
-            'core_property':'leave-one-baseline-out sign and screen consistency for sparse personal reference observations',
-            'headline_exploratory_observation':{'median_only_heuristic_flags':195,
-                 'baseline_sensitive_of_these_flags':68,'percent':34.87,
-                 'interpretation':'68 flags depend on omitted reference observations; they are NOT established false positives'},
-            'external_clinical_validation':False,
-            'documentation':'FINAL_APDRA_VALIDATION_REPORT.md',
-            'warning':'Do not apply this lab-panel method to simulated 1 Hz telemetry or interpret its screen as medical risk.'}
-),
+                    assay: str | None=Query(default=None, pattern=r'^(CMP|NULISA)$'),
                     search: str | None=Query(default=None,max_length=120),
                     offset:int=Query(default=0,ge=0),
                     limit:int=Query(default=250,ge=1,le=300)):
