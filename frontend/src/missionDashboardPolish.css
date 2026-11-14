@@ -78,3 +78,57 @@
  .hg6-quick-actions button,.hg6-vital-lines button,.hg6-crew-card{transition:none}
  .hg6-quick-actions button:hover{transform:none}
 }
+
+/* Focused dashboard with separate detail pages */
+.hg6-main>.hg6-telemetry-compact,.hg6-main>.hg6-analysis-grid,.hg6-main>.hg6-dashboard-foot{position:relative;z-index:1}
+.hg6-dashboard-foot{margin-top:14px;padding:16px 19px;border:1px solid #31566e;background:#0b2034;border-radius:13px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.hg6-dashboard-foot p{margin:5px 0 0;color:#9bbdca;font-size:11px;line-height:1.6;max-width:660px}
+.hg6-dashboard-links{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:9px}
+.hg6-dashboard-links button,.hg6-subpage-heading button{background:#113f55;border:1px solid #358397;color:#c9f8f5;border-radius:8px;padding:10px 12px;display:inline-flex;align-items:center;gap:8px;font-size:11px;cursor:pointer;white-space:nowrap}
+.hg6-dashboard-links button:hover,.hg6-subpage-heading button:hover{border-color:#61dfd7;background:#155569}
+.hg6-subpage-heading{padding:33px 5px 20px;display:flex;align-items:flex-end;justify-content:space-between;gap:15px;position:relative;z-index:1}
+.hg6-subpage-heading h1{font-size:clamp(27px,3.3vw,39px);margin:8px 0;letter-spacing:-.8px}
+.hg6-subpage-heading p{font-size:12px;line-height:1.6;color:#abc6d2;margin:0}
+.hg6-telemetry-compact{display:grid;grid-template-columns:minmax(290px,.7fr) minmax(0,1.3fr);gap:13px;margin:13px 0}
+.hg6-telemetry-compact>.hg6-card{min-width:0}
+.hg6-telemetry-compact .hg6-trend{min-height:270px}
+.hg6-telemetry-compact .hg6-trend-plot{min-height:170px}
+.hg6-telemetry-compact .hg6-trend-plot svg{max-height:180px}
+.hg6-analysis-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px;margin:12px 0}
+.hg6-analysis-grid>.hg6-card{min-width:0}
+.hg6-analysis-detail .hg6-analysis-rows{padding:4px 16px 14px}
+.hg6-analysis-rows>div{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:13px 2px;border-bottom:1px solid #31526a;font-size:11px}
+.hg6-analysis-rows>div:last-child{border:0}
+.hg6-analysis-rows span{color:#a9c7d3}
+.hg6-analysis-rows strong{text-align:right;color:#e6f6f9}
+.hg6-analysis-rows small{grid-column:1/-1;color:#8bafbe;font-size:10px}
+.hg6-analysis-history{margin-top:14px}
+.hg6-history-items{padding:7px 16px}
+.hg6-history-items>div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #294b5e;padding:11px 0;font-size:11px}
+.hg6-history-items>div:last-child{border:0}
+.hg6-history-items span{color:#9bbbc8}
+.hg6-page-note{color:#9bbbc8;font-size:11px;line-height:1.65;padding:12px 3px;position:relative;z-index:1}
+.sidebar .nav-wrapper{overflow:visible;gap:5px}
+.sidebar .nav-wrapper nav{flex:0 1 auto}
+.sidebar .nav-more{position:relative;flex:none}
+.sidebar .nav-more-trigger{display:flex;align-items:center;gap:7px;cursor:pointer}
+.sidebar .nav-more-menu{position:absolute;right:0;top:calc(100% + 8px);min-width:240px;background:#092237;border:1px solid #3c7388;border-radius:10px;box-shadow:0 16px 45px #0008;padding:6px;z-index:100}
+.sidebar .nav-more-option{width:100%;display:flex;align-items:center;gap:11px;text-align:left;background:transparent;color:#d6eaf1;border:0;border-radius:7px;padding:11px;cursor:pointer}
+.sidebar .nav-more-option:hover,.sidebar .nav-more-option.active{background:#164157}
+.sidebar .nav-more-option>svg{color:#68d8d6;flex:none}
+.sidebar .nav-more-option span{display:flex;flex-direction:column;gap:3px}
+.sidebar .nav-more-option strong{font-size:11px}
+.sidebar .nav-more-option small{font-size:9px;color:#99b9c6}
+@media(max-width:1100px){
+ .sidebar .nav-wrapper{min-width:0;overflow:visible}
+ .sidebar .nav-wrapper nav{overflow-x:auto;max-width:100%}
+ .sidebar .nav-item{padding:9px 6px}
+ .hg6-telemetry-compact{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+ .hg6-dashboard-foot,.hg6-subpage-heading{flex-direction:column;align-items:flex-start}
+ .hg6-dashboard-links{justify-content:flex-start}
+ .hg6-analysis-grid{grid-template-columns:1fr}
+ .hg6-telemetry-compact{grid-template-columns:1fr}
+ .hg6-subpage-heading{padding-top:24px}
+}
