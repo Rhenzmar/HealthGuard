@@ -1,0 +1,490 @@
+{
+  "model_metadata": {
+    "version": "candidate-17ch-two-branch-v1",
+    "schema_version": "healthguard.17ch.synthetic.v1",
+    "schema_sha256": "311901690a4c256ee9cc2cd8ade97f7a2fe537ea65153cb86f9cb8031e9a71ef",
+    "feature_order": [
+      "heart_rate_bpm",
+      "spo2_percent",
+      "respiratory_rate_bpm",
+      "core_temp_c",
+      "hrv_rmssd_ms",
+      "systolic_bp_mmhg",
+      "diastolic_bp_mmhg",
+      "peripheral_temp_c",
+      "etco2_mmhg",
+      "cabin_co2_ppm",
+      "cabin_o2_percent",
+      "cabin_pressure_kpa",
+      "cabin_temp_c",
+      "cabin_humidity_percent",
+      "radiation_rate_usv_h",
+      "cumulative_dose_usv",
+      "suit_o2_remaining_percent"
+    ],
+    "branches": {
+      "physiological": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "engineering": [
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    "reference_points": 45,
+    "window_points": 60,
+    "cadence_hz": 1,
+    "seed": 1729,
+    "calibration_threshold": 0.007730300538241863,
+    "threshold_source": "95TH_PERCENTILE_DISJOINT_SYNTHETIC_NORMAL_CALIBRATION",
+    "training_domain": "FULLY_SYNTHETIC_NORMAL_ONLY",
+    "training_episodes": 320,
+    "calibration_episodes": 96,
+    "best_epoch": 32,
+    "epochs_run": 32,
+    "model_input_shape": [
+      17,
+      60
+    ],
+    "NASA_OSD569_575_used_for_continuous_training": false,
+    "clinical_validation": false,
+    "deployment_status": "CANDIDATE_NOT_ACTIVATED"
+  },
+  "checkpoint_sha256": "fe769bb9daa0d6e5b77c3a36bba2cff33007aec37e8d8909298257584069ce7c",
+  "dataset_manifest": {
+    "seed": 1729,
+    "schema_version": "healthguard.17ch.synthetic.v1",
+    "profile_disjoint": true,
+    "episode_disjoint": true,
+    "source_kind": "FULLY_SYNTHETIC_GENERATED_NOT_MEASURED",
+    "partitions": {
+      "train": {
+        "partition": "train",
+        "scenario": "NORMAL",
+        "episodes": 320,
+        "profile_ids": [
+          "TRAIN_P000",
+          "TRAIN_P001",
+          "TRAIN_P002",
+          "TRAIN_P003",
+          "TRAIN_P004",
+          "TRAIN_P005",
+          "TRAIN_P006",
+          "TRAIN_P007",
+          "TRAIN_P008",
+          "TRAIN_P009",
+          "TRAIN_P010",
+          "TRAIN_P011"
+        ],
+        "tensor_shape": [
+          320,
+          17,
+          60
+        ],
+        "sha256": "0baeb8417d1705f7b4653b1a0a267a6a45cc49479d771e88a35c91f352b08a6e",
+        "file": "train.npz"
+      },
+      "calibration": {
+        "partition": "calibration",
+        "scenario": "NORMAL",
+        "episodes": 96,
+        "profile_ids": [
+          "CALIBRATION_P000",
+          "CALIBRATION_P001",
+          "CALIBRATION_P002",
+          "CALIBRATION_P003"
+        ],
+        "tensor_shape": [
+          96,
+          17,
+          60
+        ],
+        "sha256": "0ba5ca09f161ab1173fd94ae560be4f301ebefcc163c2621066287f29ef52b17",
+        "file": "calibration.npz"
+      },
+      "test_normal": {
+        "partition": "test",
+        "scenario": "NORMAL",
+        "episodes": 96,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          96,
+          17,
+          60
+        ],
+        "sha256": "c30a78ff186725328e30447168a70b477efddf63681926cc2556c49a7108668d",
+        "file": "test_normal.npz"
+      },
+      "test_oxygenation": {
+        "partition": "test",
+        "scenario": "oxygenation",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "92ab0858f537840076246bb1575023df4380ad395b7cba50558674a9632ac8bd",
+        "file": "test_oxygenation.npz"
+      },
+      "test_exertion": {
+        "partition": "test",
+        "scenario": "exertion",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "90c728bbb6bd6ea53f79b552944bb008e517fd30a7288166b7829939c2b1cf1a",
+        "file": "test_exertion.npz"
+      },
+      "test_thermal": {
+        "partition": "test",
+        "scenario": "thermal",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "98dca846784870b0e19f20f1f37d8a1af9c9aeb1173f13f3e5bbc522ae7a67c4",
+        "file": "test_thermal.npz"
+      },
+      "test_sensor": {
+        "partition": "test",
+        "scenario": "sensor",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "69e1bad37bcad381b9c8ba232af554e49a18523a82fd03d0dd96a09f24a3b589",
+        "file": "test_sensor.npz"
+      },
+      "test_co2": {
+        "partition": "test",
+        "scenario": "co2",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "626898f8f58c2624ff2e140c60391f266708a3a49274ca0c18dd9152c08d7b7b",
+        "file": "test_co2.npz"
+      },
+      "test_cabin_leak": {
+        "partition": "test",
+        "scenario": "cabin_leak",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "374cf58c81a48bea587eef4d2670449b41dad528ce4acb43b69ca0b08c167677",
+        "file": "test_cabin_leak.npz"
+      },
+      "test_radiation": {
+        "partition": "test",
+        "scenario": "radiation",
+        "episodes": 24,
+        "profile_ids": [
+          "TEST_P000",
+          "TEST_P001",
+          "TEST_P002",
+          "TEST_P003"
+        ],
+        "tensor_shape": [
+          24,
+          17,
+          60
+        ],
+        "sha256": "87bde088ac116398f4c6c62fabfc0c6f16d4bae250afb017c46ee06fc53eda60",
+        "file": "test_radiation.npz"
+      }
+    }
+  },
+  "evaluation": {
+    "synthetic_roc_auc_overall": 1.0,
+    "normal_test_n": 96,
+    "abnormal_test_n": 168,
+    "normal_test_false_flag_rate": 0.010416666666666666,
+    "normal_mean_error": 0.006512188818305731,
+    "abnormal_mean_error": 888.0595092773438,
+    "by_scripted_scenario": {
+      "oxygenation": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 1.2389806509017944,
+        "engineering_mean_error": 0.00038035635952837765,
+        "overall_mean_error": 0.6561099290847778
+      },
+      "exertion": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 1.5644416809082031,
+        "engineering_mean_error": 0.003695891937240958,
+        "overall_mean_error": 0.829973042011261
+      },
+      "thermal": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 1.5369621515274048,
+        "engineering_mean_error": 0.06350045651197433,
+        "overall_mean_error": 0.8435683250427246
+      },
+      "sensor": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 2.408799171447754,
+        "engineering_mean_error": 0.00046386002213694155,
+        "overall_mean_error": 1.2754648923873901
+      },
+      "co2": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 0.5290088057518005,
+        "engineering_mean_error": 5.348411560058594,
+        "overall_mean_error": 2.7969629764556885
+      },
+      "cabin_leak": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 1.229902744293213,
+        "engineering_mean_error": 1.6173423528671265,
+        "overall_mean_error": 1.4122272729873657
+      },
+      "radiation": {
+        "n": 24,
+        "overall_flag_rate_at_fixed_calibration_threshold": 1.0,
+        "physiological_mean_error": 0.10295004397630692,
+        "engineering_mean_error": 13193.1630859375,
+        "overall_mean_error": 6208.6015625
+      }
+    },
+    "synthetic_only": true,
+    "clinical_validation": false,
+    "caution": "ROC-AUC here reflects seven synthetic perturbations created by the same generator family as training. It is not clinical or astronaut-health performance."
+  },
+  "training_history": [
+    {
+      "epoch": 1,
+      "training_loss": 0.026041415706276893,
+      "calibration_mean_error_for_early_stopping": 0.026312440633773804
+    },
+    {
+      "epoch": 2,
+      "training_loss": 0.02361849173903465,
+      "calibration_mean_error_for_early_stopping": 0.025634944438934326
+    },
+    {
+      "epoch": 3,
+      "training_loss": 0.022711264342069624,
+      "calibration_mean_error_for_early_stopping": 0.023364232853055
+    },
+    {
+      "epoch": 4,
+      "training_loss": 0.01883159503340721,
+      "calibration_mean_error_for_early_stopping": 0.0162174254655838
+    },
+    {
+      "epoch": 5,
+      "training_loss": 0.013553950376808644,
+      "calibration_mean_error_for_early_stopping": 0.016237931326031685
+    },
+    {
+      "epoch": 6,
+      "training_loss": 0.012954258918762207,
+      "calibration_mean_error_for_early_stopping": 0.014100652188062668
+    },
+    {
+      "epoch": 7,
+      "training_loss": 0.012503905780613422,
+      "calibration_mean_error_for_early_stopping": 0.014334325678646564
+    },
+    {
+      "epoch": 8,
+      "training_loss": 0.01222433876246214,
+      "calibration_mean_error_for_early_stopping": 0.013679444789886475
+    },
+    {
+      "epoch": 9,
+      "training_loss": 0.011901245079934597,
+      "calibration_mean_error_for_early_stopping": 0.013739312998950481
+    },
+    {
+      "epoch": 10,
+      "training_loss": 0.011761587671935558,
+      "calibration_mean_error_for_early_stopping": 0.013510883785784245
+    },
+    {
+      "epoch": 11,
+      "training_loss": 0.011658485978841782,
+      "calibration_mean_error_for_early_stopping": 0.013362615369260311
+    },
+    {
+      "epoch": 12,
+      "training_loss": 0.011451775953173638,
+      "calibration_mean_error_for_early_stopping": 0.01312993373721838
+    },
+    {
+      "epoch": 13,
+      "training_loss": 0.011084597185254097,
+      "calibration_mean_error_for_early_stopping": 0.012625868432223797
+    },
+    {
+      "epoch": 14,
+      "training_loss": 0.010840455256402492,
+      "calibration_mean_error_for_early_stopping": 0.012492368929088116
+    },
+    {
+      "epoch": 15,
+      "training_loss": 0.010689216479659081,
+      "calibration_mean_error_for_early_stopping": 0.012397455982863903
+    },
+    {
+      "epoch": 16,
+      "training_loss": 0.010608943365514278,
+      "calibration_mean_error_for_early_stopping": 0.01227914821356535
+    },
+    {
+      "epoch": 17,
+      "training_loss": 0.010476488806307315,
+      "calibration_mean_error_for_early_stopping": 0.012052019126713276
+    },
+    {
+      "epoch": 18,
+      "training_loss": 0.01027123760432005,
+      "calibration_mean_error_for_early_stopping": 0.011649406515061855
+    },
+    {
+      "epoch": 19,
+      "training_loss": 0.009844578802585602,
+      "calibration_mean_error_for_early_stopping": 0.010670769028365612
+    },
+    {
+      "epoch": 20,
+      "training_loss": 0.008864476718008519,
+      "calibration_mean_error_for_early_stopping": 0.008953722193837166
+    },
+    {
+      "epoch": 21,
+      "training_loss": 0.007634868007153272,
+      "calibration_mean_error_for_early_stopping": 0.008036329410970211
+    },
+    {
+      "epoch": 22,
+      "training_loss": 0.007208007574081421,
+      "calibration_mean_error_for_early_stopping": 0.007526790257543325
+    },
+    {
+      "epoch": 23,
+      "training_loss": 0.006848382018506527,
+      "calibration_mean_error_for_early_stopping": 0.007446382660418749
+    },
+    {
+      "epoch": 24,
+      "training_loss": 0.006785537209361791,
+      "calibration_mean_error_for_early_stopping": 0.007280632387846708
+    },
+    {
+      "epoch": 25,
+      "training_loss": 0.006610068120062351,
+      "calibration_mean_error_for_early_stopping": 0.007081225514411926
+    },
+    {
+      "epoch": 26,
+      "training_loss": 0.006508569139987231,
+      "calibration_mean_error_for_early_stopping": 0.006971443071961403
+    },
+    {
+      "epoch": 27,
+      "training_loss": 0.006436790432780981,
+      "calibration_mean_error_for_early_stopping": 0.0069110882468521595
+    },
+    {
+      "epoch": 28,
+      "training_loss": 0.006386678852140904,
+      "calibration_mean_error_for_early_stopping": 0.006837805267423391
+    },
+    {
+      "epoch": 29,
+      "training_loss": 0.006330669857561588,
+      "calibration_mean_error_for_early_stopping": 0.006792543455958366
+    },
+    {
+      "epoch": 30,
+      "training_loss": 0.006298324465751648,
+      "calibration_mean_error_for_early_stopping": 0.006757006049156189
+    },
+    {
+      "epoch": 31,
+      "training_loss": 0.006264961883425712,
+      "calibration_mean_error_for_early_stopping": 0.0067155552096664906
+    },
+    {
+      "epoch": 32,
+      "training_loss": 0.006241038162261248,
+      "calibration_mean_error_for_early_stopping": 0.006692320108413696
+    }
+  ],
+  "comparison_note": "Existing 5-channel frozen CNN preserved, with no direct comparable 17-channel real-world benchmark."
+}
