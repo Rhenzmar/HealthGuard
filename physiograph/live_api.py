@@ -25,6 +25,7 @@ from physiograph.baseline_monitor import load_baseline, DEFAULT_BASELINE
 from physiograph.live_review import build_live_review
 from physiograph.research_api import router as research_router
 from physiograph.engineering_sim import engineering_snapshot, SIGNALS as ENGINEERING_SIGNALS, CREW_IDS as ENGINEERING_CREW_IDS
+from physiograph.biomarker_detection import evaluate_engineering, combined_live_review, scripted_environment_review
 from physiograph.context_monitor import LiveQualityMonitor, ContextReviewMonitor, CHECK_INTERVAL_S
 from physiograph.live_telemetry import (
     LiveStore, METRICS, SOURCE, TelemetryError, ConflictError, validate_sample,
@@ -97,6 +98,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
     api.state.deep_learning = load_monitor(DEFAULT_CHECKPOINT if checkpoint_path is None else checkpoint_path)
     api.state.comparison = load_baseline(DEFAULT_BASELINE if baseline_path is None else baseline_path)
     api.state.latest_review: dict[str, dict] = {}
+    api.state.multisystem_latest: dict[str, dict] = {}
     api.state.quality = LiveQualityMonitor()
     api.state.context = ContextReviewMonitor()
     public_mode = os.getenv('PHYSIOGRAPH_PUBLIC_MODE','0').strip() == '1'
@@ -190,6 +192,23 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
             raise HTTPException(404,"This fictional crew has not received a physiological simulator packet")
         return engineering_snapshot(subject_id,latest["sequence"])
 
+    @api.get("/api/live/multisystem/{subject_id}")
+    def multisystem(subject_id: str):
+        if subject_id not in ENGINEERING_CREW_IDS:
+            raise HTTPException(404, "Unknown fictional demo crew member")
+        result=api.state.multisystem_latest.get(subject_id)
+        if result is None:
+            raise HTTPException(404, "Waiting for simulated telemetry for this crew member")
+        return result
+
+    @api.get("/api/simulation/scenario-review/{subject_id}/{scenario_id}")
+    def scenario_review(subject_id: str, scenario_id: str,
+                        second: int = Query(0,ge=0,le=64)):
+        try:
+            return scripted_environment_review(subject_id,scenario_id,second)
+        except ValueError as exc:
+            raise HTTPException(422,str(exc)) from exc
+
     @api.get("/api/live/snapshot")
     def snapshot():
         return api.state.store.snapshot()
@@ -282,6 +301,12 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         context_review = api.state.context.process(sample,analysis,comparison,review,quality)
         review['contextual_decision'] = context_review['status']
         api.state.latest_review[sample.subject_id]=review
+        if sample.subject_id in ENGINEERING_CREW_IDS:
+            engineering=evaluate_engineering(sample.subject_id,sample.sequence)
+            combined=combined_live_review(sample.subject_id,result["packet"],
+                                          analysis,comparison,context_review,engineering)
+            api.state.multisystem_latest[sample.subject_id]=combined
+            result["multisystem"]=combined
         result["deep_learning"]=analysis
         result["comparison"]=comparison
         result["live_review"]=review
@@ -289,7 +314,8 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         await api.state.hub.publish({"type":"telemetry", "packet":result["packet"],
                                      "deep_learning":analysis,
                                      "comparison":comparison,"live_review":review,
-                                     'context_review':context_review})
+                                     'context_review':context_review,
+                                      'multisystem':result.get('multisystem')})
         return result
 
     @api.post("/api/live/ingest", status_code=201)
