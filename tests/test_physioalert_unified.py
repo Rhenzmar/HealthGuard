@@ -116,3 +116,10 @@ def test_unified_api_stream_and_voice_separate_from_original_context(monkeypatch
         assert body["multisystem"]["physioalert_unified"]==unified
         assert body["context_review"]["subject_id"]=="SIM_CREW_01"
         assert "voice_ready_script" in unified
+        voice=c.get("/api/live/physioalert-unified/voice/SIM_CREW_01")
+        assert voice.status_code==200
+        assert voice.json()["sequence"]==0
+        assert voice.json()["text"]==unified["voice_ready_script"]
+        assert voice.json()["generation"]=="DETERMINISTIC_TEMPLATE_NOT_LLM"
+        assert c.get("/api/live/physioalert-unified/voice/C001").status_code==404
+        assert c.get("/api/live/physioalert-unified/voice/SIM_CREW_02").status_code==404
