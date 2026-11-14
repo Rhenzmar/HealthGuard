@@ -82,6 +82,19 @@ def episode(center: np.ndarray, rng: np.random.Generator,
     effort = np.sin(t/rng.uniform(15,28)+rng.uniform(0,2*np.pi)) + .4*shared
     slow = np.sin(t/rng.uniform(26,54)+rng.uniform(0,2*np.pi))
     noise = rng.normal(size=(n,17))
+    # Wider normal oscillator family: the original training profiles varied
+    # too slowly for ordinary replay rhythms. These independent synthetic
+    # benign fluctuations cover diverse phase/frequency combinations.
+    fast_periods = rng.uniform(4.0,13.0,size=9)
+    fast_phases = rng.uniform(0,2*np.pi,size=9)
+    fast_amplitudes = rng.uniform(.4,1.0,size=9) * np.array(
+        [3.4,.22,.85,.095,4.1,4.5,2.2,.35,1.8],dtype=float
+    )
+    fast_normal = (np.sin(t[:,None]/fast_periods[None,:]+fast_phases[None,:])
+                   *fast_amplitudes[None,:])
+    long_drift = (t/(n-1))[:,None] * (rng.normal(size=9)[None,:]
+                  * np.array([2.6,.14,.48,.06,2.7,3.2,2.1,.22,1.2])[None,:])
+    raw[:,:9] += fast_normal + long_drift
     # Existing five physiological channels, unchanged input ordering.
     raw[:,0] += 2.4*effort + 1.1*noise[:,0]
     raw[:,1] += -.06*effort + .08*noise[:,1]
