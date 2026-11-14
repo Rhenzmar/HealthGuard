@@ -11,6 +11,7 @@ export default function ScenarioConsole({
   const scenario=SCENARIOS.find(s=>s.id===scenarioId);
   const active=Boolean(scenario);
   const alert=Boolean(sample?.alert);
+  const tier=sample?.severity||'OPTIMAL';
   return <section className={'hg6-scenario-console '+(alert?'hg6-scenario-alarm':'')} aria-label="Interactive simulated emergency training">
     <div className="hg6-scenario-heading">
       <div className="hg6-scenario-heading-title">
@@ -32,6 +33,7 @@ export default function ScenarioConsole({
       </div>
     </div>
     {active?<div className="hg6-scenario-running">
+      <div className="hg6-scenario-tier"><strong>Scripted training status</strong><div>{['OPTIMAL','CHECK','WARNING','CRITICAL'].map(level=><span key={level} className={'hg6-tier-'+level.toLowerCase()+(level===tier?' active':'')}>{level}</span>)}</div><small>Illustrative progression only. No medically validated severity thresholds.</small></div>
       <div className="hg6-scenario-timeline">
         <div className="hg6-scenario-timeline-top"><div><strong>{scenario.name}</strong><p>{scenario.subtitle}</p></div><span className="hg6-scenario-timer">T+{String(Math.floor(elapsed/60)).padStart(2,'0')}:{String(elapsed%60).padStart(2,'0')} / 01:04</span></div>
         <div className="hg6-scenario-track" role="progressbar" aria-label="Scenario progress" aria-valuenow={elapsed} aria-valuemin={0} aria-valuemax={SCENARIO_LENGTH}><span style={{width:(elapsed/SCENARIO_LENGTH*100)+'%'}}/></div>
@@ -43,9 +45,9 @@ export default function ScenarioConsole({
         <div><span>{alert?'SIMULATED ALERT · ACTION REVIEW':elapsed>=SCENARIO_LENGTH?'SCENARIO COMPLETE':'SCRIPTED MONITORING'}</span><h3>{alert?'Physiological pattern deviation':sample?.stage||'Baseline'}</h3><p>{sample?.reason||'The fictional telemetry will change once playback begins.'}</p></div>
       </div>
       <div className="hg6-scenario-live-grid">
-        {METRICS.map(metric=><div key={metric.key} className={'hg6-scenario-metric '+(sample?.flags?.[metric.key]?'hg6-scenario-metric-alert':'')}>
+        {METRICS.map(metric=><div key={metric.key} className={'hg6-scenario-metric hg6-scenario-metric-'+(sample?.metric_levels?.[metric.key]||'OPTIMAL').toLowerCase()}>
           <span>{metric.label}</span><strong>{formatValue(sample?.values?.[metric.key],metric.digits)} <small>{metric.unit}</small></strong>
-          <em>{sample?.flags?.[metric.key]?'SCRIPTED DEVIATION':'SIMULATED'}</em>
+          <em>{sample?.metric_levels?.[metric.key]||'OPTIMAL'} · SCRIPTED</em>
         </div>)}
       </div>
       <div className="hg6-scenario-guidance"><div><strong><Icon name="shield" size={16}/> Training response guidance</strong><p>{scenario.guidance}</p></div><button type="button" onClick={onSpeak}><Icon name="volume" size={16}/> Speak guidance</button></div>
