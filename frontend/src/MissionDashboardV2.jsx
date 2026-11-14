@@ -151,7 +151,7 @@ function CrewTelemetry({person,selected,latest,samples,review,cnn,comparison,onC
   </section>;
 }
 
-function CrewProfile({person,onClose,onMission}){
+function CrewProfile({person,onClose,onMission,latest,training}){
   return <section className="hg6-profile" aria-label={person.name+' astronaut profile'}>
     <button type="button" className="hg6-profile-back" onClick={onClose}><Icon name="arrow" size={17}/> Back to crew overview</button>
     <div className="hg6-profile-grid">
@@ -163,9 +163,9 @@ function CrewProfile({person,onClose,onMission}){
         <p className="hg6-overline">HEALTHGUARD · CREW PROFILE</p>
         <h1>{person.name}</h1>
         <p className="hg6-profile-role">{person.role} · Artemis IV demonstration</p>
-        <div className="hg6-profile-status"><Icon name="radio" size={21}/><div><strong>Telemetry not connected</strong><p>This astronaut has a demonstration profile but no live or simulated physiological data source assigned.</p></div></div>
-        <div className="hg6-profile-details"><div><span>Heart rate</span><strong>Not available</strong></div><div><span>Oxygen saturation</span><strong>Not available</strong></div><div><span>PhysioAlert</span><strong>Awaiting data</strong></div><div><span>Routine progress</span><strong>Not recorded</strong></div></div>
-        <p className="hg6-profile-context">When an independent telemetry feed is implemented for this fictional crew member, their measurements and reviews can be shown here. Until then, no readings or health status are invented.</p>
+        <div className="hg6-profile-status"><Icon name="radio" size={21}/><div><strong>{latest?'Simulator profile active':'Awaiting simulator stream'}</strong><p>{latest?'This astronaut has an independent fictional physiological simulator feed.':'No recent fictional telemetry packet available for this crew member.'} Not a real astronaut medical record.</p></div></div>
+        <div className="hg6-profile-details"><div><span>Heart rate</span><strong>{formatValue(latest?.values?.heart_rate_bpm,0)} bpm</strong></div><div><span>Oxygen saturation</span><strong>{formatValue(latest?.values?.spo2_percent,1)}%</strong></div><div><span>Telemetry mode</span><strong>{training?'Scripted training':'Fictional simulation'}</strong></div><div><span>Routine progress</span><strong>Not recorded</strong></div></div>
+        <p className="hg6-profile-context">Physiological values are fictional simulator samples, not observations from a person in space. Historical NASA OSDR records are not assigned to this crew member.</p>
         <div className="hg6-profile-actions"><button type="button" onClick={onClose}>Return to dashboard</button><button type="button" onClick={onMission}>Mission Control <Icon name="arrow" size={15}/></button></div>
       </div>
     </div>
@@ -256,7 +256,7 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   return <div className="hg6-shell">
-    {infoProfile?<CrewProfile person={infoProfile} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry person={activeCrew} selected={selected} latest={latest} samples={displaySamples} review={displayReview} cnn={training?null:cnn} comparison={training?null:comparison} training={training} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
+    {infoProfile?<CrewProfile person={infoProfile} latest={latest} training={training} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry person={activeCrew} selected={selected} latest={latest} samples={displaySamples} review={displayReview} cnn={training?null:cnn} comparison={training?null:comparison} training={training} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
     <main className="hg6-main">
       <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={hasTelemetry?review:null} progress={progress} subjects={subjects} hasTelemetry={Boolean(training)||hasTelemetry} training={training}/>
       {error&&<div className="hg6-network-error" role="status"><Icon name="alert" size={16}/>Telemetry connection issue: {error}. No missing measurements are filled in.</div>}
