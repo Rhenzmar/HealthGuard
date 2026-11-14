@@ -17,15 +17,19 @@ test('All scenarios begin with no flags, activate their expected trigger and rec
     oxygenation:'spo2_percent',
     exertion:'heart_rate_bpm',
     thermal:'core_temp_c',
-    sensor:'spo2_percent'
+    sensor:'spo2_percent',
+    co2:'respiratory_rate_bpm',
+    cabin_leak:'spo2_percent',
+    radiation:'radiation_rate_usv_h'
   };
   for(const s of SCENARIOS){
     const baseline=scenarioAt('SIM_CREW_01',s.id,0);
     const peak=scenarioAt('SIM_CREW_01',s.id,35);
     const recovery=scenarioAt('SIM_CREW_01',s.id,SCENARIO_LENGTH);
     assert.equal(baseline.alert,false,s.id);
-    assert.equal(peak.flags[keys[s.id]],true,s.id);
+    assert.equal(s.id==='radiation'?peak.engineering_flags[keys[s.id]]:peak.flags[keys[s.id]],true,s.id);
     assert.equal(recovery.alert,false,s.id);
+    assert.equal(recovery.severity,'OPTIMAL',s.id);
     assert.equal(recovery.stage,'Complete',s.id);
   }
 });
@@ -50,4 +54,18 @@ test('Four-tier scripted status progresses and recovers without classifying labs
   assert.equal(peak.metric_levels.spo2_percent,'CRITICAL');
   assert.equal(peak.metric_levels.core_temp_c,'OPTIMAL');
   assert.equal(peak.source,'SCRIPTED_TRAINING_SCENARIO');
+});
+
+test('Environmental disturbances change only scripted engineering values',()=>{
+ const co2=scenarioAt('SIM_CREW_02','co2',35);
+ const leak=scenarioAt('SIM_CREW_02','cabin_leak',35);
+ const radiation=scenarioAt('SIM_CREW_02','radiation',35);
+ assert(co2.engineering_values.cabin_co2_ppm>4000);
+ assert(co2.engineering_flags.cabin_co2_ppm);
+ assert(leak.engineering_values.cabin_pressure_kpa<85);
+ assert(leak.engineering_flags.cabin_pressure_kpa);
+ assert(radiation.engineering_values.radiation_rate_usv_h>1000);
+ assert(radiation.engineering_flags.radiation_rate_usv_h);
+ assert.equal(radiation.flags.spo2_percent,false);
+ assert.equal(radiation.source,'SCRIPTED_TRAINING_SCENARIO');
 });
