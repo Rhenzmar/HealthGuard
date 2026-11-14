@@ -1,132 +1,150 @@
-"""Download explicitly named original NASA OSDR files, with no mirror fallback.
+"""Download NASA OSDR primary source files, discovered from NASA's own file API.
 
-Usage:
-    python -m tools.download_official_nasa_osdr
-    python -m tools.download_official_nasa_osdr --output data/external/nasa_osdr
-
-Files are requested solely from NASA's OSDR data service over HTTPS. Failed
-downloads are reported as failures; they are never substituted with synthetic
-or unofficial data. SHA-256, download time, source URL and file size are logged.
+python -m tools.download_official_nasa_osdr
+Only nasa.gov file metadata/remote_url is trusted. No mirror, no guessed filenames,
+no synthetic fallback. Manifest records HTTP provenance, SHA256, and failures.
 """
 from __future__ import annotations
 import argparse
 import csv
 import hashlib
+import io
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 ROOT=Path(__file__).resolve().parent.parent
 HOST='https://osdr.nasa.gov'
-STUDIES={
-    'OSD-569':(
-        'LSDS-7_Complete_Blood_Count_CBC_TRANSFORMED.csv',
-    ),
-    'OSD-575':(
-        'LSDS-8_Comprehensive_Metabolic_Panel_CMP_TRANSFORMED.csv',
-        'LSDS-8_Multiplex_serum_immune_EvePanel_TRANSFORMED.csv',
-        'LSDS-8_Multiplex_serum_cardiovascular_EvePanel_TRANSFORMED.csv',
-        'LSDS-8_Multiplex_serum.immune.AlamarPanel_TRANSFORMED.csv',
-    ),
-}
+STUDIES=('OSD-569','OSD-575')
 
 
-def url_for(study: str, filename: str) -> str:
-    if study not in STUDIES or filename not in STUDIES[study]:
-        raise ValueError('Only predeclared NASA dataset file names are supported')
-    return (f'{HOST}/geode-py/ws/studies/{study}/download?'
-            + urlencode({'source':'datamanager','file':filename}))
-
-
-def check_csv(blob: bytes, expected_study: str, name: str):
-    if not blob or len(blob) > 80_000_000:
-        raise ValueError('Empty or unexpectedly oversized NASA file')
-    try:
-        content=blob.decode('utf-8-sig')
-    except UnicodeDecodeError as exc:
-        raise ValueError('Expected UTF-8 CSV file') from exc
-    if content.lstrip().startswith(('<!DOCTYPE','<html','{')):
-        raise ValueError('Response resembles HTML/JSON, not the requested NASA CSV')
-    reader=csv.reader(content.splitlines())
-    try:header=next(reader)
-    except StopIteration:raise ValueError('Missing source CSV header')
-    first=next(reader,None)
-    if first is None or len(header)<3:
-        raise ValueError('Missing source CSV measurements')
-    if len(first)!=len(header):
-        raise ValueError('Malformed first CSV row: number of columns differs from header')
-    if expected_study=='OSD-569' and 'Sample Name' not in header:
-        raise ValueError('OSD-569 CBC column schema mismatch')
-    return {'header_columns':len(header),'first_data_columns':len(first)}
-
-
-def fetch_file(study: str, name: str, directory: Path, timeout: float=40):
-    url=url_for(study,name)
-    request=Request(url,headers={
-        'User-Agent':'HealthGuard-NASA-OSDR-Provenance-Downloader/1.0',
-        'Accept':'text/csv,application/octet-stream;q=0.9',
-    })
-    with urlopen(request,timeout=timeout) as response:
-        final_url=response.geturl()
-        if not final_url.startswith(HOST+'/'):
-            raise ValueError('Unexpected redirect destination outside NASA OSDR')
+def nasa_request(url: str, timeout: float) -> bytes:
+    if urlparse(url).netloc!='osdr.nasa.gov' or not url.startswith(HOST+'/'):
+        raise ValueError('Only HTTPS URLs on osdr.nasa.gov are allowed')
+    with urlopen(Request(url, headers={'User-Agent':'HealthGuard-OSDR-SourceVerification/1.1'}),
+                 timeout=timeout) as response:
+        resolved=response.geturl()
+        if urlparse(resolved).netloc!='osdr.nasa.gov':
+            raise ValueError('External redirect refused')
         blob=response.read(80_000_001)
-    validation=check_csv(blob,study,name)
-    out=directory/study/name
-    out.parent.mkdir(parents=True,exist_ok=True)
-    out.write_bytes(blob)
-    return {
-        'study':study,'file':name,'status':'DOWNLOADED_FROM_NASA_OSDR',
-        'request_url':url,'resolved_url':final_url,
-        'retrieved_utc':datetime.now(timezone.utc).isoformat(),
-        'bytes':len(blob),'sha256':hashlib.sha256(blob).hexdigest(),
-        'local_file':str(out),'csv_schema':validation,
-    }
+    if len(blob)>80_000_000:
+        raise ValueError('NASA response exceeds source-file size limit')
+    return blob
 
 
-def download(output: Path, timeout: float=40):
-    entries=[]
-    for study,names in STUDIES.items():
-        for name in names:
-            try:
-                entry=fetch_file(study,name,output,timeout=timeout)
-                print(f"NASA VERIFIED DOWNLOAD: {study} / {name} ({entry['bytes']} bytes)")
-            except Exception as exc:
-                entry={
-                    'study':study,'file':name,'status':'NOT_DOWNLOADED',
-                    'request_url':url_for(study,name),
-                    'error_type':type(exc).__name__,
-                    'error':str(exc)[:500],
-                }
-                print(f"FAILED NASA DOWNLOAD: {study} / {name} ({entry['error_type']})")
-            entries.append(entry)
-    report={
-        'retrieval_source':'NASA OSDR HTTPS ONLY',
-        'mirror_fallback_allowed':False,
-        'downloaded':sum(x['status']=='DOWNLOADED_FROM_NASA_OSDR' for x in entries),
-        'failed':sum(x['status']=='NOT_DOWNLOADED' for x in entries),
-        'requested':len(entries),'files':entries,
-        'note':'Download and file-structure checks do not establish clinical validity, time-series alignment or suitability for 17-channel model training.',
-    }
+def discover(study: str, timeout: float = 40) -> list[dict]:
+    if study not in STUDIES:
+        raise ValueError('Unexpected study identifier')
+    study_number=study.split('-')[1]
+    url=f'{HOST}/osdr/data/osd/files/{study_number}'
+    raw=json.loads(nasa_request(url,timeout))
+    files=[]
+    # NASA's official Data File API returns JSON with a study_files mapping.
+    def walk(node):
+        if isinstance(node,dict):
+            if 'remote_url' in node and isinstance(node['remote_url'],str):
+                files.append(node)
+            for value in node.values():
+                if isinstance(value,(dict,list)):
+                    walk(value)
+        elif isinstance(node,list):
+            for value in node:
+                walk(value)
+    walk(raw)
+    seen=set(); results=[]
+    for item in files:
+        remote=item['remote_url']
+        if not remote.startswith('/geode-py/ws/studies/'+study+'/download?'):
+            continue
+        # Restrict to original, explicitly NASA-listed transformed data CSVs.
+        from urllib.parse import parse_qs
+        params=parse_qs(urlparse(remote).query)
+        filename=params.get('file',[''])[0]
+        upper=filename.upper()
+        if not filename.lower().endswith('.csv') or 'TRANSFORMED' not in upper:
+            continue
+        if study=='OSD-569' and 'BLOOD_COUNT' not in upper and 'CBC' not in upper:
+            continue
+        if study=='OSD-575' and not any(x in upper for x in ('METABOLIC','CMP','MULTIPLEX','ALAMAR')):
+            continue
+        if filename not in seen:
+            seen.add(filename)
+            results.append({'study':study,'filename':filename,'url':HOST+remote})
+    return sorted(results,key=lambda x:x['filename'])
+
+
+def validate_csv(blob: bytes, study: str, filename: str) -> dict:
+    content=blob.decode('utf-8-sig')
+    if content.lstrip().startswith(('<html','<!DOCTYPE','{')):
+        raise ValueError('Downloaded content is not CSV')
+    reader=csv.reader(io.StringIO(content))
+    header=next(reader,None)
+    if not header or len(header)<3:
+        raise ValueError('Missing CSV header')
+    count=0; width_issue=0
+    for row in reader:
+        if not row:continue
+        count+=1
+        if len(row)!=len(header):
+            width_issue+=1
+    if not count:
+        raise ValueError('No source observations')
+    if study=='OSD-569' and 'Sample Name' not in header:
+        raise ValueError('OSD-569 CBC schema does not contain Sample Name')
+    return {'columns':len(header),'rows':count,'inconsistent_row_widths':width_issue}
+
+
+def download(output: Path, timeout: float=40) -> dict:
     output.mkdir(parents=True,exist_ok=True)
-    (output/'official_source_manifest.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
+    entries=[]; discovery=[]
+    for study in STUDIES:
+        try:
+            candidates=discover(study,timeout)
+            discovery.append({'study':study,'status':'DISCOVERED','matching_files':len(candidates)})
+        except Exception as exc:
+            discovery.append({'study':study,'status':'DISCOVERY_FAILED',
+                              'error_type':type(exc).__name__,'error':str(exc)[:300]})
+            continue
+        for candidate in candidates:
+            try:
+                blob=nasa_request(candidate['url'],timeout)
+                structure=validate_csv(blob,study,candidate['filename'])
+                dest=output/study/candidate['filename']
+                dest.parent.mkdir(parents=True,exist_ok=True)
+                dest.write_bytes(blob)
+                entries.append({**candidate,'status':'DOWNLOADED_FROM_NASA_OSDR',
+                                'sha256':hashlib.sha256(blob).hexdigest(),
+                                'bytes':len(blob),'csv':structure,
+                                'downloaded_utc':datetime.now(timezone.utc).isoformat()})
+            except Exception as exc:
+                entries.append({**candidate,'status':'DOWNLOAD_OR_VALIDATION_FAILED',
+                                'error_type':type(exc).__name__,'error':str(exc)[:300]})
+    failures=sum(x['status']!='DOWNLOADED_FROM_NASA_OSDR' for x in entries)
+    failures+=sum(x['status']!='DISCOVERED' for x in discovery)
+    failures+=sum(x['status']=='DISCOVERED' and x['matching_files']==0 for x in discovery)
+    report={'source':'OFFICIAL_NASA_OSDR_FILE_API_ONLY',
+            'discovery':discovery,'files':entries,
+            'downloaded':sum(x['status']=='DOWNLOADED_FROM_NASA_OSDR' for x in entries),
+            'failures':failures,'mirror_fallback_allowed':False,
+            'note':'Original file acquisition and schema verification do not prove 17 synchronous channels or clinical validity.'}
+    (output/'official_source_manifest.json').write_text(
+        json.dumps(report,indent=2)+'\n',encoding='utf-8')
     return report
 
 
 def main():
-    p=argparse.ArgumentParser()
-    p.add_argument('--output',type=Path,default=ROOT/'data/external/nasa_osdr')
-    p.add_argument('--timeout',type=float,default=40)
-    args=p.parse_args()
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--output',type=Path,default=ROOT/'data/external/nasa_osdr')
+    parser.add_argument('--timeout',type=float,default=40)
+    args=parser.parse_args()
     report=download(args.output,args.timeout)
     print(json.dumps({'downloaded':report['downloaded'],
-                      'failed':report['failed'],
+                      'failures':report['failures'],
                       'manifest':str(args.output/'official_source_manifest.json')},indent=2))
-    if report['failed']:
+    if report['failures']:
         raise SystemExit(1)
-
 
 if __name__=='__main__':
     main()
