@@ -24,6 +24,7 @@ from physiograph.deep_learning import load_monitor, DEFAULT_CHECKPOINT
 from physiograph.baseline_monitor import load_baseline, DEFAULT_BASELINE
 from physiograph.live_review import build_live_review
 from physiograph.research_api import router as research_router
+from physiograph.engineering_sim import engineering_snapshot, SIGNALS as ENGINEERING_SIGNALS, CREW_IDS as ENGINEERING_CREW_IDS
 from physiograph.context_monitor import LiveQualityMonitor, ContextReviewMonitor, CHECK_INTERVAL_S
 from physiograph.live_telemetry import (
     LiveStore, METRICS, SOURCE, TelemetryError, ConflictError, validate_sample,
@@ -171,6 +172,23 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         return {"source": SOURCE, "metrics": {k: {"min":a,"max":b,"unit":c,
                 "range_type":"TECHNICAL_INPUT_VALIDATION_NOT_CLINICAL"}
                 for k,(a,b,c) in METRICS.items()}}
+
+    @api.get("/api/simulation/engineering/channels")
+    def engineering_channels():
+        return {"source":"FICTIONAL_ENGINEERING_SIMULATOR",
+                "channels":ENGINEERING_SIGNALS,
+                "crew_ids":list(ENGINEERING_CREW_IDS),
+                "data_kind":"SYNTHETIC_NOT_MEASURED",
+                "warning":"These 12 channels are scripted estimates, not actual spacecraft or astronaut sensor measurements."}
+
+    @api.get("/api/simulation/engineering/{subject_id}")
+    def engineering_subject(subject_id: str):
+        if subject_id not in ENGINEERING_CREW_IDS:
+            raise HTTPException(404,"No engineering demonstration for this subject")
+        latest=api.state.store.latest(subject_id)
+        if latest is None:
+            raise HTTPException(404,"This fictional crew has not received a physiological simulator packet")
+        return engineering_snapshot(subject_id,latest["sequence"])
 
     @api.get("/api/live/snapshot")
     def snapshot():
