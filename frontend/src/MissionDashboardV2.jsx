@@ -256,7 +256,17 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const displayReview=training?null:review;
   const progress=getRoutine();
   const connected=connection==='connected'&&subjects.length>0;
-  useEffect(()=>{setShowTelemetry(false);setInfoProfile(null);},[view]);
+  useEffect(()=>{
+    setShowTelemetry(false);
+    setInfoProfile(null);
+    if(view!=='scenario'){
+      setScenarioRunning(false);
+      setScenarioId('');
+      setScenarioSecond(0);
+      alarmRef.current=false;
+      if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
+    }
+  },[view]);
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   const selectCrew=i=>{stopScenario();setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);setMetricKey(METRICS[0].key);};
   const scenarioConsole=<ScenarioConsole person={activeCrew} scenarioId={scenarioId} onSelectScenario={selectScenario}
