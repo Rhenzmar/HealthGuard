@@ -36,6 +36,27 @@ export const SCENARIOS = [
     triggerLabel: 'Inconsistent signal pattern (training trigger)',
     cause: 'An intentionally inconsistent simulated oximeter trace. A bad sensor is a possibility, not a confirmed diagnosis.',
     guidance: 'Training response: check sensor contact and fit, repeat the measurement with approved equipment and report the inconsistency. Avoid treating a single suspect reading as confirmed physiological deterioration.'
+  },
+  {
+    id:'co2',name:'Cabin CO₂ scrubber failure',
+    subtitle:'Fictional spacecraft atmosphere disturbance',
+    triggerLabel:'Cabin CO₂ rises above 4,000 ppm (illustrative response trigger)',
+    cause:'An intentionally scripted carbon-dioxide buildup and respiratory response, not an actual cabin sensor reading.',
+    guidance:'Training response: notify mission control and the crew, verify atmospheric monitoring equipment and follow the approved environmental-control and life-support emergency checklist. Do not infer an exact astronaut diagnosis from CO₂ alone.'
+  },
+  {
+    id:'cabin_leak',name:'Cabin pressure leak',
+    subtitle:'Fictional spacecraft depressurization exercise',
+    triggerLabel:'Cabin pressure drops below 85 kPa (illustrative response trigger)',
+    cause:'Scripted habitat pressure loss. Pressure and oxygen reserves are not measured or connected.',
+    guidance:'Training response: alert the crew and mission control, verify cabin pressure independently, follow the pressure-leak response checklist and use approved personal protective equipment where instructed.'
+  },
+  {
+    id:'radiation',name:'Solar radiation event',
+    subtitle:'Fictional escalating dosimeter reading',
+    triggerLabel:'Scripted radiation-rate surge (not a medically validated limit)',
+    cause:'Fictional radiation environment increases. The model does not predict radiation sickness or actual biological exposure.',
+    guidance:'Training response: notify mission control, confirm readings with mission dosimetry and follow approved radiation shelter and operational procedures. This simulation is not a real exposure calculation.'
   }
 ];
 
@@ -91,20 +112,38 @@ export function scenarioAt(subjectId, scenarioId, second) {
     values.respiratory_rate_bpm = round(values.respiratory_rate_bpm + 8 * disturbance);
     values.core_temp_c = round(values.core_temp_c + 2.1 * disturbance, 2);
     values.hrv_rmssd_ms = round(values.hrv_rmssd_ms - 16 * disturbance);
+  } else if (scenarioId === 'co2') {
+    values.heart_rate_bpm = round(values.heart_rate_bpm + 17*disturbance);
+    values.respiratory_rate_bpm = round(values.respiratory_rate_bpm + 12*disturbance);
+  } else if (scenarioId === 'cabin_leak') {
+    values.heart_rate_bpm = round(values.heart_rate_bpm + 24*disturbance);
+    values.respiratory_rate_bpm = round(values.respiratory_rate_bpm + 13*disturbance);
+    values.spo2_percent = round(values.spo2_percent - 7.2*disturbance);
   } else if (scenarioId === 'sensor') {
     values.spo2_percent = round(values.spo2_percent - 16 * disturbance, 1);
     values.heart_rate_bpm = round(values.heart_rate_bpm + 0.7 * disturbance);
   }
   const flags = {
     heart_rate_bpm: scenarioId === 'exertion' && values.heart_rate_bpm > 115,
-    spo2_percent: scenarioId === 'oxygenation' && values.spo2_percent < 94 ||
+    spo2_percent: scenarioId === 'cabin_leak' && values.spo2_percent < 94 || scenarioId === 'oxygenation' && values.spo2_percent < 94 ||
       scenarioId === 'sensor' && disturbance > 0.55,
-    respiratory_rate_bpm: scenarioId === 'oxygenation' && values.respiratory_rate_bpm > 20 ||
+    respiratory_rate_bpm: scenarioId === 'co2' && values.respiratory_rate_bpm > 21 || scenarioId === 'cabin_leak' && values.respiratory_rate_bpm > 22 || scenarioId === 'oxygenation' && values.respiratory_rate_bpm > 20 ||
       scenarioId === 'exertion' && values.respiratory_rate_bpm > 26,
     core_temp_c: scenarioId === 'thermal' && values.core_temp_c > 38,
     hrv_rmssd_ms: false
   };
-  const alert = Object.values(flags).some(Boolean);
+  const engineering_values={
+    cabin_co2_ppm:round(650 + (scenarioId==='co2'?5400*disturbance:0),1),
+    cabin_pressure_kpa:round(101.2 - (scenarioId==='cabin_leak'?27*disturbance:0),2),
+    cabin_o2_percent:20.9,
+    radiation_rate_usv_h:round(.45 + (scenarioId==='radiation'?2200*disturbance:0),2)
+  };
+  const engineering_flags={
+    cabin_co2_ppm:scenarioId==='co2'&&engineering_values.cabin_co2_ppm>4000,
+    cabin_pressure_kpa:scenarioId==='cabin_leak'&&engineering_values.cabin_pressure_kpa<85,
+    radiation_rate_usv_h:scenarioId==='radiation'&&disturbance>.55
+  };
+  const alert=Object.values(flags).some(Boolean)||Object.values(engineering_flags).some(Boolean);
   // Severity is a scripted training progression, not a diagnostic score.
   // The status colors describe only scenario intensity; stable, actual
   // physiological baselines and sparse OSDR lab data are not rated.
@@ -115,7 +154,10 @@ export function scenarioAt(subjectId, scenarioId, second) {
     oxygenation: ['heart_rate_bpm','spo2_percent','respiratory_rate_bpm','hrv_rmssd_ms'],
     exertion: ['heart_rate_bpm','spo2_percent','respiratory_rate_bpm','core_temp_c','hrv_rmssd_ms'],
     thermal: ['heart_rate_bpm','respiratory_rate_bpm','core_temp_c','hrv_rmssd_ms'],
-    sensor: ['spo2_percent']
+    sensor: ['spo2_percent'],
+    co2: ['heart_rate_bpm','respiratory_rate_bpm'],
+    cabin_leak: ['heart_rate_bpm','respiratory_rate_bpm','spo2_percent'],
+    radiation: []
   }[scenarioId];
   const metric_levels = Object.fromEntries(Object.keys(values).map(key=>[
     key,affected.includes(key) ? tier : 'OPTIMAL'
@@ -129,7 +171,7 @@ export function scenarioAt(subjectId, scenarioId, second) {
     source: 'SCRIPTED_TRAINING_SCENARIO',
     scenario_id: scenarioId,
     elapsed_seconds: t,
-    values, flags, alert, stage, disturbance, severity:tier, metric_levels,
+    values, flags, engineering_values, engineering_flags, alert, stage, disturbance, severity:tier, metric_levels,
     reason: alert ? scenario.cause : t > 8 && t < 63 ? 'Scenario values are evolving. Training triggers have not fired at this instant.' :
       'Illustrative baseline or recovered phase; not a clinical clearance.',
     guidance: scenario.guidance,
