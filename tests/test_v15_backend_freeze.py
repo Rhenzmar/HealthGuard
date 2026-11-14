@@ -141,5 +141,5 @@ def test_four_demo_crew_have_independent_model_results(monkeypatch):
             assert c.get(f'/api/live/dl/{sid}').json()['subject_id']==sid
             assert c.get(f'/api/live/comparison/{sid}').json()['subject_id']==sid
         assert c.get('/api/live/health').json()['demo_crew_subjects']==ids
-        assert c.post('/api/live/ingest',json=snap['subjects'][ids[0]]['latest']).status_code==503
+        assert c.post('/api/live/ingest',json={k:v for k,v in snap['subjects'][ids[0]]['latest'].items() if k in {'subject_id','sequence','timestamp','source','values','context'}}).status_code==503
 
