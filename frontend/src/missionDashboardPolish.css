@@ -1,0 +1,80 @@
+/* Mission Dashboard polish: monitoring-first hierarchy and honest feed states. */
+.hg6-shell{--hg6-soft-border:#345b73}
+.hg6-main{padding-bottom:52px}
+.hg6-hero-statbar strong,.hg6-vital-lines strong,.hg6-summary-row strong{font-variant-numeric:tabular-nums}
+.hg6-hero{padding-top:20px;padding-bottom:20px}
+.hg6-strip{margin-bottom:15px}
+.hg6-crew-card{position:relative;min-height:96px;cursor:pointer}
+.hg6-crew-card:focus-visible{outline:2px solid #7cf4e9;outline-offset:3px}
+.hg6-crew-card[aria-pressed="true"]{border-color:#52d5d2;background:linear-gradient(125deg,#105163,#0b2b46)}
+.hg6-crew-card[aria-pressed="true"]:before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:4px;background:#57e5d7}
+.hg6-crew-card:active{transform:translateY(1px)}
+.hg6-crew-text em.hg6-stream-off{color:#9eb6c7}
+.hg6-crew-text em.hg6-stream-off i{background:#799aa9;box-shadow:none}
+.hg6-selected{min-height:294px}
+.hg6-selected-foot{flex-wrap:wrap;min-height:42px}
+.hg6-selected-foot .hg6-selected-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.hg6-selected-actions button{min-height:34px;cursor:pointer}
+.hg6-selected-actions button:hover,.hg6-selected-foot button:hover{color:#d1fffa}
+.hg6-vital-lines button{cursor:pointer;transition:background .16s,border-color .16s,transform .16s}
+.hg6-vital-lines button:hover,.hg6-vital-lines button[aria-pressed="true"]{background:#174359;border-color:#3c9da5}
+.hg6-vital-lines button[aria-pressed="true"]{box-shadow:inset 3px 0 #65e2d9}
+.hg6-trend{scroll-margin-top:90px}
+.hg6-trend select{max-width:190px}
+.hg6-center-grid{margin-bottom:0}
+.hg6-bottom-grid{margin-top:14px}
+.hg6-quick-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px;margin:14px 0}
+.hg6-quick-actions button{display:flex;align-items:center;gap:12px;min-height:62px;border-radius:11px;border:1px solid #315c77;background:linear-gradient(135deg,#0b2b43,#0b2137);color:#e1f7f9;text-align:left;padding:12px 14px;cursor:pointer;transition:transform .18s,border-color .18s,background .18s}
+.hg6-quick-actions button:hover{border-color:#54ccc7;background:#123d50;transform:translateY(-2px)}
+.hg6-quick-actions button>svg:first-child{color:#60dad6;flex:none}
+.hg6-quick-actions button>svg:last-child{color:#84bcca;margin-left:auto;flex:none}
+.hg6-quick-actions span{display:flex;flex-direction:column;gap:4px;min-width:0}
+.hg6-quick-actions strong{font-size:12px;font-weight:750}
+.hg6-quick-actions small{font-size:10px;color:#9ebdca;line-height:1.4}
+.hg6-scope{margin:15px 0;border:1px solid var(--hg6-soft-border);background:linear-gradient(115deg,#0d2b40,#0b1c30);border-radius:14px;padding:17px 19px;box-shadow:0 12px 30px #0002}
+.hg6-scope-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:13px}
+.hg6-scope-eyebrow{font-size:9px;font-weight:800;color:#6fdbd7;letter-spacing:1.6px}
+.hg6-scope-heading h2{font-size:17px;letter-spacing:-.3px;margin:5px 0}
+.hg6-scope-heading p{font-size:11px;color:#a8c4d1;margin:0;line-height:1.6}
+.hg6-scope-status{display:inline-flex;align-items:center;gap:7px;border:1px solid #6a7259;border-radius:30px;background:#2e352b;color:#f1ddb7;padding:7px 10px;font-size:10px;font-weight:700;white-space:nowrap}
+.hg6-scope-status i{width:7px;height:7px;border-radius:50%;background:#f2c174}
+.hg6-scope-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.hg6-scope-card{border-radius:10px;border:1px solid #34566b;background:#081b2e;padding:13px 15px;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:12px;row-gap:4px;min-width:0}
+.hg6-scope-number{grid-row:1/3;font-size:32px;line-height:1;font-weight:800;color:#d6fcfa;letter-spacing:-1.4px;font-variant-numeric:tabular-nums}
+.hg6-scope-card h3{font-size:11px;margin:0;color:#eaf7fb;line-height:1.4}
+.hg6-scope-card p{font-size:10px;margin:0;color:#92b4c4;line-height:1.5}
+.hg6-scope-detail{font-size:10px;color:#bcd4dd;line-height:1.65;margin:12px 0 0}
+.hg6-scope-detail strong{color:#d8f5f3}
+.hg6-scenario-console{margin-top:15px}
+.hg6-telemetry-metrics button{cursor:pointer;transition:border-color .15s,background .15s}
+.hg6-telemetry-metrics button:hover{border-color:#65d7d3}
+.hg6-profile-actions button{cursor:pointer}
+.hg6-profile-actions button:focus-visible,.hg6-quick-actions button:focus-visible{outline:2px solid #8aece4;outline-offset:3px}
+@media(max-width:1190px){
+ .hg6-quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .hg6-scope-grid{gap:8px}
+ .hg6-scope-card{padding:11px;column-gap:8px}
+ .hg6-scope-number{font-size:28px}
+}
+@media(max-width:650px){
+ .hg6-main{padding-bottom:38px}
+ .hg6-quick-actions{gap:8px}
+ .hg6-quick-actions button{min-height:68px;padding:10px}
+ .hg6-quick-actions strong{font-size:11px}
+ .hg6-quick-actions small{font-size:9px}
+ .hg6-quick-actions button>svg:first-child{width:18px}
+ .hg6-scope{padding:14px}
+ .hg6-scope-heading{flex-wrap:wrap}
+ .hg6-scope-status{white-space:normal}
+ .hg6-scope-grid{grid-template-columns:1fr}
+ .hg6-scope-card{grid-template-columns:40px 1fr}
+ .hg6-scope-number{font-size:28px}
+ .hg6-selected-foot{align-items:flex-start}
+}
+@media(max-width:375px){
+ .hg6-quick-actions{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ .hg6-quick-actions button,.hg6-vital-lines button,.hg6-crew-card{transition:none}
+ .hg6-quick-actions button:hover{transform:none}
+}
