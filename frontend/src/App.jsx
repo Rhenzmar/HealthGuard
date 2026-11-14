@@ -263,7 +263,7 @@ export default function App() {
     let cancelled=false;
     setSamples([]);setReview(null);setCnn(null);setComparison(null);setUnified(null);setVoice(null);setContextHistory([]);
     const load=async()=>{
-      const reqs=[`/api/live/history/${encodeURIComponent(selected)}?limit=160`,`/api/live/context-review/${encodeURIComponent(selected)}`,`/api/live/dl/${encodeURIComponent(selected)}`,`/api/live/comparison/${encodeURIComponent(selected)}`,`/api/live/voice/${encodeURIComponent(selected)}`,`/api/live/context-history/${encodeURIComponent(selected)}?limit=30`,`/api/live/physioalert-unified/${encodeURIComponent(selected)}`];
+      const reqs=[`/api/live/history/${encodeURIComponent(selected)}?limit=160`,`/api/live/context-review/${encodeURIComponent(selected)}`,`/api/live/dl/${encodeURIComponent(selected)}`,`/api/live/comparison/${encodeURIComponent(selected)}`,`/api/live/physioalert-unified/voice/${encodeURIComponent(selected)}`,`/api/live/context-history/${encodeURIComponent(selected)}?limit=30`,`/api/live/physioalert-unified/${encodeURIComponent(selected)}`];
       const results=await Promise.allSettled(reqs.map(x=>readApi(x)));
       if(cancelled)return;
       const setters=[r=>setSamples(prev=>{
