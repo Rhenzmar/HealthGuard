@@ -178,23 +178,99 @@ export default function MissionDashboard({error,readiness,snapshot,selected,setS
   const streamConnected=connection==='connected'&&hasTelemetry;
   const [showTelemetry,setShowTelemetry]=useState(false);
   const [infoProfile,setInfoProfile]=useState(null);
+  const [scenarioId,setScenarioId]=useState('');
+  const [scenarioSecond,setScenarioSecond]=useState(0);
+  const [scenarioRunning,setScenarioRunning]=useState(false);
+  const [scenarioSound,setScenarioSound]=useState(true);
+  const alarmRef=useRef(false);
+  const audioRef=useRef(null);
+  const stopScenario=()=>{
+    setScenarioRunning(false);setScenarioId('');setScenarioSecond(0);
+    alarmRef.current=false;
+    if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
+  };
+  const selectScenario=id=>{
+    setScenarioRunning(false);setScenarioId(id);setScenarioSecond(0);
+    alarmRef.current=false;
+    if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
+  };
+  const startScenario=()=>{
+    if(!scenarioId)return;
+    // Unlock browser audio during the user's explicit Start action.
+    if(scenarioSound&&typeof window!=='undefined'){
+      const Context=window.AudioContext||window.webkitAudioContext;
+      if(Context){
+        if(!audioRef.current)audioRef.current=new Context();
+        audioRef.current.resume().catch(()=>{});
+      }
+    }
+    setScenarioRunning(true);
+  };
+  const speakScenario=()=>{
+    if(!scenarioId||typeof window==='undefined'||!window.speechSynthesis)return;
+    const item=SCENARIOS.find(x=>x.id===scenarioId);
+    if(!item)return;
+    window.speechSynthesis.cancel();
+    const utterance=new SpeechSynthesisUtterance('HealthGuard training alert for '+activeCrew.name+'. '+item.guidance);
+    utterance.lang='en-US';utterance.rate=.95;
+    window.speechSynthesis.speak(utterance);
+  };
+  useEffect(()=>{
+    if(!scenarioRunning||!scenarioId)return;
+    const timer=setInterval(()=>setScenarioSecond(v=>{
+      if(v>=SCENARIO_LENGTH){setScenarioRunning(false);return v;}
+      return v+1;
+    }),1000);
+    return()=>clearInterval(timer);
+  },[scenarioRunning,scenarioId]);
+  const training=scenarioId?scenarioAt(activeCrew.subjectId,scenarioId,scenarioSecond):null;
+  const trainingHistory=useMemo(()=>scenarioId?scenarioHistory(activeCrew.subjectId,scenarioId,scenarioSecond):[],[activeCrew.subjectId,scenarioId,scenarioSecond]);
+  useEffect(()=>{
+    const newlyAlert=Boolean(training?.alert)&&!alarmRef.current;
+    alarmRef.current=Boolean(training?.alert);
+    if(!newlyAlert||!scenarioSound)return;
+    if(audioRef.current){
+      try{
+        const ctx=audioRef.current;
+        const osc=ctx.createOscillator(),gain=ctx.createGain();
+        osc.type='sine';osc.frequency.setValueAtTime(780,ctx.currentTime);
+        osc.frequency.setValueAtTime(590,ctx.currentTime+.18);
+        gain.gain.setValueAtTime(0.0001,ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.085,ctx.currentTime+.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+.38);
+        osc.connect(gain);gain.connect(ctx.destination);
+        osc.start();osc.stop(ctx.currentTime+.4);
+      }catch{/* Audio is optional if browser permissions block it. */}
+    }
+    // Browser speech permission can vary; manual Speak guidance stays available.
+    speakScenario();
+  },[training?.alert,scenarioSound,scenarioId,activeCrew.subjectId]);
+  useEffect(()=>()=>{if(audioRef.current)audioRef.current.close().catch(()=>{});},[]);
   const subjects=Object.keys(snapshot?.subjects||{});
-  const latest=hasTelemetry?(snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null):null;
+  const latest=training|| (hasTelemetry?(snapshot?.subjects?.[activeCrew.subjectId]?.latest||samples.filter(x=>x.subject_id===activeCrew.subjectId).at(-1)||null):null);
+  const displaySamples=training?trainingHistory:samples.filter(x=>x.subject_id===activeCrew.subjectId);
+  const displayReview=training?null:review;
   const progress=getRoutine();
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   return <div className="hg6-shell">
-    {infoProfile?<CrewProfile person={infoProfile} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry person={activeCrew} selected={selected} latest={latest} samples={samples} review={review} cnn={cnn} comparison={comparison} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
+    {infoProfile?<CrewProfile person={infoProfile} onClose={()=>setInfoProfile(null)} onMission={onMission}/>:showTelemetry?<CrewTelemetry person={activeCrew} selected={selected} latest={latest} samples={displaySamples} review={displayReview} cnn={training?null:cnn} comparison={training?null:comparison} onClose={()=>setShowTelemetry(false)} onBody={onBody}/>:
     <main className="hg6-main">
-      <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={hasTelemetry?review:null} progress={progress} subjects={subjects} hasTelemetry={hasTelemetry}/>
+      <Hero environment={environment} onEnvironment={onEnvironment} connected={connected} review={hasTelemetry?review:null} progress={progress} subjects={subjects} hasTelemetry={Boolean(training)||hasTelemetry} training={training}/>
       {error&&<div className="hg6-network-error" role="status"><Icon name="alert" size={16}/>Telemetry connection issue: {error}. No missing measurements are filled in.</div>}
-      <CrewStrip activeCrewIndex={activeCrewIndex} connected={connected} availableSubjects={subjects} onSelect={i=>{setActiveCrewIndex(i);setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);}} onManage={onMission}/>
+      <CrewStrip activeCrewIndex={activeCrewIndex} connected={connected} availableSubjects={subjects} onSelect={i=>{stopScenario();setActiveCrewIndex(i);setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);}} onManage={onMission}/>
+      <ScenarioConsole person={activeCrew} scenarioId={scenarioId} onSelectScenario={selectScenario}
+        onStart={startScenario} onPause={()=>setScenarioRunning(false)}
+        onReset={()=>{setScenarioSecond(0);setScenarioRunning(false);alarmRef.current=false;}}
+        onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond}
+        sample={training} soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
+        onSpeak={speakScenario}/>
       <div className="hg6-center-grid">
-        <SelectedCrew person={activeCrew} hasTelemetry={hasTelemetry} latest={hasTelemetry?latest:null} review={hasTelemetry?review:null} connection={connection} onTelemetry={()=>setShowTelemetry(true)} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)}/>
-        <LiveVitals hasTelemetry={hasTelemetry} latest={hasTelemetry?latest:null} connection={streamConnected?'connected':'reconnecting'} onMetric={setMetricKey}/>
-        <PhysioAlert hasTelemetry={hasTelemetry} review={hasTelemetry?review:null} voice={hasTelemetry?voice:null} speak={speak} speaking={speaking}/>
+        <SelectedCrew person={activeCrew} hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} review={displayReview} training={training} connection={connection} onTelemetry={()=>setShowTelemetry(true)} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)}/>
+        <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey}/>
+        <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking}/>
       </div>
-      <div className="hg6-bottom-grid"><Trend hasTelemetry={hasTelemetry} samples={hasTelemetry?samples:[]} keyValue={metricKey} onChange={setMetricKey}/><Routine progress={progress} onOpen={onRoutine}/></div>
+      <div className="hg6-bottom-grid"><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/><Routine progress={progress} onOpen={onRoutine}/></div>
 
     </main>}
 
