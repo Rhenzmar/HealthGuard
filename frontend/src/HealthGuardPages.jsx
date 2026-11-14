@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { METRICS, formatValue, friendlyStatus } from './api.js';
 import { Icon, VitalChart } from './viz.jsx';
+import EngineeringTelemetry from './EngineeringTelemetry.jsx';
 import { QUESTS, getQuestPoints, getQuestCompletion } from './questLogic.js';
 
 export const ENVIRONMENTS = [
@@ -159,6 +160,7 @@ export function MissionHUD({snapshot,selected,samples,review,connection,environm
   return <div className="hg-hud hg-page">
     <div className="hg-hud-top"><div><p className="hg-overline">HEALTHGUARD / FULL-SCREEN DISPLAY</p><h1>Mission HUD</h1><p>{env.name} · {CREW_NAMES[selected]||selected} · Fictional crew telemetry simulation</p></div><div className="hg-hud-actions"><EnvironmentPicker value={environment} onChange={onEnvironment} compact/><button className="hg-ghost-btn" type="button" onClick={onExit}>Back to dashboard</button></div></div>
     <div className="hg-hud-grid"><div className="hg-surface hg-hud-body"><div className="hg-panel-top"><h2>CREW / {crewNumber(selected)}</h2><span className="hg-pill">{CREW_NAMES[selected]||selected} · SIMULATED SUBJECT</span></div><AnatomyScene selected="cardiac" onSelect={()=>{}}/><div className="hg-hud-label">ROTATABLE EDUCATIONAL MODEL · NOT A MEDICAL SCAN</div></div><div className="hg-hud-right"><div className="hg-hud-vitals">{METRICS.map(m=><button type="button" key={m.key} className={metricKey===m.key?'active':''} onClick={()=>setMetricKey(m.key)}><span>{m.short}</span><strong>{formatValue(last?.values?.[m.key],m.digits)} <small>{m.unit}</small></strong></button>)}</div><div className="hg-surface hg-hud-chart"><div className="hg-panel-top"><h2>{metric.label}</h2><span className="hg-pill">{connection==='connected'?'STREAM CONNECTED':'RECONNECTING'}</span></div><VitalChart data={samples} metric={metric}/></div><div className="hg-surface hg-hud-review"><span className="hg-eyebrow">PHYSIOALERT / CURRENT REVIEW</span><h2>{friendlyStatus(review?.status)}</h2><p>{review?.reason||'Collecting simulated evidence.'}</p></div></div></div>
-    <p className="hg-boundary">HUD demonstration only. No spacesuit, rover navigation, radiation or environmental sensor connection exists.</p>
+    <EngineeringTelemetry subjectId={selected} personName={CREW_NAMES[selected]||selected}/>
+    <p className="hg-boundary">HUD demonstration only. The mission-systems numbers are explicitly scripted estimates, not actual suit, rover, radiation or atmospheric sensor measurements.</p>
   </div>;
 }
