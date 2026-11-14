@@ -25,7 +25,7 @@ STUDIES={
     'CMP':('OSD-575','LSDS-8_Comprehensive_Metabolic_Panel_CMP_TRANSFORMED.csv',
         '5eb1e7f025dd8443a9e70111e62bc32afae3432753024489c5c013e401d709d9'),
     'EVE_IMMUNE':('OSD-575','LSDS-8_Multiplex_serum_immune_EvePanel_TRANSFORMED.csv',
-        'efa8fb807e3b7e363df47f64f48d03c57d2397daf8fd22afc0ea4335d5d3e53e'),
+        'efa8fb807e3b7e363df47f64f48d03c57d2397daf8fd22afc0ea4335d5d3d53e'),
     'EVE_CARDIOVASCULAR':('OSD-575','LSDS-8_Multiplex_serum_cardiovascular_EvePanel_TRANSFORMED.csv',
         'fdba6c3ce45401c12ca9b699fa375303793959aa0391e2f3c722f354d9cfc75c'),
     'ALAMAR_NPQ':('OSD-575','LSDS-8_Multiplex_serum.immune.AlamarPanel_TRANSFORMED.csv',
