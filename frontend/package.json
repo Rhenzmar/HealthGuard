@@ -1,7 +1,7 @@
 {
   "name": "healthguard-frontend",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
@@ -14,7 +14,9 @@
     "react-dom": "^18.3.1",
     "three": "^0.170.0",
     "@react-three/fiber": "^8.17.10",
-    "@react-three/drei": "^9.114.3"
+    "@react-three/drei": "^9.114.3",
+    "open-anatomy-3d": "0.1.0",
+    "open-anatomy-3d-react": "0.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
