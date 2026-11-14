@@ -28,6 +28,7 @@ from physiograph.engineering_sim import engineering_snapshot, SIGNALS as ENGINEE
 from physiograph.biomarker_detection import evaluate_engineering, combined_live_review, scripted_environment_review
 from physiograph.candidate_17ch_numpy import load_candidate_monitor
 from physiograph.physioalert_unified import UnifiedReviewMonitor
+from physiograph.scenario_engine import scenario_catalog, scenario_history, evaluate_scenario_frame
 from physiograph.context_monitor import LiveQualityMonitor, ContextReviewMonitor, CHECK_INTERVAL_S
 from physiograph.live_telemetry import (
     LiveStore, METRICS, SOURCE, TelemetryError, ConflictError, validate_sample,
@@ -247,6 +248,36 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         if result is None:
             raise HTTPException(404, "Waiting for simulated telemetry for this crew member")
         return result
+
+    @api.get("/api/simulation/scenarios")
+    def training_scenario_catalog():
+        return scenario_catalog()
+
+    @api.get("/api/simulation/scenarios/history/{subject_id}/{scenario_id}")
+    def training_scenario_history(subject_id: str, scenario_id: str,
+                                  second: int = Query(0, ge=0, le=64),
+                                  limit: int = Query(65, ge=1, le=65)):
+        try:
+            return scenario_history(subject_id, scenario_id, second, limit)
+        except ValueError as exc:
+            raise HTTPException(422,str(exc)) from exc
+
+    @api.get("/api/simulation/scenarios/{subject_id}/{scenario_id}")
+    def training_scenario_evaluation(subject_id: str, scenario_id: str,
+                                     second: int = Query(0, ge=0, le=64),
+                                     include_history: bool = Query(False)):
+        try:
+            result=evaluate_scenario_frame(
+                subject_id, scenario_id, second,
+                candidate_model=api.state.candidate_17.model,
+                cnn_model=api.state.deep_learning.model,
+                statistical_model=api.state.comparison.model
+            )
+            if include_history:
+                result["history"]=scenario_history(subject_id,scenario_id,second)["samples"]
+            return result
+        except ValueError as exc:
+            raise HTTPException(422,str(exc)) from exc
 
     @api.get("/api/simulation/scenario-review/{subject_id}/{scenario_id}")
     def scenario_review(subject_id: str, scenario_id: str,
