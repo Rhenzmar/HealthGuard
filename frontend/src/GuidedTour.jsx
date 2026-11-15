@@ -5,13 +5,41 @@ import './GuidedTour.css';
 
 /**
  * Non-destructive overlay: highlighted elements are visual only.
- * Never triggers telemetry, scenario playback or voice.
+ * Never triggers telemetry or scenario playback. Voice guidance is optional.
  */
-export default function GuidedTour({index,onNext,onBack,onExit}){
+export default function GuidedTour({index,onNext,onBack,onExit,narrationAllowed=true}){
   const step=TOUR_STEPS[index];
   const [focus,setFocus]=useState(null);
   const panelRef=useRef(null);
   const closeRef=useRef(null);
+  const [narrationOn,setNarrationOn]=useState(false);
+  const activeUtterance=useRef(null);
+  const voiceSupported=typeof window!=='undefined'&&
+    typeof window.SpeechSynthesisUtterance==='function'&&Boolean(window.speechSynthesis);
+  useEffect(()=>{
+    if(!voiceSupported||!narrationOn||!narrationAllowed||!step)return;
+    const synth=window.speechSynthesis;
+    // Critical PhysioAlert speech must always take priority.
+    if(synth.speaking||synth.pending)return;
+    const speech=new window.SpeechSynthesisUtterance(
+      'HealthGuard guide. '+step.title+'. '+step.body
+    );
+    speech.lang='en-US';
+    speech.rate=.95;
+    speech.pitch=1;
+    activeUtterance.current=speech;
+    synth.speak(speech);
+    return()=>{
+      if(activeUtterance.current===speech){
+        activeUtterance.current=null;
+        if(synth.speaking||synth.pending)synth.cancel();
+      }
+    };
+  },[index,narrationOn,narrationAllowed,voiceSupported]);
+  const toggleNarration=()=>{
+    if(!voiceSupported||!narrationAllowed)return;
+    setNarrationOn(value=>!value);
+  };
   useEffect(()=>{
     if(!step)return;
     const previousFocus=document.activeElement;
@@ -79,7 +107,15 @@ export default function GuidedTour({index,onNext,onBack,onExit}){
       <div className="hg-tour-top"><span>HEALTHGUARD / GUIDED TOUR</span>
         <button ref={closeRef} type="button" onClick={onExit} aria-label="Close guided tour"><Icon name="x" size={17}/></button>
       </div>
-      <div className="hg-tour-count">STEP {index+1} OF {TOUR_STEPS.length}</div>
+      <div className="hg-tour-meta">
+        <div className="hg-tour-count">STEP {index+1} OF {TOUR_STEPS.length}</div>
+        <button type="button" className="hg-tour-voice" aria-pressed={narrationOn}
+          disabled={!voiceSupported||!narrationAllowed}
+          onClick={toggleNarration} title={!narrationAllowed?'Voice guidance is unavailable while a scenario is running':'Toggle spoken step-by-step guidance'}>
+          <Icon name={narrationOn?'volume':'mute'} size={15}/>
+          {narrationOn?'Voice on':'Voice off'}
+        </button>
+      </div>
       <h2 id="hg-tour-title">{step.title}</h2>
       <p>{step.body}</p>
       <div className="hg-tour-dots" aria-label="Tour progress">{TOUR_STEPS.map((_,i)=><span key={i} className={i===index?'active':i<index?'done':''}/>)}</div>
