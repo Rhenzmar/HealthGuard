@@ -5,6 +5,9 @@ on:
     paths:
       - 'frontend/e2e/**'
       - 'frontend/playwright.config.mjs'
+      - 'frontend/src/CountermeasureGame.jsx'
+      - 'frontend/src/countermeasureLogic.js'
+      - 'frontend/src/countermeasureGame.css'
       - 'frontend/src/CrewCheckinGame.jsx'
       - 'frontend/src/checkinGameLogic.js'
       - 'frontend/src/crewCheckinGame.css'
