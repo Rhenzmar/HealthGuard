@@ -155,3 +155,13 @@
 .mg-game-modes button{padding:15px 13px;gap:10px}
 .mg-game-modes .mg-mode-label{font-size:8px}
 @media(max-width:990px){.mg-game-modes{grid-template-columns:1fr}.mg-game-modes button{padding:15px 18px}}
+
+/* The four independent training games are visible without crowding. */
+.mg-game-modes{grid-template-columns:repeat(4,minmax(0,1fr))}
+.mg-game-modes button{padding:14px 12px;gap:8px}
+.mg-game-modes button>svg{width:19px;height:19px}
+.mg-game-modes .mg-mode-label{font-size:8px;padding:6px}
+.mg-game-modes strong{font-size:13px}
+.mg-game-modes small{font-size:9px}
+@media(max-width:1200px){.mg-game-modes{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.mg-game-modes{grid-template-columns:1fr}}
