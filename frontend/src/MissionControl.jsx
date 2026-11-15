@@ -123,11 +123,19 @@ export default function MissionControl({
       </div>
     </section>
 
-    <section className="hgc-workflow-row" aria-label="Mission scenario tools">
-      <div><small>03 / TRAINING OPERATIONS</small><h2>Test a mission scenario</h2>
-        <p>Run one of seven fictional training events and inspect the CNN, covariance, and PhysioAlert responses without changing the live crew stream.</p>
+    <section className="hgc-training-panel" aria-label="Mission scenario tools">
+      <div className="hgc-training-identity">
+        <span className="hgc-training-glyph"><Icon name="activity" size={23}/></span>
+        <div className="hgc-training-copy">
+          <span className="hgc-training-eyebrow">03 / TRAINING OPERATIONS</span>
+          <h2>Scenario training</h2>
+          <p>Rehearse simulated mission events and review CNN, covariance, and PhysioAlert responses. The live crew stream stays unchanged.</p>
+        </div>
       </div>
-      <button type="button" onClick={onScenario}>Open Scenario Lab <Icon name="arrow" size={17}/></button>
+      <div className="hgc-training-actions">
+        <span className="hgc-training-count"><strong>07</strong> TRAINING SCENARIOS</span>
+        <button type="button" onClick={onScenario}>Open Scenario Lab <Icon name="arrow" size={17}/></button>
+      </div>
     </section>
     <p className="hgc-disclaimer">Research prototype. All live physiological and engineering values here are fictional. NASA historical research data is accessed separately in the Health Library.</p>
   </div>;
