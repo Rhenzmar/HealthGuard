@@ -204,7 +204,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
     setAuxiliaryTelemetry(null);
     setAuxiliaryIssue(false);
     const load=()=>readApi('/api/simulation/engineering/'+encodeURIComponent(selected))
-      .then(payload=>{if(!disposed && payload?.subject_id===selected){setAuxiliaryTelemetry(payload);setAuxiliaryIssue(false);}})
+      .then(payload=>{if(!disposed && payload?.values && (!payload.subject_id||payload.subject_id===selected)){setAuxiliaryTelemetry(payload);setAuxiliaryIssue(false);}})
       .catch(()=>{if(!disposed){setAuxiliaryTelemetry(null);setAuxiliaryIssue(true);}});
     load();
     const timer=setInterval(load,4200);
