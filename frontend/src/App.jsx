@@ -307,7 +307,7 @@ export default function App() {
   const navTo=id=>{setPage(id);setSidebarOpen(false);window.scrollTo({top:0,behavior:'smooth'})};
   const selectedName=NAV.find(x=>x.id===page)?.name||'Overview';
   return <div className="app-shell">
-    <aside className={`sidebar ${sidebarOpen?'sidebar-open':''}`}><div className="side-logo"><span className="brand-mark"><img src="/healthguard-logo-transparent.svg" alt="" /></span><div><strong>HEALTH<span>GUARD</span></strong><small>ASTRONAUT HEALTH MONITOR</small></div><button type="button" className="sidebar-close" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}><Icon name="x"/></button></div>
+    <aside className={`sidebar ${sidebarOpen?'sidebar-open':''}`}><div className="side-logo"><span className="brand-mark"><img src="/healthguard-logo-transparent.svg?v=official-20261115" alt="" /></span><div><strong>Health<span>Guard</span></strong><small>ASTRONAUT HEALTH MONITOR</small></div><button type="button" className="sidebar-close" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}><Icon name="x"/></button></div>
       <div className="nav-wrapper"><span className="nav-heading">WORKSPACE</span><nav aria-label="Primary navigation">{NAV.map(item=><button type="button" key={item.id} title={item.caption} className={`nav-item ${item.id===page?'nav-active':''}`} onClick={()=>navTo(item.id)} aria-current={item.id===page?'page':undefined}><span className="nav-icon"><Icon name={item.icon} size={17}/></span><span><strong>{item.name}</strong><small>{item.caption}</small></span>{item.id===page&&<span className="nav-indicator"/>}</button>)}</nav></div>
 
     </aside>
