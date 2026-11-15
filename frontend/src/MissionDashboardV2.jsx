@@ -286,10 +286,10 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const scenarioCriticalActive=Boolean(
     scenarioId&&scenarioRunning&&scenario.latest?.severity==='CRITICAL'
   );
-  const voiceActive=scenarioId?scenarioCriticalActive&&scenarioSound:liveCritical&&liveAlertsEnabled;
+  const voiceActive=!scenarioId&&liveCritical&&liveAlertsEnabled;
   const liveVoice=liveVoiceAnnouncement(unified);
   const scenarioVoice=scenarioVoiceAnnouncement(scenarioId,scenario.latest?.severity||'CRITICAL');
-  alertVoiceRef.current=scenarioId?scenarioVoice:liveVoice;
+  alertVoiceRef.current=liveVoice;
   useEffect(()=>{
     if(!voiceActive||typeof window==='undefined'||!window.speechSynthesis)return;
     const speech=window.speechSynthesis;
@@ -340,12 +340,12 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringHistory={engineeringHistory} engineeringStatus={auxiliaryIssue?'error':'ready'}/></div>
         <LiveSubsystemExplorer person={activeCrew} latest={selectedPacket} training={training} engineering={auxiliaryTelemetry?.subject_id===activeCrew.subjectId?auxiliaryTelemetry:null} engineeringIssue={auxiliaryIssue}/>
       </>:null}
-      {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} onHUD={onHUD} person={activeCrew}
+      {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} onHUD={onHUD} onBody={onBody} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
         onPause={scenario.pause}
         onReset={scenario.reset}
         onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond} sample={training}
-        soundEnabled={scenarioSound} onToggleSound={scenario.toggleSound}
+        soundEnabled={scenarioSound} onToggleSound={scenario.toggleSound} latestFrame={scenario.latest}
         onSpeak={speakScenario}/>}
     </main>}
   </div>;

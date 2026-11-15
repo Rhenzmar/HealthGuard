@@ -134,8 +134,11 @@ const HG_FOCUS_KEYS = {
 };
 const HG_MODEL_URLS = {male:'/models/anatomy-male.glb',female:'/models/anatomy-female.glb'};
 export const AnatomyScene = React.memo(function AnatomyScene({selected='cardiac',onSelect=()=>{},sex='male',
-  layers=HG_ANATOMY_LAYERS,onLayersChange}) {
-  const keys=HG_FOCUS_KEYS[selected]||[];
+  layers=HG_ANATOMY_LAYERS,onLayersChange,alertedRegions=[],alertSeverity='UNASSESSED'}) {
+  const danger=alertSeverity==='CRITICAL'&&alertedRegions.length>0;
+  const keys=danger
+    ? [...new Set([...(HG_FOCUS_KEYS[selected]||[]),...alertedRegions.flatMap(region=>HG_FOCUS_KEYS[region]||[])])]
+    : HG_FOCUS_KEYS[selected]||[];
   const handleStructure=(key,structure)=>{
     const category=structure?.category||'';
     const zone=Object.entries(HG_ANATOMY_KEYS).find(([,categories])=>categories.includes(category))?.[0];
@@ -148,7 +151,7 @@ export const AnatomyScene = React.memo(function AnatomyScene({selected='cardiac'
       modelUrls={HG_MODEL_URLS}
       highlightedKeys={keys} onStructureClick={handleStructure}
       showSexToggle={false} showLayerToggles={false} showRotateControl={false}
-      showZoomControls={true} hoverColor="#75dfe9" highlightColor="#60d6df"
+      showZoomControls={true} hoverColor={danger?"#f7a0a0":"#75dfe9"} highlightColor={danger?"#ef525f":alertSeverity==="WARNING"&&alertedRegions.includes(selected)?"#edaa6a":"#60d6df"}
       hoverHint="Click to explore this system" className="hg-anatomy-viewer"
     />
     <div className="hg-three-caption">Drag to rotate · Use + / − to zoom</div>

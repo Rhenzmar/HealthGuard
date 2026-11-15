@@ -9,7 +9,9 @@ import MissionVisorHUD from './MissionVisorHUD.jsx';
 import useScenarioPlayback from './useScenarioPlayback.js';
 import MedicalWorkstation from './MedicalWorkstation.jsx';
 import HealthLibrary from './HealthLibrary.jsx';
-import {liveVoiceAnnouncement} from './healthguardVoice.js';
+import {liveVoiceAnnouncement,scenarioVoiceAnnouncement} from './healthguardVoice.js';
+import {playScenarioAlarm} from './scenarioAlarm.js';
+import {verifiedScenarioFrame} from './scenarioAnatomy.js';
 import SpaceBackgroundPicker from './SpaceBackgroundPicker.jsx';
 import {BACKGROUND_KEY,normalizeBackground,WORKSPACE_BACKGROUND_PAGES} from './spaceBackgroundThemes.js';
 import './spaceBackgroundThemes.css';
@@ -213,6 +215,38 @@ export default function App() {
   const [readiness,setReadiness]=useState(null),[mission,setMission]=useState(null),[overview,setOverview]=useState(null),[method,setMethod]=useState(null);
   const [snapshot,setSnapshot]=useState(null),[selected,setSelected]=useState('SIM_CREW_01'),[samples,setSamples]=useState([]);
   const scenario=useScenarioPlayback(selected);
+  const scenarioCritical=Boolean(scenario.running&&scenario.soundEnabled&&
+    verifiedScenarioFrame(scenario,selected)?.severity==='CRITICAL');
+  const criticalAnnounceRef=useRef('');
+  const criticalAlarmStartedRef=useRef(false);
+  criticalAnnounceRef.current=scenario.id?
+    scenarioVoiceAnnouncement(scenario.id,'CRITICAL'):'';
+  // One alert source across Scenario Lab, Body Explorer and HUD.
+  // The short tone plays once on entry, and speech tries every five seconds.
+  useEffect(()=>{
+    if(!scenarioCritical){
+      criticalAlarmStartedRef.current=false;
+      return;
+    }
+    if(!criticalAlarmStartedRef.current){
+      playScenarioAlarm();
+      criticalAlarmStartedRef.current=true;
+    }
+    if(typeof window==='undefined'||!window.speechSynthesis)return;
+    const speech=window.speechSynthesis;
+    const announce=()=>{
+      if(speech.speaking||speech.pending)return;
+      const phrase=criticalAnnounceRef.current;
+      if(!phrase)return;
+      const utterance=new SpeechSynthesisUtterance(phrase);
+      utterance.lang='en-US';utterance.rate=.95;
+      speech.speak(utterance);
+    };
+    announce();
+    const timer=window.setInterval(announce,5000);
+    return()=>{window.clearInterval(timer);speech.cancel();};
+  },[scenarioCritical,selected,scenario.id]);
+
   const [review,setReview]=useState(null),[cnn,setCnn]=useState(null),[comparison,setComparison]=useState(null),[unified,setUnified]=useState(null),[voice,setVoice]=useState(null),[contextHistory,setContextHistory]=useState([]);
   const [connection,setConnection]=useState('connecting'),[error,setError]=useState(''),[speaking,setSpeaking]=useState(false);
   const [selectedCrew,setSelectedCrew]=useState('C001'),[assay,setAssay]=useState('CMP'),[biomarker,setBiomarker]=useState('GLUCOSE');
@@ -327,7 +361,7 @@ export default function App() {
     <div className="work-area"><header className="topbar"><div className="topbar-start"><button type="button" className="menu-toggle" onClick={()=>setSidebarOpen(true)} aria-label="Open navigation"><Icon name="menu"/></button><span>MISSION CONTROL</span><Icon name="chevron" size={13}/><strong>{selectedName}</strong></div><div className="topbar-end"><span className="topbar-clock"><Icon name="clock" size={15}/>{new Date().getUTCFullYear()} · RESEARCH ENVIRONMENT</span><span className={`header-connection conn-${connection}`}><span/>{connection==='connected'?'BACKEND CONNECTED':'BACKEND CONNECTING'}</span><span className="topbar-avatar">HG</span></div></header>
       <main id="main-content" data-bg-theme={WORKSPACE_BACKGROUND_PAGES.includes(page)?backgroundTheme:undefined} className={WORKSPACE_BACKGROUND_PAGES.includes(page)?'hg-background-enabled':''}>
         {WORKSPACE_BACKGROUND_PAGES.includes(page)&&<div className="hg-scene-toolbar"><SpaceBackgroundPicker value={backgroundTheme} onChange={setBackgroundTheme}/></div>}
-        {DASHBOARD_VIEWS.has(page)?<MissionDashboard scenario={scenario} view={page} onDashboard={()=>navTo('dashboard')} onTelemetryPage={()=>navTo('telemetry')} onScenarioPage={()=>navTo('scenario')} loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={selectSubject} samples={samples.filter(x=>x.subject_id===selected)} review={review} cnn={cnn} comparison={comparison} unified={unified} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')} onBody={()=>navTo('body')} onRoutine={()=>navTo('routine')} onHUD={()=>navTo('hud')} onMission={()=>navTo('mission')} environment={environment} onEnvironment={setEnvironment}/>:page==='body'?<MedicalWorkstation selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} onTelemetry={()=>navTo('telemetry')} onMission={()=>navTo('mission')}/>:page==='routine'?<MissionGame selected={selected} onNavigate={navTo} snapshot={snapshot}/>:page==='hud'?<MissionVisorHUD scenario={scenario} onOpenScenario={()=>navTo('scenario')} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} environment={environment} onEnvironment={setEnvironment} onExit={()=>navTo('dashboard')}/>:page==='research'?<HealthLibrary liveAPDRA={unified?.explanation?.apdra_live} liveCrew={selected} overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<MissionControl environment={environment} onEnvironment={setEnvironment} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} connection={connection} readiness={readiness} unified={unified} mission={mission} onTelemetry={()=>navTo('telemetry')} onScenario={()=>navTo('scenario')} onHUD={()=>navTo('hud')}/>:<Method readiness={readiness}/>}</main>
+        {DASHBOARD_VIEWS.has(page)?<MissionDashboard scenario={scenario} view={page} onDashboard={()=>navTo('dashboard')} onTelemetryPage={()=>navTo('telemetry')} onScenarioPage={()=>navTo('scenario')} loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={selectSubject} samples={samples.filter(x=>x.subject_id===selected)} review={review} cnn={cnn} comparison={comparison} unified={unified} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')} onBody={()=>navTo('body')} onRoutine={()=>navTo('routine')} onHUD={()=>navTo('hud')} onMission={()=>navTo('mission')} environment={environment} onEnvironment={setEnvironment}/>:page==='body'?<MedicalWorkstation scenario={scenario} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} onTelemetry={()=>navTo('telemetry')} onMission={()=>navTo('mission')}/>:page==='routine'?<MissionGame selected={selected} onNavigate={navTo} snapshot={snapshot}/>:page==='hud'?<MissionVisorHUD scenario={scenario} onOpenScenario={()=>navTo('scenario')} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} environment={environment} onEnvironment={setEnvironment} onExit={()=>navTo('dashboard')}/>:page==='research'?<HealthLibrary liveAPDRA={unified?.explanation?.apdra_live} liveCrew={selected} overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<MissionControl environment={environment} onEnvironment={setEnvironment} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} connection={connection} readiness={readiness} unified={unified} mission={mission} onTelemetry={()=>navTo('telemetry')} onScenario={()=>navTo('scenario')} onHUD={()=>navTo('hud')}/>:<Method readiness={readiness}/>}</main>
       
     </div>
     {tour>=0 && <div className="tour-backdrop" role="dialog" aria-modal="true" aria-labelledby="tour-title"><div className="tour-modal"><div className="tour-step-mark">GUIDED TOUR <span>0{tour+1} / 0{tourSteps.length}</span></div><div className="tour-graphic"><div className="tour-core"><Icon name={['grid','pulse','flask','satellite'][tour]} size={42}/></div><span className="tour-ring tr1"/><span className="tour-ring tr2"/></div><h2 id="tour-title">{tourSteps[tour].title}</h2><p>{tourSteps[tour].body}</p><div className="tour-progress">{tourSteps.map((s,i)=><span key={i} className={i===tour?'active':''}/>)}</div><div className="tour-actions"><button className="text-btn" onClick={()=>setTour(-1)}>Skip tour</button><button className="primary-btn" onClick={()=>{if(tour===tourSteps.length-1){setTour(-1)}else{setTour(t=>t+1);navTo(tourSteps[tour+1].page)}}}>{tour===tourSteps.length-1?'Finish tour':'Continue'}<Icon name="arrow" size={17}/></button></div></div></div>}

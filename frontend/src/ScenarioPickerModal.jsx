@@ -1,104 +1,116 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {Icon} from './viz.jsx';
+import {METRICS,formatValue} from './api.js';
 import {SCENARIOS,SCENARIO_LENGTH} from './scenarioSimulator.js';
-import ScenarioConsole from './ScenarioConsole.jsx';
+import {scenarioVoiceAnnouncement} from './healthguardVoice.js';
+import {unlockScenarioAlarm} from './scenarioAlarm.js';
 import './scenarioPickerModal.css';
 
-const CREW_SCENARIOS = new Set(['oxygenation','exertion','thermal','sensor']);
-const CATEGORIES = [
-  {id:'crew',label:'CREW HEALTH',title:'Physiological events',description:'Scripted changes in a fictional astronaut’s vital signs.'},
-  {id:'environment',label:'SPACECRAFT',title:'Spacecraft and cabin events',description:'Illustrative atmosphere and radiation events, with simulated crew responses.'}
-];
-
-/**
- * A presentation-only picker. All scenario timing and data remain owned by
- * MissionDashboard, even when this dialog is closed.
- */
+const CREW=new Set(['oxygenation','exertion','thermal','sensor']);
+const CATS=[{id:'crew',label:'Crew health',icon:'heart'},{id:'ship',label:'Spacecraft',icon:'satellite'}];
+const levels=['OPTIMAL','CHECK','WARNING','CRITICAL'];
+const ENGINEERING_EVENTS={
+  co2:[['cabin_co2_ppm','Cabin CO₂','ppm']],
+  cabin_leak:[['cabin_pressure_kpa','Cabin pressure','kPa']],
+  radiation:[['radiation_rate_usv_h','Radiation rate','µSv/h']],
+  suit_leak:[['suit_pressure_psi','Suit pressure','psi']],
+  suit_power:[['suit_battery_percent','Suit battery','%']]
+};
 export default function ScenarioPickerModal({
-  open,onClose,onHUD,person,scenarioId,onSelectScenario,onStart,onPause,onReset,onExit,
-  running,elapsed,sample,soundEnabled,onToggleSound,onSpeak,scenarioPending=false,scenarioError=''
+  open,onClose,onBody,onHUD,person,scenarioId,onSelectScenario,onStart,onPause,onReset,onExit,
+  running,elapsed,sample,latestFrame,soundEnabled,onToggleSound,onSpeak,scenarioPending=false,scenarioError=''
 }){
   const [category,setCategory]=useState('crew');
-  const [showDetails,setShowDetails]=useState(false);
-  useEffect(()=>{if(running)setShowDetails(true);},[running]);
-  const modalRef=useRef(null);
-  const closeRef=useRef(null);
-  const returnFocusRef=useRef(null);
-  const onCloseRef=useRef(onClose);
+  const modalRef=useRef(null),closeRef=useRef(null),onCloseRef=useRef(onClose);
   onCloseRef.current=onClose;
   useEffect(()=>{
     if(!open)return;
-    returnFocusRef.current=document.activeElement;
-    setCategory(CREW_SCENARIOS.has(scenarioId)||!scenarioId?'crew':'environment');
-    setShowDetails(Boolean(running));
-    const previousOverflow=document.body.style.overflow;
+    const previousFocus=document.activeElement,oldOverflow=document.body.style.overflow;
     document.body.style.overflow='hidden';
+    setCategory(!scenarioId||CREW.has(scenarioId)?'crew':'ship');
     closeRef.current?.focus();
-    const onKeyDown=event=>{
+    const onKey=event=>{
       if(event.key==='Escape'){event.preventDefault();onCloseRef.current();return;}
       if(event.key!=='Tab'||!modalRef.current)return;
-      const focusables=Array.from(modalRef.current.querySelectorAll('button:not([disabled]),select:not([disabled]),a[href],summary,[tabindex]:not([tabindex="-1"])')).filter(node=>node.getClientRects().length);
-      if(!focusables.length)return;
-      const first=focusables[0],last=focusables[focusables.length-1];
-      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
-      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+      const items=[...modalRef.current.querySelectorAll('button:not([disabled]),select:not([disabled]),summary')].filter(el=>el.getClientRects().length);
+      if(!items.length)return;
+      if(event.shiftKey&&document.activeElement===items[0]){event.preventDefault();items.at(-1).focus();}
+      else if(!event.shiftKey&&document.activeElement===items.at(-1)){event.preventDefault();items[0].focus();}
     };
-    document.addEventListener('keydown',onKeyDown);
-    return()=>{
-      document.body.style.overflow=previousOverflow;
-      document.removeEventListener('keydown',onKeyDown);
-      returnFocusRef.current?.focus?.();
-    };
+    document.addEventListener('keydown',onKey);
+    return()=>{document.body.style.overflow=oldOverflow;document.removeEventListener('keydown',onKey);previousFocus?.focus?.();};
   },[open]);
   if(!open)return null;
-  const group=CATEGORIES.find(item=>item.id===category)||CATEGORIES[0];
-  const visible=SCENARIOS.filter(item=>category==='crew'?CREW_SCENARIOS.has(item.id):!CREW_SCENARIOS.has(item.id));
-  const selected=SCENARIOS.find(item=>item.id===scenarioId);
-  const isFinished=elapsed>=SCENARIO_LENGTH;
-  const status=scenarioError?'UNAVAILABLE':scenarioPending?'LOADING':running?'PLAYING':selected?isFinished?'COMPLETE':'READY':'NO SCENARIO';
-  const level=selected && sample?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'
-    ? sample.severity:null;
-  const play=()=>{onStart();setShowDetails(true);};
-  return <div className="hg-scenario-backdrop" onMouseDown={event=>{if(!running&&event.target===event.currentTarget)onClose();}}>
-    <section className="hg-scenario-modal" role="dialog" aria-modal="true" aria-label="Choose a training scenario" aria-labelledby="hg-scenario-title" ref={modalRef}>
+  const selected=SCENARIOS.find(s=>s.id===scenarioId);
+  const visible=SCENARIOS.filter(s=>category==='crew'?CREW.has(s.id):!CREW.has(s.id));
+  const verified=sample||latestFrame;
+  const frame=verified?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'&&verified.scenario_id===scenarioId&&verified.subject_id===person?.subjectId?verified:null;
+  const level=levels.includes(frame?.severity)?frame.severity:'UNASSESSED';
+  const elapsedSec=Math.max(0,Math.min(elapsed,SCENARIO_LENGTH));
+  const status=scenarioError?'Unavailable':scenarioPending?'Updating':running?'Playing':elapsedSec===SCENARIO_LENGTH?'Complete':selected?'Ready':'Choose a scenario';
+  const canStart=Boolean(selected&&frame&&!scenarioPending&&!scenarioError&&elapsedSec<SCENARIO_LENGTH);
+  const time='T+'+String(Math.floor(elapsedSec/60)).padStart(2,'0')+':'+String(elapsedSec%60).padStart(2,'0')+' / 01:04';
+  return <div className="hg-scenario-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget&&!running)onClose();}}>
+    <section className="hg-scenario-modal hg-scenario-clean" role="dialog" aria-modal="true" aria-labelledby="hg-scenario-title" ref={modalRef}>
       <header className="hg-scenario-modal-header">
-        <div><span className="hg-scenario-kicker">HEALTHGUARD · TRAINING SIMULATION</span><h2 id="hg-scenario-title">Possible scenarios</h2><p>Choose a fictional event to demonstrate changing astronaut health indicators.</p></div>
-        <div className="hg-scenario-modal-header-actions">
-          {selected&&<button type="button" className="hg-scenario-reset" onClick={onHUD} title="View the same scenario in the astronaut suit display"><Icon name="radio" size={15}/> View in suit HUD</button>}
-          <button type="button" className="hg-scenario-reset" onClick={()=>{onExit();onClose();}} title="Stop scenario and return to normal simulated feed"><Icon name="radio" size={15}/> Reset to live</button>
-          <button ref={closeRef} type="button" className="hg-scenario-close" onClick={onClose} aria-label="Close scenario picker"><Icon name="x" size={18}/></button>
-        </div>
+        <div><span className="hg-scenario-kicker">HEALTHGUARD / SIMULATED TRAINING</span><h2 id="hg-scenario-title">Scenario Lab</h2>
+          <p>Choose a fictional event and review the astronaut's changing indicators.</p></div>
+        <button type="button" ref={closeRef} className="hg-scenario-close" onClick={onClose} aria-label="Close scenario popup"><Icon name="x" size={18}/></button>
       </header>
       <div className="hg-scenario-tabs" role="tablist" aria-label="Scenario category">
-        {CATEGORIES.map(item=><button key={item.id} type="button" role="tab" id={'hg-scenario-tab-'+item.id} aria-selected={category===item.id} aria-controls="hg-scenario-panel" className={category===item.id?'active':''} onClick={()=>setCategory(item.id)}>{item.label}<span>{SCENARIOS.filter(s=>item.id==='crew'?CREW_SCENARIOS.has(s.id):!CREW_SCENARIOS.has(s.id)).length}</span></button>)}
+        {CATS.map(cat=><button role="tab" id={'scenario-tab-'+cat.id} aria-controls="scenario-options" aria-selected={category===cat.id} key={cat.id}
+          type="button" className={category===cat.id?'active':''} onClick={()=>setCategory(cat.id)}><Icon name={cat.icon} size={15}/>{cat.label}<span>{SCENARIOS.filter(s=>cat.id==='crew'?CREW.has(s.id):!CREW.has(s.id)).length}</span></button>)}
       </div>
-      <div className="hg-scenario-modal-body" id="hg-scenario-panel" role="tabpanel" aria-labelledby={'hg-scenario-tab-'+category}>
-        <div className="hg-scenario-group"><span className="hg-scenario-group-icon"><Icon name={category==='crew'?'heart':'satellite'} size={17}/></span><div><h3>{group.title}</h3><p>{group.description}</p></div><span className="hg-scenario-count">{visible.length} EVENTS</span></div>
-        <div className="hg-scenario-cards">{visible.map((scenario,i)=><button key={scenario.id} type="button" className={'hg-scenario-option '+(scenarioId===scenario.id?'selected':'')} onClick={()=>onSelectScenario(scenario.id)} aria-pressed={scenarioId===scenario.id}>
-          <div className="hg-scenario-option-top"><span className="hg-scenario-number">{String(i+1).padStart(2,'0')}</span><strong>{scenario.name}</strong><span className="hg-scenario-category">{category==='crew'?'CREW':'CABIN'}</span></div>
-          <p>{scenario.subtitle}</p>
-          <div className="hg-scenario-option-meta"><span>{scenario.triggerLabel}</span><b>{scenarioId===scenario.id?'SELECTED':'SELECT'} <Icon name="arrow" size={13}/></b></div>
-        </button>)}</div>
-        <p className="hg-scenario-disclaimer"><Icon name="shield" size={14}/> Scenario values, severity tiers and triggers are scripted for demonstration only. They are not measurements from real astronauts or clinical risk predictions.</p>
-      </div>
-      <footer className="hg-scenario-modal-footer">
-        <div className="hg-scenario-current">
-          <div><span className="hg-scenario-status-dot"/><strong>{selected?'ACTIVE SELECTION · '+selected.name:'NO ACTIVE SCENARIO'}</strong><span className={'hg-scenario-status '+(running?'live':'')}>{status}</span>{level&&<span className={'hg-scenario-level hg-scenario-level-'+level.toLowerCase()} aria-live="polite">{level} · TRAINING</span>}</div>
-          <p>{selected?selected.cause:'Select a scenario above to prepare a fictional playback.'}</p>
-          {scenarioError&&<p role="alert" className="hg-scenario-error">Scenario backend unavailable: {scenarioError}. No fabricated model outputs are shown.</p>}
-          {scenarioPending&&<p role="status" className="hg-scenario-pending">Loading scenario and 17-channel model evidence…</p>}
-          {selected&&<div className="hg-scenario-progress" role="progressbar" aria-label="Scenario playback progress" aria-valuemin={0} aria-valuemax={SCENARIO_LENGTH} aria-valuenow={elapsed}><i style={{width:(elapsed/SCENARIO_LENGTH*100)+'%'}}/></div>}
+      <div className="hg-scenario-scroll">
+        <div className="hg-scenario-layout">
+          <section className="hg-scenario-selection" role="tabpanel" id="scenario-options" aria-labelledby={'scenario-tab-'+category}>
+            <h3>Select a scenario</h3>
+            <div className="hg-scenario-list">{visible.map(s=><button key={s.id} type="button" aria-pressed={scenarioId===s.id}
+              className={'hg-scenario-choice'+(scenarioId===s.id?' active':'')} onClick={()=>onSelectScenario(s.id)}>
+              <Icon name={scenarioId===s.id?'check':'activity'} size={17}/>
+              <span><strong>{s.name}</strong><small>{s.subtitle}</small></span></button>)}</div>
+            <p className="hg-scenario-disclaimer"><Icon name="shield" size={15}/> Fictional training, not real astronaut monitoring or a medical diagnosis.</p>
+          </section>
+          <section className="hg-scenario-preview" aria-label="Selected scenario preview">
+            <div className="hg-scenario-preview-top"><span>LIVE TRAINING PREVIEW</span><b>{status}</b></div>
+            {selected?<><h3>{selected.name}</h3><p className="hg-scenario-preview-caption">{selected.subtitle}</p>
+              <div role="status" aria-live="polite" className={'hg-scenario-warning hg-scenario-warning-'+level.toLowerCase()}>
+                <Icon name={level==='CRITICAL'?'alert':'shield'} size={18}/>
+                <div><strong>{level==='UNASSESSED'?'Awaiting evaluation':level+' · TRAINING'}</strong>
+                  <span>{['WARNING','CRITICAL'].includes(level)?scenarioVoiceAnnouncement(scenarioId,level):frame?.stage||'Ready to start.'}</span></div>
+              </div>
+              {scenarioError&&<p role="alert" className="hg-scenario-error">{scenarioError}. No invented model outputs.</p>}
+              {scenarioPending&&<p role="status" className="hg-scenario-pending">Loading the next verified scenario frame…</p>}
+              <div className="hg-scenario-readings">{METRICS.map(m=><div key={m.key} className={frame?.metric_levels?.[m.key]==='CRITICAL'?'critical':''}>
+                <span>{m.label}</span><strong>{formatValue(frame?.values?.[m.key],m.digits)} <small>{m.unit}</small></strong></div>)}</div>
+              {ENGINEERING_EVENTS[scenarioId]&&frame&&<div className="hg-scenario-engineering">
+                <strong>Spacecraft simulator</strong>
+                {ENGINEERING_EVENTS[scenarioId].map(([key,label,unit])=><div key={key} className={frame.engineering_flags?.[key]?'critical':''}>
+                  <span>{label}</span><b>{formatValue(frame.engineering_values?.[key],1)} <small>{unit}</small></b>
+                </div>)}
+              </div>}
+              <details className="hg-scenario-evidence"><summary>Training details and model evidence <Icon name="chevron" size={14}/></summary>
+                <p>{selected.cause}</p><p>Illustrative trigger: {selected.triggerLabel}</p>
+                <div>17-channel CNN <b>{frame?.model_evidence?.candidate_17ch?.status||'Awaiting evidence'}</b></div>
+                <div>Covariance comparison <b>{frame?.model_evidence?.statistical_comparator?.status||'Awaiting evidence'}</b></div>
+                <button type="button" onClick={onSpeak}><Icon name="volume" size={15}/> Speak guidance</button>
+              </details>
+            </>:<p className="hg-scenario-empty">Select an event to see its simulated indicators.</p>}
+          </section>
         </div>
-        <div className="hg-scenario-footer-actions">
-          {selected&&<button type="button" className="hg-scenario-secondary" onClick={onReset} title="Restart selected scenario">Restart</button>}
-          {selected&&running&&<button type="button" className="hg-scenario-secondary" onClick={onPause}>Pause</button>}
-          <button type="button" className="hg-scenario-start" disabled={!selected||!sample||scenarioPending||Boolean(scenarioError)||running||isFinished} onClick={play}><Icon name="activity" size={16}/>{running?'Running':elapsed>0?'Resume playback':'Start scenario'}</button>
+      </div>
+      <footer className="hg-scenario-playback">
+        <div className="hg-scenario-playback-summary"><div><strong>{selected?.name||'No scenario selected'}</strong><span>{time}</span></div>
+          <div className="hg-scenario-progress" role="progressbar" aria-label="Scenario playback" aria-valuenow={elapsedSec} aria-valuemin={0} aria-valuemax={SCENARIO_LENGTH}><i style={{width:(elapsedSec/SCENARIO_LENGTH*100)+'%'}}/></div></div>
+        <div className="hg-scenario-playback-buttons">
+          <button type="button" className="hg-scenario-start" disabled={!running&&!canStart} onClick={running?onPause:()=>{if(soundEnabled)unlockScenarioAlarm();onStart();}}><Icon name={running?'check':'activity'} size={15}/>{running?'Pause':elapsedSec>0?'Resume':'Start'}</button>
+          <button type="button" className="hg-scenario-secondary" disabled={!selected} onClick={onReset}>Restart</button>
+          <button type="button" className="hg-scenario-secondary" aria-pressed={soundEnabled} onClick={onToggleSound}><Icon name={soundEnabled?'volume':'mute'} size={15}/>{soundEnabled?'Voice & alarm on':'Voice & alarm off'}</button>
+          {selected&&<button type="button" className="hg-scenario-secondary" onClick={onBody}>Body Explorer</button>}
+          {selected&&<button type="button" className="hg-scenario-secondary" onClick={onHUD}>Suit HUD</button>}
+          <button type="button" className="hg-scenario-secondary" onClick={()=>{onExit();onClose();}}>Return to live</button>
         </div>
       </footer>
-      {selected&&<div className="hg-scenario-detail-region">
-        <button className="hg-scenario-detail-toggle" type="button" onClick={()=>setShowDetails(v=>!v)} aria-expanded={showDetails}><Icon name="activity" size={15}/>{showDetails?'Hide training controls':'Show full training controls'}<Icon name="chevron" size={14}/></button>
-        {showDetails&&<div className="hg-scenario-detail-expanded"><ScenarioConsole person={person} scenarioId={scenarioId} scenarioPending={scenarioPending} scenarioError={scenarioError} onSelectScenario={onSelectScenario} onStart={onStart} onPause={onPause} onReset={onReset} onExit={onExit} running={running} elapsed={elapsed} sample={sample} soundEnabled={soundEnabled} onToggleSound={onToggleSound} onSpeak={onSpeak}/></div>}
-      </div>}
     </section>
   </div>;
 }

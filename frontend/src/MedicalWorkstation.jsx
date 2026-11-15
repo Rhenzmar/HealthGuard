@@ -3,6 +3,7 @@ import {AnatomyScene} from './HealthGuardPages.jsx';
 import {METRICS,formatValue,readApi} from './api.js';
 import {Icon,VitalChart} from './viz.jsx';
 import './medicalWorkstation.css';
+import {verifiedScenarioFrame,anatomyAlertRegions} from './scenarioAnatomy.js';
 
 const CREW=[
  {id:'SIM_CREW_01',name:'Cmdr. Elena Park',role:'Flight commander',image:'/crew/elena.svg'},
@@ -40,8 +41,17 @@ const metricFor=key=>ALL.find(m=>m.key===key);
 const isCore=key=>METRICS.some(m=>m.key===key);
 const LAYERS=[['skin','Outline'],['skeleton','Skeleton'],['organs','Organs'],['vessels','Vessels'],['muscles','Muscles'],['nerves','Nerves']];
 
-export default function MedicalWorkstation({selected,onSelectCrew,snapshot,samples=[],review,unified,connection,onTelemetry}) {
+export default function MedicalWorkstation({selected,onSelectCrew,snapshot,samples=[],review,unified,connection,onTelemetry,scenario}) {
  const [regionId,setRegionId]=useState('cardiac');
+ const activeScenarioFrame=verifiedScenarioFrame(scenario,selected);
+ const scenarioSeverity=activeScenarioFrame?.severity||'UNASSESSED';
+ const alertedRegions=anatomyAlertRegions(activeScenarioFrame);
+ const alertedRegionIds=alertedRegions.join(',');
+ useEffect(()=>{
+   if(scenarioSeverity==='CRITICAL'&&alertedRegions.length){
+     setRegionId(current=>alertedRegions.includes(current)?current:alertedRegions[0]);
+   }
+ },[scenarioSeverity,alertedRegionIds]);
  const [metricKey,setMetricKey]=useState('heart_rate_bpm');
  const [bodySex,setBodySex]=useState('male');
  const [layersOpen,setLayersOpen]=useState(false);
@@ -94,7 +104,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
    const hasDirect=Boolean(key&&isCore(key));
    const showsReading=Boolean(key&&available(key)&&(!isCore(key)||online));
    return <button type="button" key={r.id}
-     className={'hgm-section-card '+(regionId===r.id?'is-selected':'')}
+     className={'hgm-section-card '+(regionId===r.id?'is-selected':'')+(alertedRegions.includes(r.id)?' is-training-alert is-training-'+scenarioSeverity.toLowerCase():'')}
      aria-pressed={regionId===r.id} onClick={()=>chooseRegion(r.id)}>
      <span className="hgm-section-icon"><Icon name={r.icon} size={20}/></span>
      <span className="hgm-section-copy">
@@ -132,7 +142,12 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
      })}</div>
    </section>
 
-   <section className="hgm-systems-stage" aria-label="Body systems section explorer">
+   {activeScenarioFrame&&['CHECK','WARNING','CRITICAL'].includes(scenarioSeverity)&&<div role="status" className={'hgm-training-notice hgm-training-'+scenarioSeverity.toLowerCase()}>
+     <Icon name={scenarioSeverity==='CRITICAL'?'alert':'shield'} size={18}/>
+     <span><strong>{scenarioSeverity} · FICTIONAL TRAINING EVENT</strong>
+       {alertedRegions.length?'Highlighted body systems are linked to the scenario’s flagged physiological channels.':'This scenario currently flags spacecraft or environmental readings, not a directly measured body system.'}</span>
+   </div>}
+   <section className={'hgm-systems-stage'+(scenarioSeverity==='CRITICAL'?' hgm-stage-critical':'')} aria-label="Body systems section explorer">
      <div className="hgm-stage-top">
        <div><span>INTERACTIVE ANATOMY</span><h2>{crew.name}</h2></div>
        <div className="hgm-stage-status"><span className={online?'is-online':''}/>
@@ -145,7 +160,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
        <div className="hgm-stage-model">
          <div className="hgm-figure hgm-figure-stage">
            <div className="hgm-model-overline">HEALTHGUARD / SECTION VIEW</div>
-           <AnatomyScene selected={regionId} sex={bodySex} layers={layers} onLayersChange={setLayers} onSelect={chooseRegion}/>
+           <AnatomyScene selected={regionId} alertedRegions={alertedRegions} alertSeverity={scenarioSeverity} sex={bodySex} layers={layers} onLayersChange={setLayers} onSelect={chooseRegion}/>
            <span className="hgm-figure-footnote">Educational 3D anatomy · not a medical scan</span>
          </div>
        </div>

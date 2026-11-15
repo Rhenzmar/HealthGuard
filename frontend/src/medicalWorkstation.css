@@ -303,3 +303,23 @@
 @media(max-width:760px){
  .hgm-sections-workstation .hgm-systems-right{grid-template-rows:repeat(2,minmax(78px,auto));gap:8px;align-content:center}
 }
+
+
+/* Static scenario alerts: only systems with flagged simulator channels change color. */
+.hgm-training-notice{display:flex;align-items:flex-start;gap:12px;padding:12px 15px;margin:0 0 14px;border:1px solid #8e7855;border-radius:10px;background:#3d3023;color:#fff0ce}
+.hgm-training-notice>svg{flex:none}
+.hgm-training-notice>span{display:grid;gap:4px;font-size:10px;line-height:1.5}
+.hgm-training-notice strong{font-size:11px}
+.hgm-training-warning{border-color:#c58b54;background:#493226;color:#ffe4be}
+.hgm-training-critical{border-color:#f17b80;background:#54212d;color:#ffe4e9}
+.hgm-systems-stage.hgm-stage-critical{border-color:#cc5967}
+.hgm-section-card.is-training-alert{transition:none!important;animation:none!important;transform:none!important;box-shadow:none!important}
+.hgm-section-card.is-training-alert.is-training-critical,
+.hgm-section-card.is-training-alert.is-training-critical.is-selected{border-color:#f07e85!important;background:#53212d!important;box-shadow:inset 3px 0 #f28a91!important}
+.hgm-section-card.is-training-alert.is-training-critical .hgm-section-icon,
+.hgm-section-card.is-training-alert.is-training-critical strong{color:#ffcad1!important}
+.hgm-section-card.is-training-alert.is-training-warning,
+.hgm-section-card.is-training-alert.is-training-warning.is-selected{border-color:#d59a62!important;background:#493427!important;box-shadow:none!important}
+.hgm-systems-stage.hgm-stage-critical .hgm-figure-stage{border-color:#d16d76}
+.hgm-stage-critical .hgm-model-overline{color:#ffb6c1}
+.hgm-training-notice,.hgm-stage-critical,.hgm-section-card.is-training-alert{animation:none!important}
