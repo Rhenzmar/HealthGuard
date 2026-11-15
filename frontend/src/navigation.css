@@ -78,3 +78,28 @@
 .sidebar .side-logo strong span{color:inherit}
 @media(max-width:1050px){.sidebar .brand-mark{width:40px;height:35px;flex-basis:40px}.sidebar .side-logo strong{font-size:14px}}
 @media(max-width:640px){.sidebar .brand-mark{width:36px;height:31px;flex-basis:36px}.sidebar .side-logo{gap:6px}}
+
+
+/* Tour entry belongs to the actual visible top navigation, not the hidden topbar. */
+.sidebar .hg-nav-tour-slot{
+  display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;margin-left:2px;
+}
+.sidebar .hg-nav-tour-button{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  min-height:38px;padding:9px 12px;
+  border-radius:9px;border:1px solid #40a0a8;
+  background:#145064;color:#e3ffff;
+  font-size:11px;font-weight:750;white-space:nowrap;
+  box-shadow:none;cursor:pointer;
+}
+.sidebar .hg-nav-tour-button:hover{background:#1b6375;border-color:#6cdddd}
+.sidebar .hg-nav-tour-button:focus-visible{outline:2px solid #a1f7ee;outline-offset:3px}
+@media(max-width:1050px){
+ .sidebar .hg-nav-tour-button{padding:9px;gap:5px;font-size:10px}
+}
+@media(max-width:680px){
+ .sidebar .hg-nav-tour-button{min-height:33px;padding:7px}
+ .sidebar .hg-nav-tour-button span{display:none}
+ .sidebar .hg-nav-tour-button svg{width:18px;height:18px}
+}
