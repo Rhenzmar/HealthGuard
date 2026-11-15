@@ -84,3 +84,46 @@
 .hg-three-vertical-guide{position:absolute;top:8%;bottom:8%;left:50%;border-left:1px dashed rgba(71,152,174,.13);pointer-events:none}
 @media(max-width:950px){.hgm-main-layout{grid-template-columns:1fr}.hgm-figure{height:460px}}
 @media(max-width:670px){.hgm-figure{height:385px}.hgm-view-controls span{display:none}.hgm-figure-watermark{font-size:8px}.hgm-figure-status{bottom:39px}}
+
+
+/* Real anatomy viewer: quiet three-dimensional clinical workstation */
+.hgm-workstation{max-width:1640px;padding:24px clamp(15px,2.4vw,38px) 38px;background:#081521}
+.hgm-heading{margin-bottom:16px}
+.hgm-heading h1{font-size:clamp(26px,2.45vw,35px);margin:6px 0}
+.hgm-heading p{font-size:12px}
+.hgm-crew-strip{padding:12px 15px;margin-bottom:14px;background:#0c2030}
+.hgm-crew-grid{gap:8px}
+.hgm-crew-option{padding:8px;border-radius:7px;background:#0c2637}
+.hgm-crew-option img{width:40px;height:45px}
+.hgm-main-layout{grid-template-columns:minmax(440px,1.4fr) minmax(300px,.85fr);gap:14px}
+.hgm-anatomy-panel,.hgm-explanation{padding:15px;border-radius:10px}
+.hgm-figure{height:min(65vw,650px);min-height:480px;background:radial-gradient(ellipse 50% 65% at center,rgba(38,104,124,.22),transparent),linear-gradient(160deg,#061622,#081b2a);border:1px solid #284759}
+.hgm-figure .hg-real-anatomy{width:100%;height:100%;min-height:0;overflow:hidden;touch-action:pan-y}
+.hg-real-anatomy .hg-anatomy-viewer{position:relative;width:100%;height:100%;background:transparent!important;color:#d8f4f4}
+.hg-real-anatomy .oa3d-canvas{position:absolute!important;inset:0;min-height:0!important;height:100%!important;background:transparent!important}
+.hg-real-anatomy .oa3d-canvas canvas{width:100%;height:100%;display:block}
+.hg-real-anatomy .oa3d-loading{z-index:5}
+.hg-real-anatomy .oa3d-hover-tag{z-index:7}
+.hg-real-anatomy .oa3d-zoom,.hg-real-anatomy .oa3d-reset{z-index:7;background:#0d2c3c!important;border:1px solid #386776!important;color:#c7f4f4!important}
+.hg-real-anatomy .hg-three-crosshair{pointer-events:none}
+.hgm-figure-watermark{z-index:3;letter-spacing:.85px;color:#759ead}
+.hgm-figure-status{z-index:3}
+.hgm-view-controls{margin:0 0 9px}
+.hgm-view-controls span{font-size:8px}
+.hgm-anatomy-layer-controls{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 8px}
+.hgm-anatomy-layer-controls button{font-size:10px;color:#9fbdc8;border:1px solid #2b5365;background:#0d2635;padding:8px 11px;border-radius:6px;cursor:pointer}
+.hgm-anatomy-layer-controls button[aria-pressed="true"]{background:#194456;color:#e4f9f7;border-color:#53b4b9}
+.hgm-region-pills{justify-content:flex-start;margin:6px 0 11px;gap:6px}
+.hgm-region-pills button{flex:0 0 auto;padding:8px 12px}
+.hgm-panel-heading{margin-bottom:12px}
+.hgm-panel-heading h2{font-size:17px;margin-top:6px}
+.hgm-region-description{line-height:1.65;margin-bottom:13px}
+.hgm-region-context{margin-bottom:13px}
+.hgm-related-grid button{padding:10px}
+.hgm-related-grid button strong{font-size:19px}
+.hgm-apdra-card,.hgm-review-card{margin-top:12px;padding:13px}
+.hgm-research-note{margin-top:12px;padding:11px}
+.hgm-monitor{padding:16px}
+.hgm-measurements{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media(max-width:1050px){.hgm-main-layout{grid-template-columns:1fr}.hgm-figure{height:560px;min-height:400px}}
+@media(max-width:670px){.hgm-figure{height:460px;min-height:360px}.hgm-anatomy-panel,.hgm-explanation{padding:11px}.hgm-view-controls span{display:none}.hgm-figure-watermark{top:10px;left:10px}.hgm-region-pills button{padding:8px 10px}.hgm-anatomy-layer-controls button{font-size:9px;padding:7px 9px}}
