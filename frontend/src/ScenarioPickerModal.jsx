@@ -56,6 +56,8 @@ export default function ScenarioPickerModal({
   const selected=SCENARIOS.find(item=>item.id===scenarioId);
   const isFinished=elapsed>=SCENARIO_LENGTH;
   const status=scenarioError?'UNAVAILABLE':scenarioPending?'LOADING':running?'PLAYING':selected?isFinished?'COMPLETE':'READY':'NO SCENARIO';
+  const level=selected && sample?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'
+    ? sample.severity:null;
   const play=()=>{onStart();setShowDetails(true);};
   return <div className="hg-scenario-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}>
     <section className="hg-scenario-modal" role="dialog" aria-modal="true" aria-label="Choose a training scenario" aria-labelledby="hg-scenario-title" ref={modalRef}>
@@ -81,7 +83,7 @@ export default function ScenarioPickerModal({
       </div>
       <footer className="hg-scenario-modal-footer">
         <div className="hg-scenario-current">
-          <div><span className="hg-scenario-status-dot"/><strong>{selected?'ACTIVE SELECTION · '+selected.name:'NO ACTIVE SCENARIO'}</strong><span className={'hg-scenario-status '+(running?'live':'')}>{status}</span></div>
+          <div><span className="hg-scenario-status-dot"/><strong>{selected?'ACTIVE SELECTION · '+selected.name:'NO ACTIVE SCENARIO'}</strong><span className={'hg-scenario-status '+(running?'live':'')}>{status}</span>{level&&<span className={'hg-scenario-level hg-scenario-level-'+level.toLowerCase()} aria-live="polite">{level} · TRAINING</span>}</div>
           <p>{selected?selected.cause:'Select a scenario above to prepare a fictional playback.'}</p>
           {scenarioError&&<p role="alert" className="hg-scenario-error">Scenario backend unavailable: {scenarioError}. No fabricated model outputs are shown.</p>}
           {scenarioPending&&<p role="status" className="hg-scenario-pending">Loading scenario and 17-channel model evidence…</p>}
