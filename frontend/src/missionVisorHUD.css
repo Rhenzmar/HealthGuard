@@ -85,3 +85,13 @@
 .hgv-env-lunar_base .hgv-eva-figure{filter:grayscale(.75) drop-shadow(7px 9px 6px #000)}
 .hgv-scene-focus{pointer-events:none}
 @media(max-width:700px){.hgv-habitat{top:40%;height:12%}.hgv-eva-figure{bottom:47%;height:19%;left:12%}.hgv-rover-prop{top:36%;right:10%;width:48%}}
+
+
+/* Real local GLB foreground, with the photographic reference preserved behind it. */
+.hgv-model-layer{position:absolute;z-index:3;inset:35% 15% 17%;pointer-events:auto;touch-action:pan-y}
+.hgv-model-layer canvas{display:block;width:100%;height:100%}
+.hgv-model-caption{position:absolute;bottom:0;left:50%;transform:translateX(-50%);white-space:nowrap;pointer-events:none;font-weight:800;font-size:8px;color:#a8e9e6;letter-spacing:.65px;text-shadow:0 2px 8px #000}
+.hgv-visor-content,.hgv-glass-head,.hgv-visor-bottom{pointer-events:none}
+.hgv-readings,.hgv-systems,.hgv-vital,.hgv-detail,.hgv-detail button{pointer-events:auto}
+.hgv-visor-content .hgv-scene-focus{pointer-events:none}
+@media(max-width:700px){.hgv-model-layer{inset:25% 6% 51%}.hgv-model-caption{font-size:7px}}
