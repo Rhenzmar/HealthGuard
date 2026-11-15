@@ -20,6 +20,7 @@ export default function ScenarioPickerModal({
 }){
   const [category,setCategory]=useState('crew');
   const [showDetails,setShowDetails]=useState(false);
+  useEffect(()=>{if(running)setShowDetails(true);},[running]);
   const modalRef=useRef(null);
   const closeRef=useRef(null);
   const returnFocusRef=useRef(null);
@@ -55,7 +56,7 @@ export default function ScenarioPickerModal({
   const selected=SCENARIOS.find(item=>item.id===scenarioId);
   const isFinished=elapsed>=SCENARIO_LENGTH;
   const status=scenarioError?'UNAVAILABLE':scenarioPending?'LOADING':running?'PLAYING':selected?isFinished?'COMPLETE':'READY':'NO SCENARIO';
-  const play=()=>{onStart();onClose();};
+  const play=()=>{onStart();setShowDetails(true);};
   return <div className="hg-scenario-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}>
     <section className="hg-scenario-modal" role="dialog" aria-modal="true" aria-label="Choose a training scenario" aria-labelledby="hg-scenario-title" ref={modalRef}>
       <header className="hg-scenario-modal-header">
