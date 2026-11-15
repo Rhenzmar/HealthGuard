@@ -8,7 +8,7 @@ def test_engineering_snapshots_reproducible_and_isolated():
     assert a==engineering_snapshot("SIM_CREW_01",60)
     b=engineering_snapshot("SIM_CREW_02",60)
     assert a["values"]["systolic_bp_mmhg"]!=b["values"]["systolic_bp_mmhg"]
-    assert len(a["values"])==12
+    assert len(a["values"])==14
     assert set(a["values"])==set(SIGNALS)
     assert a["measurement_origin"]=="SYNTHETIC_NOT_MEASURED"
     assert a["classification"]=="NOT_EVALUATED"
@@ -24,7 +24,7 @@ def test_engineering_catalog_readonly_and_empty_without_simulator(monkeypatch):
     monkeypatch.setenv("PHYSIOGRAPH_AUTO_DEMO","0")
     with TestClient(build_app()) as c:
         catalog=c.get("/api/simulation/engineering/channels").json()
-        assert len(catalog["channels"])==12
+        assert len(catalog["channels"])==14
         assert catalog["data_kind"]=="SYNTHETIC_NOT_MEASURED"
         assert c.get("/api/simulation/engineering/SIM_CREW_01").status_code==404
         assert c.get("/api/simulation/engineering/C001").status_code==404
