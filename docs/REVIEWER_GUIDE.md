@@ -2,7 +2,7 @@
 
 **Project:** HealthGuard, NASA Space Apps Challenge 2026  
 **Team:** CNHS-STE  
-**Live demo:** https://physiograph-dashboard.onrender.com/  
+**Live demo:** https://healthguard-dashboard.onrender.com/  
 **Project page:** https://www.spaceappschallenge.org/2026/find-a-team/cnhs-ste/?tab=project
 
 ## What to try in the demo
