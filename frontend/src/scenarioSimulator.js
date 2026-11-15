@@ -57,6 +57,20 @@ export const SCENARIOS = [
     triggerLabel:'Scripted radiation-rate surge (not a medically validated limit)',
     cause:'Fictional radiation environment increases. The model does not predict radiation sickness or actual biological exposure.',
     guidance:'Training response: notify mission control, confirm readings with mission dosimetry and follow approved radiation shelter and operational procedures. This simulation is not a real exposure calculation.'
+  },
+  {
+    id:'suit_leak',name:'Suit pressure loss',
+    subtitle:'Scripted EVA suit pressure-control failure',
+    triggerLabel:'Suit pressure below 3.4 psi (training illustration, not an operational limit)',
+    cause:'Fictional pressure decrease with an illustrative physiological response, not actual suit telemetry.',
+    guidance:'Training response: stop the EVA task, verify the suit pressure reading, notify Mission Control and follow the approved pressure-loss checklist.'
+  },
+  {
+    id:'suit_power',name:'Suit battery failure',
+    subtitle:'Scripted EVA battery depletion',
+    triggerLabel:'Suit battery reserve below 50% (illustrative training trigger)',
+    cause:'Simulated rapid battery loss, not an actual battery controller reading.',
+    guidance:'Training response: stop the EVA task, check the power reading, notify Mission Control and follow the approved electrical-power checklist.'
   }
 ];
 
