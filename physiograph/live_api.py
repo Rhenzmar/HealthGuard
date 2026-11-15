@@ -403,7 +403,9 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                 "reason": f"Experimental live APDRA unavailable: {type(exc).__name__}"
             }
         review["apdra_live"] = apdra_live
+        review["live_apdra_applied"] = True
         context_review["apdra_live"] = apdra_live
+        context_review["live_apdra_applied"] = True
         review['contextual_decision'] = context_review['status']
         api.state.latest_review[sample.subject_id]=review
         if sample.subject_id in ENGINEERING_CREW_IDS:
