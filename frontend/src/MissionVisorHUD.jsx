@@ -57,7 +57,7 @@ function SignalRow({metric,value,samples,selected,onSelect}) {
   return <button type="button" className={'hgv-signal'+(selected?' active':'')} onClick={onSelect} aria-pressed={selected} title={'Inspect '+metric.label}>
     <span className="hgv-signal-glyph"><Icon name={metric.glyph} size={21}/></span>
     <span className="hgv-signal-copy"><small>{metric.short}</small><strong>{formatValue(value,metric.digits)} <em>{metric.unit}</em></strong></span>
-    {metric.key==='heart_rate_bpm'&&<Trace samples={hudSamples} metric={metric}/>}
+    {metric.key==='heart_rate_bpm'&&<Trace samples={samples} metric={metric}/>}
   </button>;
 }
 
@@ -215,7 +215,7 @@ export default function MissionVisorHUD({
             </aside>
           </div>
           <div className="hgv-bottomline">
-            <div className="hgv-trend-box"><span><Icon name="pulse" size={16}/>{metric.label.toUpperCase()} · SIMULATED TREND</span><Trace samples={samples} metric={metric}/></div>
+            <div className="hgv-trend-box"><span><Icon name="pulse" size={16}/>{metric.label.toUpperCase()} · SIMULATED TREND</span><Trace samples={hudSamples} metric={metric}/></div>
             <div className="hgv-compass"><div className="hgv-ticks" aria-hidden="true"/><span>HEADING / RANGE UNAVAILABLE</span></div>
             <div className={'hgv-review-note'+(critical?' critical':'')}><span>{scenarioDisplay?'SCENARIO RESPONSE':'MONITOR SUMMARY'}</span><p><strong>{headline}</strong> {explanation}</p></div>
           </div>
