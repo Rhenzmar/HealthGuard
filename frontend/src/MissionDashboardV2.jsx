@@ -8,6 +8,7 @@ import EngineeringTelemetry from './EngineeringTelemetry.jsx';
 import {SCENARIOS,SCENARIO_LENGTH} from './scenarioSimulator.js';
 import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel,readApi} from './api.js';
 import {currentActivity,primaryPattern,recentBaselineComparison} from './crewContext.js';
+import {appendEngineeringReading} from './engineeringTrendHistory.js';
 import {Icon,VitalChart} from './viz.jsx';
 import {EnvironmentPicker,ENVIRONMENTS} from './HealthGuardPages.jsx';
 import {QUESTS,getQuestPoints,getQuestCompletion} from './questLogic.js';
@@ -157,20 +158,31 @@ function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,
     <div className="hg6-alert-bottom">{training?<button type="button" onClick={onTrainingSpeak}><Icon name="volume" size={15}/> Speak training guidance <Icon name="arrow" size={14}/></button>:voice?.text?<button type="button" onClick={speak}><Icon name={speaking?'mute':'volume'} size={15}/>{speaking?'Stop explanation':'Explain result'} <Icon name="arrow" size={14}/></button>:<span>Waiting for a review explanation</span>}<small>Not a diagnosis</small></div>
   </section>;
 }
-function AuxiliaryEstimateDetail({metricKey,engineeringValues,engineeringStatus}){
+function AuxiliaryEstimateDetail({metricKey,engineeringValues,engineeringStatus,engineeringHistory=[]}){
   const metric=AUXILIARY_VITALS.find(m=>m.key===metricKey);
   if(!metric)return null;
   const value=engineeringValues?.[metric.key];
-  return <section className="hg6-card hg6-auxiliary-detail" aria-label={metric.label+" estimate details"}>
-    <div className="hg6-card-heading"><h2><Icon name={metric.glyph} size={18}/>{metric.label}</h2><span className="hg6-quiet-badge">SCRIPTED ESTIMATE</span></div>
-    <div className="hg6-auxiliary-content">
-      <strong>{formatValue(value,metric.digits)} <small>{metric.unit}</small></strong>
-      <p>{engineeringStatus==='error'?'Engineering simulator currently unavailable.':Number.isFinite(value)?'Latest estimate from the separate fictional engineering simulator.':'Awaiting an estimate from the engineering simulator.'}</p>
-      <div><span>Source</span><b>Engineering simulator</b></div>
-      <div><span>Actual measurement</span><b>Not connected</b></div>
-      <div><span>Continuous history</span><b>Not provided</b></div>
-      <div><span>Clinical / AI inference</span><b>Not evaluated</b></div>
+  const observations=engineeringHistory.filter(row=>Number.isFinite(row?.values?.[metric.key]));
+  const last=observations.at(-1);
+  const snapshotCurrent=Number.isFinite(value)?value:last?.values?.[metric.key];
+  return <section className="hg6-card hg6-trend hg6-auxiliary-detail" aria-label={metric.label+" simulator trend"}>
+    <div className="hg6-card-heading">
+      <h2><Icon name={metric.glyph} size={18}/> {metric.label} <span>· simulated trend</span></h2>
+      <span className="hg6-quiet-badge">SCRIPTED ESTIMATE</span>
     </div>
+    <div className="hg6-auxiliary-chart-current">
+      <strong>{formatValue(snapshotCurrent,metric.digits)} <small>{metric.unit}</small></strong>
+      <span>{observations.length} recent simulator observations</span>
+    </div>
+    <div className="hg6-trend-plot hg6-auxiliary-chart">
+      <VitalChart data={observations} metric={metric} observationMode="engineering-poll"/>
+    </div>
+    <p className="hg6-trend-footer">
+      {engineeringStatus==='error'?'Simulator temporarily unavailable; previously received observations are retained. ':
+        observations.length<2?'Collecting simulator polls; the line appears after two readings. ':''}
+      Values come from independently polled engineering-simulator responses, typically about 4.2 seconds apart.
+      Not a measured vital sign or a 24-hour recording. No intermediate readings are interpolated.
+    </p>
   </section>;
 }
 function Trend({hasTelemetry,samples,keyValue,onChange,training}){
@@ -225,14 +237,21 @@ function CrewProfile({person,onClose,onMission,latest,training}){
 export default function MissionDashboard({view='dashboard',onDashboard=()=>{},onTelemetryPage=()=>{},onScenarioPage=()=>{},error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment,contextHistory=[]}){
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const [auxiliaryTelemetry,setAuxiliaryTelemetry]=useState(null);
+  const [engineeringHistory,setEngineeringHistory]=useState([]);
   const [auxiliaryIssue,setAuxiliaryIssue]=useState(false);
   useEffect(()=>{
     if(!selected||!['dashboard','telemetry','scenario'].includes(view))return;
     let disposed=false;
     setAuxiliaryTelemetry(null);
+    setEngineeringHistory([]);
     setAuxiliaryIssue(false);
     const load=()=>readApi('/api/simulation/engineering/'+encodeURIComponent(selected))
-      .then(payload=>{if(!disposed && payload?.values && (!payload.subject_id||payload.subject_id===selected)){setAuxiliaryTelemetry(payload);setAuxiliaryIssue(false);}})
+      .then(payload=>{if(!disposed && payload?.values && (!payload.subject_id||payload.subject_id===selected)){
+        const receivedAt=Date.now();
+        setAuxiliaryTelemetry(payload);
+        setEngineeringHistory(previous=>appendEngineeringReading(previous,selected,payload.values,receivedAt));
+        setAuxiliaryIssue(false);
+      }})
       .catch(()=>{if(!disposed){setAuxiliaryTelemetry(null);setAuxiliaryIssue(true);}});
     load();
     const timer=setInterval(load,4200);
@@ -391,7 +410,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         {pageHead('Crew Telemetry','Signal inspection, current measurements, historical research panels and trend analysis.')}
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
         <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/>{AUXILIARY_VITALS.some(m=>m.key===metricKey)?
-  <AuxiliaryEstimateDetail metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/>:
+  <AuxiliaryEstimateDetail metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'} engineeringHistory={engineeringHistory}/>:
   <Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/>}</div>
         <details className="hg6-model-disclosure">
           <summary><Icon name="shield" size={17}/> Experimental model evidence and pattern reviews <Icon name="chevron" size={15}/></summary>
