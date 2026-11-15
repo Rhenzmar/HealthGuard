@@ -72,7 +72,7 @@ function SystemRow({system,value}) {
 
 export default function MissionVisorHUD({
   snapshot, selected, onSelectCrew, samples=[], review, unified, connection,
-  environment, onEnvironment, onExit
+  environment, onEnvironment, onExit, scenario, onOpenScenario
 }) {
   const root=useRef(null);
   const [engineering,setEngineering]=useState(null);
@@ -83,22 +83,45 @@ export default function MissionVisorHUD({
   const [sceneFailed,setSceneFailed]=useState(false);
   const current=environment==='mars_base'||environment==='rover'?'mars_base':'lunar_base';
   const location=LOCATIONS[current];
-  const latest=snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null;
+  const scenarioFrame=scenario?.active?scenario.latest:null;
+  const currentFrame=scenario?.sample;
+  const scenarioDisplay=Boolean(scenario?.active);
+  const latest=scenarioDisplay?(scenarioFrame||null):(snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null);
+  const hudSamples=scenarioDisplay?(scenarioFrame?.history||[]):samples;
   const metric=METRICS.find(m=>m.key===selectedMetric)||METRICS[0];
   const crew=CREW.find(c=>c[0]===selected)?.[1]||'Selected astronaut';
   const reviewForCrew=unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY' &&
     (!unified?.subject_id||unified.subject_id===selected)?unified:null;
-  const severity=['OPTIMAL','CHECK','WARNING','CRITICAL'].includes(reviewForCrew?.status)
-    ?reviewForCrew.status:'UNASSESSED';
+  const severity=scenarioDisplay
+    ? (['OPTIMAL','CHECK','WARNING','CRITICAL'].includes(scenarioFrame?.severity)
+      ? scenarioFrame.severity:'UNASSESSED')
+    : (['OPTIMAL','CHECK','WARNING','CRITICAL'].includes(reviewForCrew?.status)
+      ? reviewForCrew.status:'UNASSESSED');
   const critical=severity==='CRITICAL';
-  const systems=engineering?.values||{};
-  const isConnected=connection==='connected'&&Boolean(latest);
-  const statusText=severity==='OPTIMAL'?'No pattern flag':severity==='UNASSESSED'?'Awaiting review':severity+' · training';
-  const explanation=reviewForCrew?.reason||review?.reason||'Collecting context and model evidence.';
+  // Suit status never invents unconnected O₂ pressure or battery sensors.
+  // Only real backend-scripted engineering fields are shown for training.
+  const systems=scenarioDisplay?(scenarioFrame?.engineering_values||{}):(engineering?.values||{});
+  const isConnected=scenarioDisplay?Boolean(scenarioFrame):connection==='connected'&&Boolean(latest);
+  const statusText=severity==='OPTIMAL'?'OPTIMAL · training':
+    severity==='UNASSESSED'?'Awaiting evidence':severity+' · training';
+  const explanation=scenarioDisplay
+    ? (scenarioFrame?.reason||'Loading scenario frame from the backend.')
+    : (reviewForCrew?.reason||review?.reason||'Collecting context and model evidence.');
+  const scenarioPending=Boolean(scenarioDisplay&&!currentFrame);
+  const scenarioValuesReady=Boolean(scenarioFrame);
+  const actions={
+    OPTIMAL:'No current scripted trigger. Continue observation.',
+    CHECK:'Check the readings and confirm the measurement source.',
+    WARNING:'Review the changing values and notify Mission Control as appropriate.',
+    CRITICAL:'Training alert. Verify the readings and follow the approved response checklist.',
+    UNASSESSED:'Waiting for a verified scenario or live review.',
+  };
+  const headline=actions[severity]||actions.UNASSESSED;
 
   useEffect(()=>setSceneFailed(false),[current]);
 
   useEffect(()=>{
+    if(scenarioDisplay)return;
     let cancelled=false;
     setEngineering(null);
     setEngineeringError(false);
@@ -108,7 +131,7 @@ export default function MissionVisorHUD({
     fetchEngineering();
     const timer=setInterval(fetchEngineering,5000);
     return()=>{cancelled=true;clearInterval(timer)};
-  },[selected]);
+  },[selected,scenarioDisplay]);
 
   useEffect(()=>{
     const sync=()=>setFullscreen(document.fullscreenElement===root.current);
@@ -119,7 +142,9 @@ export default function MissionVisorHUD({
   useEffect(()=>{
     if(!critical||!voiceEnabled||typeof window==='undefined'||!window.speechSynthesis)return;
     let cancelled=false,timeout;
-    const speech=reviewForCrew?.voice_ready_script||'HealthGuard critical training flag. Review simulated telemetry and verify the measurement context.';
+    const speech=scenarioDisplay
+      ? (scenarioFrame?.alarm?.voice_ready_script||headline)
+      : (reviewForCrew?.voice_ready_script||headline);
     const announce=()=>{
       if(cancelled)return;
       window.speechSynthesis.cancel();
@@ -131,13 +156,13 @@ export default function MissionVisorHUD({
     };
     announce();
     return()=>{cancelled=true;clearTimeout(timeout);window.speechSynthesis.cancel()};
-  },[critical,voiceEnabled,selected,reviewForCrew?.voice_ready_script]);
+  },[critical,voiceEnabled,selected,reviewForCrew?.voice_ready_script,scenarioDisplay,scenarioFrame?.alarm?.voice_ready_script]);
 
   async function toggleFullscreen(){
     try{if(document.fullscreenElement)await document.exitFullscreen();else await root.current?.requestFullscreen()}catch{}
   }
 
-  return <section ref={root} className={'hgv-screen hgv-env-'+current} aria-label="HealthGuard first-person suit HUD demonstration">
+  return <section ref={root} className={'hgv-screen hgv-env-'+current+' hgv-severity-'+severity.toLowerCase()} aria-label="HealthGuard first-person suit HUD demonstration">
     <div className="hgv-control-bar">
       <div className="hgv-control-title"><Icon name="shield" size={17}/><strong>HealthGuard</strong><span>Mission HUD / EVA suit simulation</span></div>
       <div className="hgv-control-actions">
@@ -145,6 +170,7 @@ export default function MissionVisorHUD({
           {Object.entries(LOCATIONS).map(([id,config])=><button type="button" key={id} onClick={()=>onEnvironment(id)} aria-pressed={current===id} className={current===id?'active':''}>{config.tab}</button>)}
         </div>
         <label className="hgv-crew-picker"><span className="sr-only">Selected astronaut</span><select value={selected} onChange={e=>onSelectCrew(e.target.value)}>{CREW.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label>
+        <button className="hgv-tool-button" type="button" onClick={onOpenScenario}><Icon name="activity" size={15}/>{scenarioDisplay?'Scenario Lab · '+scenario.elapsed+'s':'Scenario Lab'}</button>
         <button className={'hgv-tool-button'+(voiceEnabled?' active':'')} type="button" onClick={()=>setVoiceEnabled(v=>!v)} aria-pressed={voiceEnabled} title="Toggle critical training voice alerts"><Icon name={voiceEnabled?'volume':'mute'} size={16}/><span>Voice {voiceEnabled?'on':'off'}</span></button>
         <button className="hgv-tool-button" type="button" onClick={toggleFullscreen}>{fullscreen?'Exit full view':'Full screen'}</button>
         <button className="hgv-tool-button hgv-exit" type="button" onClick={onExit}><Icon name="x" size={15}/>Exit HUD</button>
@@ -166,12 +192,13 @@ export default function MissionVisorHUD({
               <div className="hgv-brand-name"><Icon name="shield" size={25}/><strong>HEALTH<span>GUARD</span></strong></div>
               <span>ASTRONAUT HEALTH MONITORING</span>
               <div className={'hgv-physioalert hgv-alert-'+severity.toLowerCase()} role="status" aria-live="polite"><Icon name={critical?'alert':severity==='OPTIMAL'?'check':'shield'} size={17}/><strong>PHYSIOALERT</strong><span>{statusText}</span></div>
+              {scenarioDisplay&&<small className="hgv-scenario-badge">SCENARIO: {scenario.id.replaceAll('_',' ').toUpperCase()} · T+{String(scenario.elapsed).padStart(2,'0')}s {scenarioPending?'· UPDATING':''}</small>}
             </div>
             <div className="hgv-telemetry"><span>{isConnected?'SIMULATOR CONNECTED':'AWAITING TELEMETRY'}</span><strong>{latest?.sequence!=null?'SAMPLE #'+latest.sequence:'NO LIVE PACKET'}</strong><small>NOT A REAL SPACESUIT FEED</small></div>
           </div>
           <div className="hgv-sides">
             <aside className="hgv-panel hgv-panel-left" aria-label="Fictional physiological signals">
-              <div className="hgv-panel-heading"><Icon name="activity" size={16}/><strong>BIOMETRICS</strong><span>LIVE SIM</span></div>
+              <div className="hgv-panel-heading"><Icon name="activity" size={16}/><strong>BIOMETRICS</strong><span>{scenarioDisplay?'TRAINING':'LIVE SIM'}</span></div>
               {METRICS.map(m=><SignalRow key={m.key} metric={m} value={latest?.values?.[m.key]} samples={samples} selected={selectedMetric===m.key} onSelect={()=>setSelectedMetric(m.key)}/>)}
             </aside>
             <div className="hgv-focus" aria-hidden="true">
