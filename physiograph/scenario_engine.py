@@ -19,7 +19,7 @@ from typing import Any
 
 import numpy as np
 
-from .engineering_sim import CREW_IDS, SIGNALS, engineering_snapshot
+from .engineering_sim import CREW_IDS, SIGNALS, FROZEN_17CH_ENGINEERING_KEYS, engineering_snapshot
 from .live_telemetry import METRICS, SOURCE
 from .deep_learning import normalize_window
 from .biomarker_detection import evaluate_engineering
@@ -83,6 +83,20 @@ SCENARIOS = {
         "guidance": "Notify Mission Control, confirm dosimeter readings, and follow approved radiation shelter procedures. No diagnosis or exposure prediction is implied.",
         "affected": (),
     },
+    "suit_leak": {
+        "name": "Suit pressure loss", "subtitle": "Fictional pressure-control failure during EVA",
+        "trigger": "Suit pressure falls below 3.4 psi (illustrative training trigger)",
+        "reason": "Scripted decrease in suit pressure with a simulated breathing response. This is not a suit instrument reading.",
+        "guidance": "Stop the EVA task, verify the pressure indication, notify Mission Control and follow the mission-approved pressure-loss procedure.",
+        "affected": ("spo2_percent","respiratory_rate_bpm"),
+    },
+    "suit_power": {
+        "name": "Suit battery failure", "subtitle": "Fictional rapid power loss during EVA",
+        "trigger": "Suit battery reserve falls below 50% (illustrative training trigger)",
+        "reason": "Scripted suit battery depletion. No real battery controller or electrical system is connected.",
+        "guidance": "Stop the EVA task, verify the power readout, notify Mission Control and follow the mission-approved electrical-power procedure.",
+        "affected": (),
+    },
 }
 CREW_BASELINES = {
     "SIM_CREW_01": (70, 98.3, 14.0, 36.75, 62),
@@ -118,6 +132,10 @@ def _engineer(sid: str, scenario_id: str, t: int, intensity: float) -> dict[str,
         vals["cabin_co2_ppm"] = _round(vals["cabin_co2_ppm"]+5400*intensity)
     elif scenario_id == "cabin_leak":
         vals["cabin_pressure_kpa"] = _round(vals["cabin_pressure_kpa"]-27*intensity,2)
+    elif scenario_id == "suit_leak":
+        vals["suit_pressure_psi"] = _round(max(0, vals["suit_pressure_psi"]-2.0*intensity),2)
+    elif scenario_id == "suit_power":
+        vals["suit_battery_percent"] = _round(max(0, vals["suit_battery_percent"]-70*intensity),2)
     elif scenario_id == "radiation":
         vals["radiation_rate_usv_h"] = _round(vals["radiation_rate_usv_h"]+2200*intensity,2)
         # The accumulated dose is strictly an illustrative integration of
@@ -168,12 +186,16 @@ def simulated_values(sid: str, scenario_id: str, t: int) -> tuple[tuple[float,..
         v["heart_rate_bpm"] = _round(v["heart_rate_bpm"]+24*intensity)
         v["respiratory_rate_bpm"] = _round(v["respiratory_rate_bpm"]+13*intensity)
         v["spo2_percent"] = _round(v["spo2_percent"]-7.2*intensity)
+    elif scenario_id == "suit_leak":
+        v["spo2_percent"] = _round(v["spo2_percent"]-5.0*intensity)
+        v["respiratory_rate_bpm"] = _round(v["respiratory_rate_bpm"]+6*intensity)
     eng = _engineer(sid,scenario_id,t,intensity)
     if set(v)!=set(METRICS) or set(eng)!=set(SIGNALS):
-        raise ValueError("Scenario 17-channel schema mismatch")
+        raise ValueError("Scenario simulated channel schema mismatch")
     if any(not lo <= v[key] <= hi for key,(lo,hi,_) in METRICS.items()):
         raise ValueError("Scenario physiological values violate input integrity bounds")
-    return tuple(v[k] for k in PHYS_KEYS),tuple(eng[k] for k in SIGNALS)
+    # New HUD-only suit values are not inputs to the frozen 17-channel model.
+    return tuple(v[k] for k in PHYS_KEYS),tuple(eng[k] for k in FROZEN_17CH_ENGINEERING_KEYS)
 
 
 def _flags(scenario_id:str, v:dict, e:dict, intensity:float) -> tuple[dict,dict]:
@@ -192,6 +214,8 @@ def _flags(scenario_id:str, v:dict, e:dict, intensity:float) -> tuple[dict,dict]
         "cabin_co2_ppm":scenario_id=="co2" and e["cabin_co2_ppm"]>4000,
         "cabin_pressure_kpa":scenario_id=="cabin_leak" and e["cabin_pressure_kpa"]<85,
         "radiation_rate_usv_h":scenario_id=="radiation" and intensity>.55,
+        "suit_pressure_psi":scenario_id=="suit_leak" and e["suit_pressure_psi"]<3.4,
+        "suit_battery_percent":scenario_id=="suit_power" and e["suit_battery_percent"]<50,
     }
     return flags,eng_flags
 
@@ -200,7 +224,7 @@ def scenario_frame(sid: str, scenario_id: str, second: int) -> dict[str,Any]:
     _validate(sid,scenario_id,second)
     a,b=simulated_values(sid,scenario_id,second)
     v=dict(zip(PHYS_KEYS,a))
-    eng=dict(zip(SIGNALS,b))
+    eng=_engineer(sid,scenario_id,second,_envelope(second))
     intensity=_envelope(second)
     flags,engineering_flags=_flags(scenario_id,v,eng,intensity)
     active=any(flags.values()) or any(engineering_flags.values())
