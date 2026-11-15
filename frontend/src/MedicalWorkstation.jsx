@@ -1,100 +1,120 @@
-import React,{useEffect,useMemo,useState} from 'react';
-import { AnatomyScene } from './HealthGuardPages.jsx';
-import { METRICS,formatValue,friendlyStatus,readApi } from './api.js';
-import { Icon,MiniTrend } from './viz.jsx';
+import React,{useEffect,useState} from 'react';
+import {AnatomyScene} from './HealthGuardPages.jsx';
+import {METRICS,formatValue,readApi} from './api.js';
+import {Icon,VitalChart} from './viz.jsx';
 import './medicalWorkstation.css';
 
 const CREW=[
-  {id:'SIM_CREW_01',name:'Cmdr. Elena Park',role:'Commander',image:'/crew/elena.svg'},
-  {id:'SIM_CREW_02',name:'Dr. Marcus Reed',role:'Medical officer',image:'/crew/marcus.svg'},
-  {id:'SIM_CREW_03',name:'Lt. Aisha Khan',role:'Systems engineer',image:'/crew/aisha.svg'},
-  {id:'SIM_CREW_04',name:'Spc. Daniel Cho',role:'Mission specialist',image:'/crew/daniel.svg'},
+ {id:'SIM_CREW_01',name:'Cmdr. Elena Park',role:'Flight commander',image:'/crew/elena.svg'},
+ {id:'SIM_CREW_02',name:'Dr. Marcus Reed',role:'Medical officer',image:'/crew/marcus.svg'},
+ {id:'SIM_CREW_03',name:'Lt. Aisha Khan',role:'Systems engineer',image:'/crew/aisha.svg'},
+ {id:'SIM_CREW_04',name:'Spc. Daniel Cho',role:'Mission specialist',image:'/crew/daniel.svg'}
 ];
 const REGIONS=[
-  {id:'brain',name:'Brain & ocular',text:'No connected neurological or ocular sensor; educational structure only.',keys:[]},
-  {id:'respiratory',name:'Lungs & pulmonary',text:'Simulated oxygen saturation, respiratory rate, and a separate scripted capnography estimate.',keys:['spo2_percent','respiratory_rate_bpm','etco2_mmhg']},
-  {id:'cardiac',name:'Heart & cardiac',text:'Simulated heart rate and HRV with independently scripted blood pressure estimates.',keys:['heart_rate_bpm','hrv_rmssd_ms','systolic_bp_mmhg','diastolic_bp_mmhg']},
-  {id:'thermal',name:'Thermal regulation',text:'Simulated core temperature and separately scripted peripheral temperature.',keys:['core_temp_c','peripheral_temp_c']},
-  {id:'movement',name:'Skeletal & movement',text:'The current simulator does not measure bone density, muscle strength, or motion.',keys:[]},
+ {id:'cardiac',name:'Cardiovascular',short:'Heart',description:'Review the heart rate and heart-rate variability measurements. These cannot independently identify cardiac disease.',keys:['heart_rate_bpm','hrv_rmssd_ms','systolic_bp_mmhg','diastolic_bp_mmhg']},
+ {id:'respiratory',name:'Respiratory',short:'Lungs',description:'Review oxygen saturation and breathing rate, with a separately scripted end-tidal CO₂ estimate.',keys:['spo2_percent','respiratory_rate_bpm','etco2_mmhg']},
+ {id:'thermal',name:'Thermoregulation',short:'Temperature',description:'Review simulated core temperature and a separately scripted peripheral-temperature estimate.',keys:['core_temp_c','peripheral_temp_c']},
+ {id:'brain',name:'Neurological',short:'Brain',description:'No neurological or vision sensor is connected. Anatomical illustration only.',keys:[]},
+ {id:'movement',name:'Musculoskeletal',short:'Movement',description:'No bone-density, muscle-strength or motion capture feed is connected.',keys:[]}
 ];
-const ENGINEERING=[
- {key:'systolic_bp_mmhg',label:'Systolic BP',unit:'mmHg',digits:1},
- {key:'diastolic_bp_mmhg',label:'Diastolic BP',unit:'mmHg',digits:1},
- {key:'etco2_mmhg',label:'End-tidal CO₂',unit:'mmHg',digits:1},
- {key:'peripheral_temp_c',label:'Peripheral temp.',unit:'°C',digits:1},
+const AUX=[
+ {key:'systolic_bp_mmhg',label:'Systolic blood pressure',short:'SYSTOLIC BP',unit:'mmHg',digits:1},
+ {key:'diastolic_bp_mmhg',label:'Diastolic blood pressure',short:'DIASTOLIC BP',unit:'mmHg',digits:1},
+ {key:'etco2_mmhg',label:'End-tidal CO₂',short:'ETCO₂',unit:'mmHg',digits:1},
+ {key:'peripheral_temp_c',label:'Peripheral temperature',short:'PERIPH. TEMP',unit:'°C',digits:1}
 ];
-const findMetric=key=>METRICS.find(x=>x.key===key)||ENGINEERING.find(x=>x.key===key);
+const ALL=[...METRICS,...AUX];
+const metricFor=k=>ALL.find(m=>m.key===k);
+const isCore=k=>METRICS.some(m=>m.key===k);
+
 export default function MedicalWorkstation({selected,onSelectCrew,snapshot,samples=[],review,unified,connection,onTelemetry,onMission}) {
- const [region,setRegion]=useState('cardiac');
- const [engineering,setEngineering]=useState(null);
- const [error,setError]=useState('');
- const [view,setView]=useState('anatomy');
+ const [regionId,setRegionId]=useState('cardiac');
  const [metricKey,setMetricKey]=useState('heart_rate_bpm');
- const subject=CREW.find(x=>x.id===selected)||CREW[0];
- const latest=snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null;
- const candidates=REGIONS.find(x=>x.id===region)||REGIONS[0];
- const values=latest?.values||{};
- const estimateValues=engineering?.values||{};
- const metric=findMetric(metricKey)||METRICS[0];
- const summaryStatus=unified?.subject_id===selected && unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY' ? unified?.status : null;
- const severity=['OPTIMAL','CHECK','WARNING','CRITICAL'].includes(summaryStatus)?summaryStatus:'UNASSESSED';
- const online=connection==='connected' && Boolean(latest);
- useEffect(()=>{let cancelled=false;setEngineering(null);setError('');
+ const [engineering,setEngineering]=useState(null);
+ const [issue,setIssue]=useState('');
+ const [showAll,setShowAll]=useState(true);
+ const selectedCrew=CREW.find(x=>x.id===selected)||CREW[0];
+ const region=REGIONS.find(x=>x.id===regionId)||REGIONS[0];
+ const metric=metricFor(metricKey)||METRICS[0];
+ const last=snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null;
+ const values=last?.values||{};
+ const estimates=engineering?.values||{};
+ const valueFor=k=>isCore(k)?values[k]:estimates[k];
+ const online=connection==='connected'&&Boolean(last);
+ const activeReview=unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY' &&
+  (!unified.subject_id||unified.subject_id===selected)?unified:null;
+ const severity=['CRITICAL','WARNING','CHECK','OPTIMAL'].includes(activeReview?.status)?activeReview.status:'UNASSESSED';
+ useEffect(()=>{let cancelled=false;setEngineering(null);setIssue('');
   const load=()=>readApi('/api/simulation/engineering/'+encodeURIComponent(selected))
-    .then(r=>{if(!cancelled){setEngineering(r);setError('');}})
-    .catch(()=>{if(!cancelled){setEngineering(null);setError('Engineering estimates unavailable');}});
-  load();let timer=setInterval(load,5000);return()=>{cancelled=true;clearInterval(timer)};
+   .then(r=>{if(!cancelled){setEngineering(r);setIssue('')}})
+   .catch(()=>{if(!cancelled){setEngineering(null);setIssue('Scripted estimates unavailable')}});
+  load();const timer=setInterval(load,5000);return()=>{cancelled=true;clearInterval(timer)};
  },[selected]);
- useEffect(()=>{const r=REGIONS.find(x=>x.id===region);setMetricKey(r?.keys.find(k=>METRICS.some(m=>m.key===k))||'heart_rate_bpm')},[region]);
- const getValue=k=>METRICS.some(m=>m.key===k)?values[k]:estimateValues[k];
- const metricRows=useMemo(()=>[...METRICS,...ENGINEERING],[ ]);
- return <main className="hgm-workstation" aria-label="HealthGuard crew medical workstation">
-   <div className="hgm-head">
-     <div><span className="hgm-kicker">HEALTHGUARD / MEDICAL WORKSTATION</span><h1>Crew physiological explorer</h1><p>Interactive anatomy and numerical monitoring for four fictional astronaut simulations</p></div>
-     <div className="hgm-head-actions"><span className={'hgm-link-status '+(connection==='connected'?'online':'')}>{connection==='connected'?'SIMULATOR STREAMING':'CONNECTING'}</span><button type="button" onClick={onMission}>Mission systems <Icon name="arrow" size={15}/></button></div>
+ const changeRegion=id=>{
+  setRegionId(id);
+  const match=REGIONS.find(r=>r.id===id);
+  const core=match?.keys.find(isCore);
+  if(core)setMetricKey(core);
+ };
+ const selectedReading=isCore(metricKey)?'CORE PHYSIOLOGICAL SIMULATOR':'SEPARATE SCRIPTED ESTIMATE';
+ return <div className="hgm-workstation">
+  <header className="hgm-heading">
+   <div><span className="hgm-kicker"><Icon name="heart" size={15}/> HEALTHGUARD / BODY EXPLORER</span>
+    <h1>Explore the body<span>.</span></h1>
+    <p>Understand crew physiology through interactive anatomy, fictional measurements and model evidence.</p>
    </div>
-   <div className="hgm-shell">
-     <aside className="hgm-crew" aria-label="Crew manifest">
-       <div className="hgm-panel-head"><span>CREW MANIFEST</span><strong>ALL 4</strong></div>
-       {CREW.map((p,i)=>{
-         const snap=snapshot?.subjects?.[p.id]?.latest, live=connection==='connected'&&Boolean(snap);
-         return <button type="button" className={'hgm-crew-card '+(selected===p.id?'active':'')} onClick={()=>onSelectCrew(p.id)} aria-pressed={selected===p.id} key={p.id}>
-           <img src={p.image} alt={'Fictional astronaut portrait of '+p.name}/>
-           <span className="hgm-crew-card-info"><strong>{p.name}</strong><small>CREW 0{i+1} · {p.role}</small><em className={live?'online':''}>{live?'SIMULATOR ONLINE':'AWAITING DATA'}</em></span>
-           <span className="hgm-crew-quick">{METRICS.slice(0,2).map(m=><span key={m.key}>{m.short}: <b>{formatValue(snap?.values?.[m.key],m.digits)}</b></span>)}</span>
-         </button>
-       })}
-       <div className="hgm-crew-footer"><Icon name="radio" size={16}/> Four independent fictional streams, not actual astronauts</div>
-     </aside>
-     <section className="hgm-anatomy" aria-label="Interactive anatomical view">
-       <div className="hgm-panel-head"><span>HOLOGRAPHIC BODY VIEW / CREW {String(CREW.findIndex(x=>x.id===selected)+1).padStart(2,'0')}</span><strong>{subject.name}</strong></div>
-       <div className="hgm-view-controls">
-         <button type="button" className={view==='anatomy'?'active':''} onClick={()=>setView('anatomy')}>3D body</button>
-         <button type="button" className={view==='signals'?'active':''} onClick={()=>setView('signals')}>Signal evidence</button>
-       </div>
-       {view==='anatomy'?<div className="hgm-stage">
-         <div className="hgm-stage-figure"><AnatomyScene selected={region} onSelect={setRegion}/></div>
-         <div className="hgm-region-left">
-           {REGIONS.slice(0,3).map(z=><button key={z.id} className={region===z.id?'selected':''} type="button" onClick={()=>setRegion(z.id)}>{z.name}<small>{z.keys.length?'SIMULATED DATA':'EDUCATIONAL ONLY'}</small></button>)}
-         </div>
-         <div className="hgm-region-right">
-           {REGIONS.slice(3).map(z=><button key={z.id} className={region===z.id?'selected':''} type="button" onClick={()=>setRegion(z.id)}>{z.name}<small>{z.keys.length?'SIMULATED DATA':'EDUCATIONAL ONLY'}</small></button>)}
-         </div>
-       </div>:<div className="hgm-signal-evidence"><div className="hgm-signal-chart"><MiniTrend data={samples} metric={metricKey} color="#71e5e5"/></div><h3>{metric.label||metric.short}</h3><p>Recent fictional telemetry samples are plotted without clinical interpretation. Scripted estimates do not have a live trend feed.</p><button type="button" onClick={onTelemetry}>Open detailed crew telemetry <Icon name="arrow" size={15}/></button></div>}
-       <div className="hgm-regions">{REGIONS.map(z=><button type="button" key={z.id} className={region===z.id?'selected':''} onClick={()=>{setRegion(z.id);setView('anatomy')}}>{z.name}</button>)}</div>
-       <div className="hgm-selected-region"><span>SELECTED BODY SYSTEM</span><strong>{candidates.name}</strong><p>{candidates.text}</p><div className="hgm-region-measures">{candidates.keys.length?candidates.keys.map(k=>{const m=findMetric(k);return <button key={k} type="button" onClick={()=>{setMetricKey(k);setView('signals')}}><span>{m?.label||m?.short}</span><b>{formatValue(getValue(k),m?.digits||1)} <small>{m?.unit}</small></b></button>}):<span className="hgm-no-data">No direct sensor or physiological model for this region</span>}</div></div>
-     </section>
-     <aside className="hgm-measurements" aria-label="Physiological monitoring matrix">
-       <div className="hgm-panel-head"><span>LIVE PHYSIOLOGICAL MATRIX</span><strong>{online?'SIMULATED LIVE':'AWAITING STREAM'}</strong></div>
-       <div className="hgm-metric-grid">{metricRows.map(m=><button type="button" className={metricKey===m.key?'selected':''} key={m.key} onClick={()=>{setMetricKey(m.key);setView('signals')}}><span>{m.short||m.label}</span><strong>{formatValue(getValue(m.key),m.digits)} <small>{m.unit}</small></strong><em>{METRICS.some(x=>x.key===m.key)?'CORE SIMULATOR':'SCRIPTED ESTIMATE'}</em></button>)}</div>
-       <div className={'hgm-physioalert hgm-state-'+severity.toLowerCase()}>
-         <span><Icon name="shield" size={17}/> PHYSIOALERT</span><strong>{severity==='UNASSESSED'?'Awaiting unified review':severity+' · Training only'}</strong>
-         <p>{summaryStatus?unified?.reason:review?.reason||'Collecting simulated measurements and model evidence.'}</p>
-       </div>
-       <div className="hgm-system-caption">{error||'Core physiological stream and separately scripted engineering estimates are displayed without treating either as clinical measurements.'}</div>
-       <button className="hgm-open-telemetry" type="button" onClick={onTelemetry}>Open full model and telemetry evidence <Icon name="arrow" size={15}/></button>
-     </aside>
+   <button type="button" className="hgm-telemetry-link" onClick={onTelemetry}>Open crew telemetry <Icon name="arrow" size={15}/></button>
+  </header>
+
+  <section className="hgm-crew-strip" aria-label="Select fictional astronaut">
+   <div className="hgm-strip-title"><Icon name="users" size={17}/> CREW <span>4 INDEPENDENT SIMULATOR STREAMS</span></div>
+   <div className="hgm-crew-grid">{CREW.map((crew,i)=>{
+    const packet=snapshot?.subjects?.[crew.id]?.latest;
+    const connected=connection==='connected'&&Boolean(packet);
+    return <button type="button" key={crew.id} aria-pressed={selected===crew.id} onClick={()=>onSelectCrew(crew.id)} className={'hgm-crew-option '+(selected===crew.id?'selected':'')}>
+     <img src={crew.image} alt={'Illustration of fictional astronaut '+crew.name}/>
+     <span className="hgm-crew-name"><strong>{crew.name}</strong><small>{crew.role}</small><em>{connected?'SIMULATED STREAM':'AWAITING STREAM'}</em></span>
+     <span className="hgm-crew-sample"><b>{formatValue(packet?.values?.heart_rate_bpm,0)}</b><small>BPM</small></span>
+    </button>
+   })}</div>
+  </section>
+
+  <div className="hgm-main-layout">
+   <section className="hgm-anatomy-panel" aria-label="Three-dimensional anatomical explorer">
+    <div className="hgm-panel-heading"><div><span>01 / INTERACTIVE ANATOMY</span><h2>{selectedCrew.name}</h2></div><span className="hgm-source-indicator">EDUCATIONAL MODEL</span></div>
+    <div className="hgm-figure"><AnatomyScene selected={regionId} onSelect={changeRegion}/></div>
+    <div className="hgm-region-pills">{REGIONS.map(r=><button type="button" key={r.id} aria-pressed={regionId===r.id} onClick={()=>changeRegion(r.id)} className={regionId===r.id?'selected':''}>{r.short}</button>)}</div>
+    <div className="hgm-figure-hint"><Icon name="activity" size={15}/> Drag to rotate and select a body region. Colors indicate selection, not medical condition.</div>
+   </section>
+   <section className="hgm-explanation" aria-label="Selected system and physiological evidence">
+    <div className="hgm-panel-heading"><div><span>02 / BODY SYSTEM</span><h2>{region.name}</h2></div><span className="hgm-source-indicator">REGION REVIEW</span></div>
+    <p className="hgm-region-description">{region.description}</p>
+    <div className="hgm-related-heading">RELATED SIMULATED MEASUREMENTS</div>
+    <div className="hgm-related-grid">{region.keys.length?region.keys.map(key=>{
+      const m=metricFor(key);
+      return <button type="button" key={key} className={metricKey===key?'selected':''} onClick={()=>setMetricKey(key)}>
+       <span>{m?.label||m?.short}</span><strong>{formatValue(valueFor(key),m?.digits??1)} <small>{m?.unit}</small></strong>
+       <em>{isCore(key)?'CORE SIMULATOR':'SCRIPTED ESTIMATE'}</em>
+      </button>;
+    }):<p className="hgm-unavailable">No physiological measurement is connected to this region. The model is for anatomy exploration only.</p>}</div>
+    <div className="hgm-review-card">
+     <div><Icon name="shield" size={18}/><span>PHYSIOALERT / {activeReview?'SIMULATED TRAINING':'CONTEXT REVIEW'}</span></div>
+     <strong className={'hgm-severity-'+severity.toLowerCase()}>{severity==='UNASSESSED'?'Awaiting classification':severity==='OPTIMAL'?'No training flag':severity+' · Training only'}</strong>
+     <p>{activeReview?.reason||review?.reason||'Awaiting sufficient simulated samples for model review.'}</p>
+    </div>
+    <div className="hgm-research-note"><Icon name="database" size={17}/><p><strong>Where APDRA fits:</strong> APDRA is used in the Health Library to analyze historical NASA baseline stability, not as a live diagnosis or input to this fictional crew stream.</p></div>
+   </section>
+  </div>
+
+  <section className="hgm-monitor" aria-label="Crew measurement overview">
+   <div className="hgm-panel-heading"><div><span>03 / MONITORING</span><h2>Physiological signals</h2></div><div className="hgm-monitor-actions"><span className={online?'online':''}>{online?'SIMULATOR CONNECTED':'AWAITING SIMULATOR'}</span><button type="button" onClick={()=>setShowAll(v=>!v)}>{showAll?'Compact view':'All 9 readings'}</button></div></div>
+   <div className="hgm-measurements">{(showAll?ALL:ALL.filter(m=>region.keys.includes(m.key))).map(m=><button type="button" key={m.key} aria-pressed={metricKey===m.key} onClick={()=>setMetricKey(m.key)} className={metricKey===m.key?'selected':''}><span>{m.short||m.label}</span><strong>{formatValue(valueFor(m.key),m.digits)} <small>{m.unit}</small></strong><em>{isCore(m.key)?'CORE SIMULATOR':'SCRIPTED ESTIMATE'}</em></button>)}</div>
+   <div className="hgm-chart-panel">
+    <div className="hgm-chart-title"><div><span>SELECTED SIGNAL / {selectedReading}</span><h3>{metric.label}</h3></div><button type="button" onClick={onTelemetry}>Detailed telemetry <Icon name="arrow" size={15}/></button></div>
+    {isCore(metricKey)?<VitalChart data={samples} metric={metric}/>:<div className="hgm-no-trend"><Icon name="activity" size={21}/><strong>Snapshot estimate only</strong><p>This independently scripted value has no verified historical trend. HealthGuard does not create an artificial one.</p></div>}
    </div>
-   <p className="hgm-boundary">All crew and live data are fictional. The 3D body is an interactive educational illustration, not a medical scan. Regional selections do not assert organ disease, injury, fitness or clinical severity. Historical NASA data is separate.</p>
- </main>;
+   {issue&&<p className="hgm-warning">{issue}. Missing values are not replaced.</p>}
+  </section>
+  <p className="hgm-footer">All live crew readings are fictional. This educational anatomical model is not a medical scan, and numerical model flags are not diagnoses. The core physiological stream and independent estimates have different data sources.</p>
+ </div>;
 }
