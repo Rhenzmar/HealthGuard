@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Icon, ResearchDotChart } from './viz.jsx';
+import TelemetryBiomarkerHub from './TelemetryBiomarkerHub.jsx';
 import { formatValue } from './api.js';
 import './healthLibrary.css';
 
@@ -224,6 +225,7 @@ export default function HealthLibrary({
           <p>Original source labels and sample IDs are retained. The API limits a query to the first 200 rows. No imputation is performed.</p>
         </div>
       </details>
+      <TelemetryBiomarkerHub compact/>
       <div className="hl-source-boundary"><Icon name="shield" size={18}/><p><strong>Source and system boundary:</strong> Historical NASA laboratory records are separate from all fictional crew telemetry and the CNN/covariance simulator. APDRA is a retrospective evidence-stability analysis, not a deployed medical diagnosis system.</p></div>
     </section>
   </div>;
