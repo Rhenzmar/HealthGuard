@@ -6,6 +6,7 @@ import {crewIndexForSubject,crewFeedStatus,latestForSubject,samplesForSubject} f
 import EngineeringTelemetry from './EngineeringTelemetry.jsx';
 import LiveSubsystemExplorer from './LiveSubsystemExplorer.jsx';
 import {SCENARIOS,SCENARIO_LENGTH} from './scenarioSimulator.js';
+import {liveVoiceAnnouncement,scenarioVoiceAnnouncement} from './healthguardVoice.js';
 import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel,readApi} from './api.js';
 import {currentActivity,primaryPattern,recentBaselineComparison} from './crewContext.js';
 import {appendEngineeringReading} from './engineeringTrendHistory.js';
@@ -272,8 +273,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
     const item=SCENARIOS.find(x=>x.id===scenarioId);
     if(!item)return;
     window.speechSynthesis.cancel();
-    const speech=scenario.latest?.alarm?.voice_ready_script||
-      ('HealthGuard training guidance for '+activeCrew.name+'. '+item.guidance);
+    const speech=scenarioVoiceAnnouncement(scenarioId,scenario.latest?.severity||'CHECK','guidance');
     const utterance=new SpeechSynthesisUtterance(speech);
     utterance.lang='en-US';utterance.rate=.95;
     window.speechSynthesis.speak(utterance);
@@ -287,10 +287,8 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
     scenarioId&&scenarioRunning&&scenario.latest?.severity==='CRITICAL'
   );
   const voiceActive=scenarioId?scenarioCriticalActive&&scenarioSound:liveCritical&&liveAlertsEnabled;
-  const liveVoice=unified?.voice_ready_script||
-    'HealthGuard training alert. Verify the simulated readings.';
-  const scenarioVoice=scenario.latest?.alarm?.voice_ready_script||
-    ('HealthGuard critical scripted scenario for '+activeCrew.name+'. Check the readings and follow the mission training checklist.');
+  const liveVoice=liveVoiceAnnouncement(unified);
+  const scenarioVoice=scenarioVoiceAnnouncement(scenarioId,scenario.latest?.severity||'CRITICAL');
   alertVoiceRef.current=scenarioId?scenarioVoice:liveVoice;
   useEffect(()=>{
     if(!voiceActive||typeof window==='undefined'||!window.speechSynthesis)return;

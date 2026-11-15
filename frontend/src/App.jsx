@@ -9,6 +9,7 @@ import MissionVisorHUD from './MissionVisorHUD.jsx';
 import useScenarioPlayback from './useScenarioPlayback.js';
 import MedicalWorkstation from './MedicalWorkstation.jsx';
 import HealthLibrary from './HealthLibrary.jsx';
+import {liveVoiceAnnouncement} from './healthguardVoice.js';
 import SpaceBackgroundPicker from './SpaceBackgroundPicker.jsx';
 import {BACKGROUND_KEY,normalizeBackground,WORKSPACE_BACKGROUND_PAGES} from './spaceBackgroundThemes.js';
 import './spaceBackgroundThemes.css';
@@ -311,8 +312,9 @@ export default function App() {
     if(typeof window==='undefined'||!window.speechSynthesis)return;
     if(speaking){window.speechSynthesis.cancel();setSpeaking(false);return;}
     if(!voice?.text)return;
-    window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(voice.text);utterance.lang='en-US';utterance.rate=.93;utterance.pitch=1;utterance.onend=()=>setSpeaking(false);utterance.onerror=()=>setSpeaking(false);window.speechSynthesis.speak(utterance);setSpeaking(true);
-  },[speaking,voice]);
+    const speechText=liveVoiceAnnouncement(unified);
+    window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(speechText);utterance.lang='en-US';utterance.rate=.93;utterance.pitch=1;utterance.onend=()=>setSpeaking(false);utterance.onerror=()=>setSpeaking(false);window.speechSynthesis.speak(utterance);setSpeaking(true);
+  },[speaking,voice,unified]);
   useEffect(()=>()=>{if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel()},[]);
   const navTo=id=>{setPage(id);setSidebarOpen(false);window.scrollTo({top:0,behavior:'smooth'})};
   const selectedName=NAV.find(x=>x.id===page)?.name||'Overview';
