@@ -38,3 +38,11 @@
 .hg-subsystems button:focus-visible{outline:2px solid #88e6e3;outline-offset:2px}
 @media(max-width:1150px){.hg-subsystems-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.hg-subsystems{padding:13px}.hg-subsystems-head{align-items:flex-start}.hg-subsystems-total strong{font-size:15px}.hg-subsystems-grid,.hg-subsystems-readings{grid-template-columns:1fr}.hg-subsystem-card{min-height:115px}.hg-subsystems-filters button{flex:1 1 auto}}
+
+.hg-subsystem-card-readings{display:grid;gap:8px;margin:1px 0 4px}
+.hg-subsystem-card-readings>div{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:10px}
+.hg-subsystem-card-readings span{color:#b2cfdb;line-height:1.45}
+.hg-subsystem-card-readings strong{white-space:nowrap;font-size:11px;font-variant-numeric:tabular-nums;color:#e7f8fa}
+.hg-subsystem-card-readings strong small{font-size:9px;font-weight:450;color:#97b9c7}
+.hg-subsystem-card-count>span{margin-left:auto;font-weight:650;color:#80d9d3}
+.hg-subsystem-card-count svg{margin-left:0}
