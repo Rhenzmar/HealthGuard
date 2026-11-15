@@ -78,7 +78,10 @@ test('all seven selectable scenarios yield real backend CNN evidence and recover
   await modal.getByRole('button',{name:/Restart/i}).first().click();
   await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeEnabled({timeout:30000});
   await page.keyboard.press('Escape');
-  await expect(modal).not.toBeVisible();
+  await expect(modal).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i})).toHaveAttribute('aria-current','page');
+  // Starting playback must not navigate to Mission Dashboard.
+  await expect(modal.getByRole('button',{name:/Pause/i}).first()).toBeVisible();
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
   await expect(modal).toBeVisible();
 });
@@ -112,7 +115,7 @@ test('scenario critical voice, no beep, and recovery behavior respond to real ba
   await modal.getByRole('button',{name:/Start scenario/i}).click();
   await expect(modal).not.toBeVisible();
   // The current approved design deliberately has NO pulse/beep alarm.
-  await expect(page.locator('.hg6-alert-red').first()).toBeVisible({timeout:20000});
+  await expect(modal.locator('.hg6-scenario-event-alert').first()).toBeVisible({timeout:20000});
   expect(await page.evaluate(()=>window.__healthguardAudioBeepCount)).toBe(0);
   await expect.poll(()=>page.evaluate(()=>window.__healthguardSpeechEvents.filter(x=>x.kind==='speak').length),{timeout:20000}).toBeGreaterThan(1);
   // The deterministic UI fixture advances to the real backend recovery
@@ -133,4 +136,26 @@ test('failed backend scenario request cannot substitute local fabricated data',a
   await modal.getByRole('button',{name:/Thermal instability/i}).click();
   await expect(modal.getByRole('alert')).toContainText(/Scenario backend unavailable/i);
   await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeDisabled();
+});
+
+
+test('scenario remains active after entering Moon or Mars suit HUD',async ({page})=>{
+  await page.goto('/');
+  await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
+  const modal=page.getByRole('dialog',{name:'Possible scenarios'});
+  await modal.getByRole('button',{name:/Oxygenation decline/i}).click();
+  await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeEnabled({timeout:30000});
+  await modal.getByRole('button',{name:/Start scenario/i}).click();
+  await expect(modal).toBeVisible();
+  await modal.getByRole('button',{name:/View in suit HUD/i}).click();
+  const hud=page.getByRole('group',{name:/visor view/i});
+  await expect(hud).toBeVisible();
+  await expect(page.locator('.hgv-scenario-badge')).toContainText('OXYGENATION');
+  await expect(page.locator('.hgv-telemetry')).toContainText('SERVER SCENARIO');
+  await page.getByRole('button',{name:/Mars suit/i}).click();
+  await expect(hud).toHaveAttribute('aria-label',/Mars suit visor view/i);
+  await expect(page.locator('.hgv-scenario-badge')).toContainText('OXYGENATION');
+  await page.getByRole('button',{name:/Scenario Lab/i}).last().click();
+  await expect(modal).toBeVisible();
+  await expect(modal.locator('.hg-scenario-current')).toContainText('Oxygenation decline');
 });
