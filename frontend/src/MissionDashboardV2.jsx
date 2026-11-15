@@ -263,6 +263,9 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const streamConnected=connection==='connected'&&hasTelemetry;
   const [showTelemetry,setShowTelemetry]=useState(false);
   const [infoProfile,setInfoProfile]=useState(null);
+  const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(false);
+  const alertVoiceRef=useRef('');
+  const toggleLiveAlerts=()=>setLiveAlertsEnabled(v=>!v);
   const scenarioId=scenario.id;
   const scenarioSecond=scenario.elapsed;
   const scenarioRunning=scenario.running;
