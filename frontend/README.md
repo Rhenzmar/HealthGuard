@@ -2,7 +2,7 @@
 
 The **HealthGuard** interface is a React/Vite application for a **fictional astronaut health-monitoring and mission-support demonstration**. The main project overview is in [../README.md](../README.md).
 
-[Try the deployed app](https://physiograph-dashboard.onrender.com/) · [Reviewer guide](../docs/REVIEWER_GUIDE.md)
+[Try the deployed app](https://healthguard-dashboard.onrender.com/) · [Reviewer guide](../docs/REVIEWER_GUIDE.md)
 
 ## Sections
 
@@ -49,7 +49,7 @@ npm run build
 
 ## Hosting
 
-The active Render static site is [physiograph-dashboard.onrender.com](https://physiograph-dashboard.onrender.com/). Its current build command is `cd frontend && npm install --no-audit --no-fund && npm run build`, with publish directory `frontend/dist`. The frontend's public build variable is `VITE_PHYSIOGRAPH_API_BASE`; it must contain **only a public API origin, never a secret**.
+The active Render static site is [healthguard-dashboard.onrender.com](https://healthguard-dashboard.onrender.com/). Its current build command is `cd frontend && npm install --no-audit --no-fund && npm run build`, with publish directory `frontend/dist`. The frontend's public build variable is `VITE_PHYSIOGRAPH_API_BASE`; it must contain **only a public API origin, never a secret**.
 
 **Audio:** Critical-event voice and guided-tour narration use `SpeechSynthesisUtterance` in the browser. A brief procedural alarm tone uses Web Audio. Browser autoplay policies and device settings can prevent sound until the user interacts with the page. These are demonstration alerts, not certified alarms.
 
