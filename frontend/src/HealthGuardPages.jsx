@@ -137,7 +137,7 @@ export const AnatomyScene = React.memo(function AnatomyScene({selected='cardiac'
   layers=HG_ANATOMY_LAYERS,onLayersChange,alertedRegions=[],alertSeverity='UNASSESSED'}) {
   const danger=alertSeverity==='CRITICAL'&&alertedRegions.length>0;
   const keys=danger
-    ? [...new Set([...HG_FOCUS_KEYS[selected]||[],...alertedRegions.flatMap(region=>HG_FOCUS_KEYS[region]||[])])]
+    ? [...new Set([...(HG_FOCUS_KEYS[selected]||[]),...alertedRegions.flatMap(region=>HG_FOCUS_KEYS[region]||[])])]
     : HG_FOCUS_KEYS[selected]||[];
   const handleStructure=(key,structure)=>{
     const category=structure?.category||'';
