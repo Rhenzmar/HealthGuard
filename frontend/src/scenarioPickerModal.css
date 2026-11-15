@@ -130,3 +130,11 @@
  .hg-scenario-playback-buttons button{flex:1 1 auto}
 }
 @media(max-width:470px){.hg-scenario-list,.hg-scenario-readings{grid-template-columns:1fr}}
+
+.hg-scenario-engineering{display:grid;gap:7px;margin-top:10px}
+.hg-scenario-engineering>strong{color:#86d9d5;font-size:10px}
+.hg-scenario-engineering>div{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid #33586c;border-radius:8px;background:#0b2638;padding:10px;color:#bfd7df;font-size:10px}
+.hg-scenario-engineering>div b{color:#e8f8f9;font-variant-numeric:tabular-nums}
+.hg-scenario-engineering>div b small{color:#acc6ce;font-size:9px;font-weight:450}
+.hg-scenario-engineering>div.critical{border-color:#ee7d86;background:#60232d}
+.hg-scenario-engineering>div.critical b{color:#ffe2e4}
