@@ -4,9 +4,9 @@ test('Mission Quest plays all five interactive astronaut chapters and persists c
   await page.goto('/');
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Health Routine/}).click();
   await expect(page.getByRole('heading',{name:/MISSION QUEST/i})).toBeVisible();
-  await expect(page.getByRole('region',{name:'Mission game statistics'}).count()).toBeGreaterThanOrEqual(0);
+  await expect(page.getByRole('region',{name:'Mission game statistics'})).toBeVisible();
   await expect(page.getByText('Cadet',{exact:true})).toBeVisible();
-  await expect(page.getByText('MISSION LOCKED',{exact:false}).count()).toBeGreaterThanOrEqual(0);
+  await expect(page.locator('.mg-map-node').nth(1)).toBeDisabled();
   const answers=[1,0,0,0];
   for(let i=0;i<answers.length;i++){
     await page.locator('.mg-options .mg-option').nth(answers[i]).click();
