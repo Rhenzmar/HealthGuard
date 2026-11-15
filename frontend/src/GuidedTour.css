@@ -1,6 +1,6 @@
 .hg-tour-root{position:fixed;inset:0;z-index:99999;pointer-events:auto;color:#eaf9fa}
-.hg-tour-dim{position:fixed;inset:0;background:rgba(1,9,19,.69);pointer-events:auto}
-.hg-tour-spotlight{position:fixed;z-index:1;border-radius:10px;box-shadow:0 0 0 2px #62e0da,0 0 0 9999px rgba(1,9,19,.18),0 0 22px #36b8bd66;pointer-events:none;transition:top .16s,left .16s,width .16s,height .16s}
+.hg-tour-dim{position:fixed;inset:0;background:transparent;pointer-events:auto}
+.hg-tour-spotlight{position:fixed;z-index:1;border-radius:10px;box-shadow:0 0 0 2px #62e0da,0 0 0 9999px rgba(1,9,19,.72),0 0 22px #36b8bd66;pointer-events:none;transition:top .16s,left .16s,width .16s,height .16s}
 .hg-tour-panel{position:fixed;z-index:2;width:min(385px,calc(100vw - 24px));box-sizing:border-box;border:1px solid #4fa0ad;border-radius:14px;padding:18px;background:#0b2436f5;box-shadow:0 22px 65px #000b;backdrop-filter:blur(18px);max-height:calc(100dvh - 24px);overflow:auto}
 .hg-tour-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
 .hg-tour-top span{font-size:9px;letter-spacing:1px;color:#79ddd6;font-weight:800}
