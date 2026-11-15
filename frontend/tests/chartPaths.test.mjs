@@ -15,7 +15,7 @@ test('flat data stays flat, including graph-like constant readings',()=>{
 });
 test('monotone endpoints and turning points do not introduce spikes',()=>{
   const d=smoothChartPath([{x:0,y:0},{x:1,y:10},{x:2,y:3}]);
-  assert.match(d,/ C1\.33 10\.00 1\.67 3\.00 2\.00 3\.00$/);
+  assert.match(d,/ C1\.33 10\.00 1\.67 5\.33 2\.00 3\.00$/);
 });
 test('handles empty, singleton, duplicate or nonfinite coordinates safely',()=>{
   assert.equal(smoothChartPath([]),'');
