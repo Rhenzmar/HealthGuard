@@ -14,15 +14,9 @@ const CREW=[
 // These are visualization groups, not independent medical risk assessments.
 // Only groups with a linked simulator channel display a current measurement.
 const REGIONS=[
- {id:'brain',name:'Neural & sensory',short:'Brain',icon:'activity',side:'left',
-  description:'Explore the brain and visual pathways. No direct neurological, cognitive, or ocular sensor is connected to HealthGuard.',
-  keys:[]},
  {id:'cardiac',name:'Cardiovascular',short:'Heart',icon:'heart',side:'left',
   description:'Review heart rate, heart-rate variability, and separately scripted blood pressure estimates. These signals cannot independently diagnose cardiovascular disease.',
   keys:['heart_rate_bpm','hrv_rmssd_ms','systolic_bp_mmhg','diastolic_bp_mmhg']},
- {id:'renal',name:'Renal & fluids',short:'Kidneys',icon:'database',side:'left',
-  description:'Explore kidney anatomy and spaceflight fluid-balance concepts. No renal biomarker or direct fluid-volume sensor is connected.',
-  keys:[]},
  {id:'respiratory',name:'Breathing & oxygen',short:'Lungs',icon:'wind',side:'right',
   description:'Review simulated oxygen saturation and breathing rate. End-tidal CO₂ is a separately scripted estimate, not part of the core anomaly input.',
   keys:['spo2_percent','respiratory_rate_bpm','etco2_mmhg']},
@@ -45,7 +39,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
  const [regionId,setRegionId]=useState('cardiac');
  const activeScenarioFrame=verifiedScenarioFrame(scenario,selected);
  const scenarioSeverity=activeScenarioFrame?.severity||'UNASSESSED';
- const alertedRegions=anatomyAlertRegions(activeScenarioFrame);
+ const alertedRegions=anatomyAlertRegions(activeScenarioFrame).filter(id=>REGIONS.some(region=>region.id===id));
  const alertedRegionIds=alertedRegions.join(',');
  useEffect(()=>{
    if(scenarioSeverity==='CRITICAL'&&alertedRegions.length){
@@ -61,7 +55,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
  const [issue,setIssue]=useState('');
  const [layers,setLayers]=useState({skin:true,skeleton:true,joints:false,muscles:false,organs:true,vessels:false,nerves:false});
  const crew=CREW.find(x=>x.id===selected)||CREW[0];
- const region=REGIONS.find(x=>x.id===regionId)||REGIONS[1];
+ const region=REGIONS.find(x=>x.id===regionId)||REGIONS[0];
  const metric=metricFor(metricKey)||METRICS[0];
  const last=snapshot?.subjects?.[selected]?.latest||samples.at(-1)||null;
  const values=last?.values||{};
@@ -123,7 +117,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
      <div>
        <span className="hgm-kicker"><Icon name="heart" size={15}/> HEALTHGUARD / BODY EXPLORER</span>
        <h1>Explore human systems<span>.</span></h1>
-       <p>Five body systems, one interactive astronaut health overview.</p>
+       <p>Three monitored body systems, one interactive astronaut health overview.</p>
      </div>
      <button type="button" className="hgm-telemetry-link" onClick={onTelemetry}>Crew telemetry <Icon name="arrow" size={15}/></button>
    </header>
