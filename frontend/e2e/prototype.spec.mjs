@@ -149,6 +149,13 @@ test('scenario remains active after entering Moon or Mars suit HUD',async ({page
   await modal.getByRole('button',{name:/View in suit HUD/i}).click();
   const hud=page.getByRole('group',{name:/visor view/i});
   await expect(hud).toBeVisible();
+  await expect(page.locator('.hgv-screen')).toHaveClass(/hgv-clear-view/);
+  await expect(page.getByRole('complementary',{name:/Simulated body overview/i})).toBeVisible();
+  await expect(page.getByRole('button',{name:/Clear view/i})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:/Clear view/i}).click();
+  await expect(page.locator('.hgv-screen')).toHaveClass(/hgv-high-contrast/);
+  await page.getByRole('button',{name:/High contrast/i}).click();
+  await expect(page.locator('.hgv-screen')).toHaveClass(/hgv-clear-view/);
   // The heart-rate mini-trace uses component-local samples, not a missing parent variable.
   await expect(page.locator('.hgv-panel-left .hgv-signal').first()).toBeVisible();
   await expect(page.locator('.hgv-trend-box')).toBeVisible();
