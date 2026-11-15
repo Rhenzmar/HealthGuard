@@ -57,7 +57,7 @@ test('crew switching and primary/remainder navigation work',async ({page})=>{
 test('all seven selectable scenarios yield real backend CNN evidence and recovery',async ({page,request})=>{
   await page.goto('/');
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
-  const modal=page.getByRole('dialog',{name:'Choose a training scenario'});
+  const modal=page.getByRole('dialog',{name:'Possible scenarios'});
   await expect(modal).toBeVisible();
   for(const [id,label,category] of scenarios){
     await modal.getByRole('tab',{name:new RegExp(category)}).click();
@@ -101,7 +101,7 @@ test('scenario critical voice, no beep, and recovery behavior respond to real ba
   });
   await page.goto('/');
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
-  const modal=page.getByRole('dialog',{name:'Choose a training scenario'});
+  const modal=page.getByRole('dialog',{name:'Possible scenarios'});
   await modal.getByRole('tab',{name:/CREW HEALTH/}).click();
   await modal.getByRole('button',{name:/Oxygenation decline/i}).click();
   await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeEnabled({timeout:30000});
@@ -129,7 +129,7 @@ test('failed backend scenario request cannot substitute local fabricated data',a
   }));
   await page.goto('/');
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
-  const modal=page.getByRole('dialog',{name:'Choose a training scenario'});
+  const modal=page.getByRole('dialog',{name:'Possible scenarios'});
   await modal.getByRole('button',{name:/Thermal instability/i}).click();
   await expect(modal.getByRole('alert')).toContainText(/Scenario backend unavailable/i);
   await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeDisabled();
