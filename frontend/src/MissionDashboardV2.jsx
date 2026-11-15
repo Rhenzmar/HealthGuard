@@ -180,7 +180,7 @@ function CrewProfile({person,onClose,onMission,latest,training}){
   </section>;
 }
 
-export default function MissionDashboard({view='dashboard',onDashboard=()=>{},onTelemetryPage=()=>{},onAnalysisPage=()=>{},onScenarioPage=()=>{},error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment,contextHistory=[]}){
+export default function MissionDashboard({view='dashboard',onDashboard=()=>{},onTelemetryPage=()=>{},onScenarioPage=()=>{},error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment,contextHistory=[]}){
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const activeCrewIndex=crewIndexForSubject(selected);
   const activeCrew=CREW[activeCrewIndex];
@@ -333,27 +333,25 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         {pageHead('Crew Telemetry','Signal inspection, current measurements, historical research panels and trend analysis.')}
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
         <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey}/><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/></div>
+        <details className="hg6-model-disclosure">
+          <summary><Icon name="shield" size={17}/> Experimental model evidence and pattern reviews <Icon name="chevron" size={15}/></summary>
+          <div className="hg6-analysis-grid">
+            <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking} liveAlertsEnabled={liveAlertsEnabled} onToggleLiveAlerts={toggleLiveAlerts}/>
+            <section className="hg6-card hg6-analysis-detail"><div className="hg6-card-heading"><h2><Icon name="shield" size={18}/> Detector evidence</h2><span className="hg6-quiet-badge">EXPERIMENTAL SIMULATOR</span></div>
+              <div className="hg6-analysis-rows">
+                <div><span>1D CNN autoencoder</span><strong>{hasTelemetry?friendlyStatus(cnn?.status):'Awaiting telemetry'}</strong><small>{cnn?.error!=null&&hasTelemetry?'Reconstruction error: '+formatValue(cnn.error,5):'No available model score'}</small></div>
+                <div><span>Covariance comparator</span><strong>{hasTelemetry?friendlyStatus(comparison?.status):'Awaiting telemetry'}</strong><small>{comparison?.score!=null&&hasTelemetry?'Novelty score: '+formatValue(comparison.score,4):'No available comparison score'}</small></div>
+                <div><span>Measurement quality</span><strong>{hasTelemetry?friendlyStatus(review?.quality?.status):'Awaiting telemetry'}</strong><small>Context and quality screening</small></div>
+                <div><span>17-channel evidence</span><strong>{unified?.models_ready?'Model evidence available':'Awaiting model evidence'}</strong><small>Fictional simulated data, not a clinical assessment</small></div>
+              </div>
+            </section>
+          </div>
+          <section className="hg6-card hg6-analysis-history"><div className="hg6-card-heading"><h2><Icon name="clock" size={18}/> Recent context reviews</h2></div>
+            {contextHistory.length?<div className="hg6-history-items">{contextHistory.slice(-8).reverse().map((event,i)=><div key={String(event.sequence)+'-'+i}><strong>{friendlyStatus(event.status)}</strong><span>Sequence #{event.sequence??'—'} · {event.activity_state||'Unspecified activity'}</span></div>)}</div>:<p className="hg6-page-note">No pattern-review history is available for this crew member.</p>}
+          </section>
+        </details>
         <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
         <p className="hg6-page-note">Live crew readings are fictional simulator data. Historical NASA laboratory records belong to different research participants and are not continuous astronaut telemetry.</p>
-      </>:null}
-      {view==='analysis'?<>
-        {pageHead('Anomaly Center','Experimental model comparisons, measurement-quality review and context-aware pattern flags. No diagnostic or clinical-risk inference.')}
-        <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
-        <div className="hg6-analysis-grid">
-          <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking} liveAlertsEnabled={liveAlertsEnabled} onToggleLiveAlerts={toggleLiveAlerts}/>
-          <section className="hg6-card hg6-analysis-detail"><div className="hg6-card-heading"><h2><Icon name="activity" size={18}/> Model comparison</h2><span className="hg6-quiet-badge">CURRENT FIVE-CHANNEL MODELS</span></div>
-            <div className="hg6-analysis-rows">
-              <div><span>1D CNN autoencoder</span><strong>{hasTelemetry?friendlyStatus(cnn?.status):'Awaiting telemetry'}</strong><small>{cnn?.error!=null && hasTelemetry?'Reconstruction error: '+formatValue(cnn.error,5):'No available model score'}</small></div>
-              <div><span>Covariance comparison</span><strong>{hasTelemetry?friendlyStatus(comparison?.status):'Awaiting telemetry'}</strong><small>{comparison?.score!=null && hasTelemetry?'Novelty score: '+formatValue(comparison.score,4):'No available comparison score'}</small></div>
-              <div><span>Measurement quality</span><strong>{hasTelemetry?friendlyStatus(review?.quality?.status):'Awaiting telemetry'}</strong><small>Context and integrity screening</small></div>
-              <div><span>17-channel model</span><strong>{unified?.models_ready?'Model evidence available':'Awaiting model evidence'}</strong><small>Experimental simulated-data training analysis</small></div>
-            </div>
-          </section>
-        </div>
-        <section className="hg6-card hg6-analysis-history"><div className="hg6-card-heading"><h2><Icon name="clock" size={18}/> Recent pattern reviews</h2></div>
-          {contextHistory.length?<div className="hg6-history-items">{contextHistory.slice(-8).reverse().map((event,i)=><div key={event.sequence+'-'+i}><strong>{friendlyStatus(event.status)}</strong><span>Sequence #{event.sequence??'—'} · {event.activity_state||'Unspecified activity'}</span></div>)}</div>:<p className="hg6-page-note">No review history is currently available for the selected crew member.</p>}
-        </section>
-        <p className="hg6-page-note">Experimental flags are not disease diagnoses. Scripted training alerts are separate from these backend detector outputs.</p>
       </>:null}
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
