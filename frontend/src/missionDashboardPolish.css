@@ -132,3 +132,87 @@
  .hg6-telemetry-compact{grid-template-columns:1fr}
  .hg6-subpage-heading{padding-top:24px}
 }
+
+/* Final header: all eight destinations visible, Scenario Lab in the last slot. */
+.sidebar{gap:12px;padding-inline:clamp(10px,1.6vw,25px)}
+.sidebar .nav-wrapper{flex:1 1 auto;min-width:0;overflow:hidden;justify-content:stretch;gap:0}
+.sidebar .nav-wrapper nav{display:flex;flex:1 1 auto;max-width:100%;min-width:0;justify-content:space-between;gap:2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.sidebar .nav-item{padding:9px clamp(5px,.62vw,10px);min-height:40px;gap:5px}
+.sidebar .nav-item strong{font-size:clamp(9px,.67vw,11px);letter-spacing:-.05px}
+.sidebar .nav-icon{width:16px;height:16px}
+.sidebar .nav-icon svg{width:16px;height:16px}
+.sidebar .side-logo{gap:7px}
+.sidebar .side-logo strong{font-size:clamp(11px,1vw,15px)}
+.sidebar .sidebar-bottom{gap:6px}
+@media(max-width:1180px){
+ .sidebar{gap:8px;padding-inline:11px}
+ .sidebar .nav-item{padding:8px 5px}
+ .sidebar .nav-item strong{font-size:9px}
+ .hg-header-simulation{display:none}
+}
+@media(max-width:850px){
+ .sidebar .nav-wrapper nav{justify-content:flex-start;gap:2px;scrollbar-width:thin}
+ .sidebar .nav-item{flex:0 0 auto}
+}
+/* Clean, balanced astronaut profile without a button obscuring the portrait. */
+.hg6-selected{border-radius:14px}
+.hg6-selected-body{grid-template-columns:minmax(180px,33%) minmax(0,1fr)}
+.hg6-selected-portrait{
+ position:relative;min-height:248px;
+ background:radial-gradient(ellipse at 51% 45%,#245b7578,transparent 74%),linear-gradient(148deg,#193a57,#091b2e 80%);
+ border-right:1px solid #275269;
+ isolation:isolate
+}
+.hg6-selected-portrait:before{
+ content:"";position:absolute;inset:12px 12px 12px;border:1px solid #679cb72b;border-radius:11px;pointer-events:none;z-index:1
+}
+.hg6-selected-portrait>img{
+ position:absolute;inset:0;width:100%;height:100%;
+ object-fit:contain;object-position:center bottom;opacity:1;
+ filter:drop-shadow(0 8px 18px #020b1d45)
+}
+.hg6-portrait-label{
+ position:absolute;z-index:3;left:15px;top:15px;
+ border:1px solid #4d83906c;background:#071f35b9;color:#a6e6e6;
+ border-radius:6px;letter-spacing:1.25px;font-size:9px;font-weight:750;padding:6px 9px
+}
+.hg6-health-summary{padding:17px 18px 12px}
+.hg6-summary-intro{padding-bottom:8px;margin-bottom:4px;border-bottom:1px solid #26495e}
+.hg6-summary-intro h3{font-size:14px;letter-spacing:-.12px}
+.hg6-summary-row{min-height:34px}
+.hg6-selected-foot{border-top:1px solid #28485a;min-height:47px;padding:10px 15px}
+.hg6-selected-foot .hg6-selected-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:16px}
+.hg6-selected-actions button{border:0;background:transparent;padding:7px 0;color:#8ee5df;font-weight:700}
+.hg6-selected-actions button:hover{text-decoration:underline;color:#cefdf6}
+@media(max-width:1280px){
+ .hg6-selected-body{grid-template-columns:minmax(150px,31%) minmax(0,1fr)}
+ .hg6-health-summary{padding:12px 11px}
+}
+@media(max-width:680px){
+ .hg6-selected-body{grid-template-columns:1fr}
+ .hg6-selected-portrait{min-height:225px;max-height:245px;border-right:0;border-bottom:1px solid #275269}
+ .hg6-selected-portrait>img{object-fit:contain}
+ .hg6-selected-foot{align-items:flex-start}
+ .hg6-selected-foot .hg6-selected-actions{justify-content:flex-start}
+}
+/* Static, localized severity. No pulsing cards, no flashing lights. */
+.hg6-shell .hg6-alert,.hg6-shell .hg6-alert-state,.hg6-shell .hg6-alert-symbol,
+.hg6-shell .hg6-vital-lines button,.hg6-shell .hg6-connection i,
+.hg6-shell .hg6-crew-text em i,.hg6-shell .hg6-state,
+.hg6-shell .hg6-scenario-console,.hg6-shell .hg6-scenario-metric{
+ animation:none!important
+}
+.hg6-alert-state.hg6-alert-red{
+ border-color:#d66b75!important;background:#4a202c!important;
+ box-shadow:none!important
+}
+.hg6-alert-red .hg6-alert-symbol{box-shadow:none!important}
+.hg6-vital-lines button.hg6-vital-flagged:not(.hg6-vital-critical){background:transparent;border-bottom-color:#2d4b61}
+.hg6-vital-lines button.hg6-vital-critical{
+ background:#54232b;border-bottom:1px solid #c86872;box-shadow:inset 3px 0 #fa8286
+}
+.hg6-vital-lines button.hg6-vital-critical strong{color:#ffd8d8}
+.hg6-scenario-metric-critical{box-shadow:none!important}
+.hg6-scenario-alarm{box-shadow:none!important}
+.hg6-scenario-alarm .hg6-scenario-mode{box-shadow:none!important}
+.hg6-shell .hg6-vital-lines button.hg6-vital-selected:not(.hg6-vital-critical){background:#17384b}
