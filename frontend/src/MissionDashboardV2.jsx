@@ -10,7 +10,7 @@ import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel,readApi} fro
 import {currentActivity,primaryPattern,recentBaselineComparison} from './crewContext.js';
 import {Icon,VitalChart} from './viz.jsx';
 import {EnvironmentPicker,ENVIRONMENTS} from './HealthGuardPages.jsx';
-import {QUESTS,getQuestPoints,getQuestCompletion} from './questLogic.js';
+import {QUESTS,readRoutineStore,summarizeCrewRoutine,localDayKey} from './questLogic.js';
 import {ATTRIBUTION} from 'open-anatomy-3d';
 import 'open-anatomy-3d-react/styles.css';
 
@@ -21,13 +21,10 @@ const CREW=[
   {name:'Lt. Aisha Khan',role:'Systems engineer',initials:'AK',portrait:'three',image:'/crew/aisha.svg',stream:true,subjectId:'SIM_CREW_03'},
   {name:'Spc. Daniel Cho',role:'Mission specialist',initials:'DC',portrait:'four',image:'/crew/daniel.svg',stream:true,subjectId:'SIM_CREW_04'}
 ];
-const DATE_KEY=()=>new Date().toISOString().slice(0,10);
-function getRoutine(){
+function getRoutine(crewId){
   try{
-    const data=JSON.parse(window.localStorage.getItem('healthguard-mission-quest-v1')||'{}');
-    const statuses=data[DATE_KEY()]||{};
-    const finished=QUESTS.filter(q=>statuses[q.id]==='complete').map(q=>q.id);
-    return {done:finished.length,ids:finished,percent:getQuestCompletion(finished),xp:getQuestPoints(finished)};
+    const summary=summarizeCrewRoutine(readRoutineStore(),localDayKey(),crewId);
+    return {done:summary.done,ids:summary.ids,percent:summary.percent,xp:summary.xp};
   }catch{return {done:0,ids:[],percent:0,xp:0};}
 }
 function metricValue(packet,key,digits=0,unit=''){
@@ -182,7 +179,7 @@ function Trend({hasTelemetry,samples,keyValue,onChange,training}){
   </section>;
 }
 function Routine({progress,onOpen}){
-  const today=getRoutine();
+  const today=progress;
   const shown=QUESTS.slice(0,4);
   return <section className="hg6-card hg6-routine"><div className="hg6-routine-label"><Icon name="check" size={24}/><div><h2>Mission routine</h2><p>Daily check-ins and learning tasks</p></div></div>
     <div className="hg6-donut" style={{'--pct':progress.percent}} role="progressbar" aria-label="Routine completion" aria-valuenow={progress.percent} aria-valuemin={0} aria-valuemax={100}><div><strong>{progress.percent}%</strong><small>Complete</small></div></div>
@@ -362,7 +359,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const latest=scenarioId?training:selectedPacket;
   const displaySamples=training?trainingHistory:samplesForSubject(samples,activeCrew.subjectId,selectedPacket);
   const displayReview=scenarioId?null:review;
-  const progress=getRoutine();
+  const progress=getRoutine(activeCrew.subjectId);
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
   const selectCrew=i=>{stopScenario();setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);setMetricKey(METRICS[0].key);};
