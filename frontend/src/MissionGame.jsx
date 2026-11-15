@@ -6,6 +6,7 @@ import {MISSION_TRIALS,getCrewLifetimeXp,getMissionRank,getMissionStreak,
   missionAchievements,isMissionUnlocked,evaluateTrial} from './missionGameLogic.js';
 import WellnessGame from './WellnessGame.jsx';
 import CrewCheckinGame from './CrewCheckinGame.jsx';
+import CountermeasureGame from './CountermeasureGame.jsx';
 import './missionGame.css';
 
 const CREW=[
@@ -77,7 +78,7 @@ function Trial({task,status,choice,setChoice,note,setNote,feedback,onSubmit,onDe
   </section>;
 }
 
-export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
+export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{},snapshot=null}){
   const [store,setStore]=useState(()=>readRoutineStore());
   const [crewId,setCrewId]=useState(ROUTINE_CREW.includes(selected)?selected:'SIM_CREW_01');
   const [active,setActive]=useState('morning');
@@ -153,8 +154,8 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
     <section className="mg-hero">
       <div className="mg-hero-copy"><span className="mg-eyebrow"><Icon name="satellite" size={15}/> HEALTHGUARD / CREW TRAINING ARCADE</span>
         <h1>MISSION <span>QUEST</span></h1>
-        <p>Three ways to train: make health-literacy decisions, try optional wellness activities, or complete a private daily check-in.</p>
-        <div className="mg-hero-tags"><span><Icon name="shield-check" size={14}/> Simulation only</span><span><Icon name="gamepad-2" size={14}/> Three playable game modes</span><span><Icon name="award" size={14}/> Earn fictional XP</span></div>
+        <p>Four game modes: practice health decisions, choose optional activities, reflect on wellbeing, or run a countermeasure mission.</p>
+        <div className="mg-hero-tags"><span><Icon name="shield-check" size={14}/> Simulation only</span><span><Icon name="gamepad-2" size={14}/> Four playable game modes</span><span><Icon name="award" size={14}/> Earn fictional XP</span></div>
       </div>
       <div className="mg-hero-crewmate"><span className="mg-hero-halo"/><img src={crew.portrait} alt={'Illustration of fictional astronaut '+crew.name}/><span className="mg-crew-callsign"><strong>{crew.name}</strong><small>{crew.role.toUpperCase()}</small></span></div>
     </section>
@@ -172,14 +173,18 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
         <Icon name="clipboard-list" size={22}/><span><strong>Crew Check-In</strong><small>A personal daily mission with sleep, mood and body-map challenges</small></span>
         <span className="mg-mode-label">4 STAGES</span>
       </button>
+      <button type="button" className={gameMode==='countermeasures'?'active':''} aria-current={gameMode==='countermeasures'?'page':undefined} onClick={()=>setGameMode('countermeasures')}>
+        <Icon name="shield-check" size={22}/><span><strong>Countermeasure Ops</strong><small>Exercise missions, reaction arcade and fluid supply challenges</small></span>
+        <span className="mg-mode-label">5 TASKS</span>
+      </button>
     </nav>
     <section className="mg-toolbar">
       <div><span className="mg-kicker">PLAY AS</span><CrewChooser crewId={crewId} onChange={id=>{setCrewId(id);setActive('morning');setReward(null)}}/></div>
       <div className="mg-toolbar-info"><span><Icon name="calendar" size={15}/> MISSION DAY {gameDay}</span><button type="button" onClick={()=>setShowRules(v=>!v)} aria-expanded={showRules}><Icon name="info" size={15}/> How to play</button></div>
     </section>
-    {showRules&&<div className="mg-rules" role="note">Knowledge Quest rewards educational decisions. Wellness Expedition uses short optional activity timers. Crew Check-In rewards completing or skipping a private self-report, never the health values entered. The three games keep separate browser-only records; none measure or diagnose real health.</div>}
+    {showRules&&<div className="mg-rules" role="note">Knowledge Quest tests decisions, Wellness Expedition offers optional activity timers, Crew Check-In offers private reflections, and Countermeasure Ops combines games into a fictional daily routine. No game measures health, confirms training compliance, or diagnoses illness. Skipping is permitted and progress remains browser-only.</div>}
 
-    {gameMode==='checkin'?<CrewCheckinGame crewId={crewId} crewName={crew.name}/>:gameMode==='wellness'?<WellnessGame crewId={crewId} crewName={crew.name}/>:
+    {gameMode==='countermeasures'?<CountermeasureGame crewId={crewId} crewName={crew.name} telemetry={snapshot?.subjects?.[crewId]?.latest||null} onOpenCheckin={()=>setGameMode('checkin')}/>:gameMode==='checkin'?<CrewCheckinGame crewId={crewId} crewName={crew.name}/>:gameMode==='wellness'?<WellnessGame crewId={crewId} crewName={crew.name}/>:
     <>
     <section className="mg-stats" aria-label="Mission game statistics">
       <div className="mg-stat"><div><Icon name="zap" size={19}/><span>TOTAL XP</span></div><strong>{lifetime}<small> XP</small></strong><p>Earned across recorded mission days</p></div>
