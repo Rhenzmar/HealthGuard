@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatValue } from './api';
+import {smoothChartPath} from './chartPaths.js';
 
 const paths = {
   grid: <><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></>,
@@ -59,7 +60,7 @@ export function VitalChart({ data, metric, observationMode = 'simulated-second' 
   const W = 930, H = 270, pad = 35;
   const g = chartGeometry(data, metric.key, W, H, pad);
   if (!g || g.points.length < 2) return <div className="chart-empty">Waiting for simulated samples. Charts appear when the backend supplies data.</div>;
-  const line = g.points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const line = smoothChartPath(g.points);
   const area = `${line} L${g.points[g.points.length - 1].x.toFixed(1)} ${H - pad} L${g.points[0].x.toFixed(1)} ${H - pad} Z`;
   const name = `vital-fill-${metric.key}`;
   const engineering = observationMode === 'engineering-poll';
