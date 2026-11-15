@@ -219,6 +219,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const [infoProfile,setInfoProfile]=useState(null);
   const [scenarioId,setScenarioId]=useState('');
   const [scenarioSecond,setScenarioSecond]=useState(0);
+  const [scenarioRevision,setScenarioRevision]=useState(0);
   const [scenarioRunning,setScenarioRunning]=useState(false);
   const [scenarioFrame,setScenarioFrame]=useState(null);
   const [scenarioFetchError,setScenarioFetchError]=useState('');
@@ -237,6 +238,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const selectScenario=id=>{
     setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
     setScenarioRunning(false);setScenarioId(id);setScenarioSecond(0);
+    setScenarioRevision(v=>v+1);
     setScenarioCritical(false);
     if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
   };
@@ -285,7 +287,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
       .catch(error=>{if(cancelled)return;setScenarioFetchError(error.message||'Scenario model analysis unavailable');
         setScenarioFrame(null);setScenarioPending(false);setScenarioRunning(false);});
     return()=>{cancelled=true;};
-  },[activeCrew.subjectId,scenarioId,scenarioSecond]);
+  },[activeCrew.subjectId,scenarioId,scenarioSecond,scenarioRevision]);
   const training=(scenarioFrame?.scenario_id===scenarioId
                   &&scenarioFrame?.subject_id===activeCrew.subjectId
                   &&scenarioFrame?.elapsed_seconds===scenarioSecond)?scenarioFrame:null;
@@ -384,7 +386,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
         onPause={()=>setScenarioRunning(false)}
-        onReset={()=>{setScenarioFrame(null);setScenarioFetchError('');setScenarioSecond(0);setScenarioRunning(false);setScenarioCritical(false);}}
+        onReset={()=>{setScenarioFrame(null);setScenarioFetchError('');setScenarioSecond(0);setScenarioRunning(false);setScenarioCritical(false);setScenarioRevision(v=>v+1);}}
         onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond} sample={training}
         soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
         onSpeak={speakScenario}/>}
