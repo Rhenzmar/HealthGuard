@@ -1,0 +1,64 @@
+name: Verify real NASA RR-1 ISS environmental telemetry
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/nasa/rr1_eda/**'
+      - 'tools/evaluate_nasa_rr1_eda.py'
+      - 'tests/test_nasa_rr1_eda.py'
+      - '.github/workflows/verify-nasa-rr1-real-data.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: nasa-rr1-real-data-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  real-rr1:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install verification tools
+        run: python -m pip install pytest
+      - name: Test original NASA RR-1 CSVs, source summary and cadence
+        run: python -m pytest -q tests/test_nasa_rr1_eda.py
+      - name: Evaluate real NASA ISS environmental records
+        run: python -m tools.evaluate_nasa_rr1_eda
+      - name: Publish reproducible report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nasa-real-rr1-environment-evaluation
+          path: research/nasa_rr1_eda_evaluation/
+          retention-days: 30
+      - name: Commit source-matched original NASA evaluation
+        run: |
+          set -eu
+          mkdir -p /tmp/rr1
+          cp research/nasa_rr1_eda_evaluation/* /tmp/rr1/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            for src in tools/evaluate_nasa_rr1_eda.py data/nasa/rr1_eda/RR-1_EDA_Telemetry_table.csv data/nasa/rr1_eda/RR-1_EDA_Radiation_table.csv; do
+              if [ "$(git rev-parse "$GITHUB_SHA:$src")" != "$(git rev-parse "origin/main:$src")" ]; then
+                echo "Source revision changed: not committing stale reports"
+                exit 0
+              fi
+            done
+            git reset --hard origin/main
+            mkdir -p research/nasa_rr1_eda_evaluation
+            cp /tmp/rr1/* research/nasa_rr1_eda_evaluation/
+            git add research/nasa_rr1_eda_evaluation/evaluation.json research/nasa_rr1_eda_evaluation/REPORT.md
+            if git diff --staged --quiet; then
+              exit 0
+            fi
+            git commit -m "Publish real NASA RR-1 environmental telemetry evaluation"
+            if git push origin HEAD:main; then
+              exit 0
+            fi
+          done
+          exit 1
