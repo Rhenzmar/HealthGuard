@@ -27,10 +27,7 @@ const REGIONS=[
   keys:['spo2_percent','respiratory_rate_bpm','etco2_mmhg']},
  {id:'thermal',name:'Thermal regulation',short:'Core temperature',icon:'thermometer',side:'right',
   description:'Review the core-temperature simulator and a separately scripted peripheral-temperature estimate. No physical thermometer is connected.',
-  keys:['core_temp_c','peripheral_temp_c']},
- {id:'movement',name:'Muscle & bone',short:'Movement',icon:'layers',side:'right',
-  description:'Explore bones, muscles, and joints. HealthGuard does not currently receive muscle-strength, bone-density, or motion-capture measurements.',
-  keys:[]}
+  keys:['core_temp_c','peripheral_temp_c']}
 ];
 const AUX=[
  {key:'systolic_bp_mmhg',label:'Systolic blood pressure',short:'SYSTOLIC BP',unit:'mmHg',digits:1},
@@ -116,7 +113,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
      <div>
        <span className="hgm-kicker"><Icon name="heart" size={15}/> HEALTHGUARD / BODY EXPLORER</span>
        <h1>Explore human systems<span>.</span></h1>
-       <p>Six body systems, one interactive astronaut health overview.</p>
+       <p>Five body systems, one interactive astronaut health overview.</p>
      </div>
      <button type="button" className="hgm-telemetry-link" onClick={onTelemetry}>Crew telemetry <Icon name="arrow" size={15}/></button>
    </header>
