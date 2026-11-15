@@ -127,3 +127,56 @@
 .hgm-measurements{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media(max-width:1050px){.hgm-main-layout{grid-template-columns:1fr}.hgm-figure{height:560px;min-height:400px}}
 @media(max-width:670px){.hgm-figure{height:460px;min-height:360px}.hgm-anatomy-panel,.hgm-explanation{padding:11px}.hgm-view-controls span{display:none}.hgm-figure-watermark{top:10px;left:10px}.hgm-region-pills button{padding:8px 10px}.hgm-anatomy-layer-controls button{font-size:9px;padding:7px 9px}}
+
+
+/* Body Explorer finishing pass: visual calm, responsive controls and smooth input */
+.hgm-workstation{background:#081521;line-height:1.5}
+.hgm-crew-strip,.hgm-anatomy-panel,.hgm-explanation,.hgm-monitor{background:#0c1e2d;border-color:#294356;box-shadow:none}
+.hgm-crew-strip{padding:11px 14px}
+.hgm-crew-option,.hgm-view-controls button,.hgm-anatomy-layer-controls button,.hgm-region-pills button,.hgm-related-grid button,.hgm-measurements>button,.hgm-telemetry-link,.hgm-monitor-actions button,.hgm-layer-heading button{
+ transition:background-color .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease;
+}
+.hgm-crew-option:hover,.hgm-related-grid button:hover,.hgm-measurements>button:hover{border-color:#5a9daa;background:#12374a}
+.hgm-crew-option:focus-visible,.hgm-view-controls button:focus-visible,.hgm-anatomy-layer-controls button:focus-visible,.hgm-region-pills button:focus-visible,.hgm-layer-heading button:focus-visible{outline:2px solid #7ee1de;outline-offset:3px}
+.hgm-figure{border-color:#29485a;background:radial-gradient(ellipse 48% 60% at 50% 50%,#163a4c 0%,#0b2232 56%,#071723 100%);border-radius:9px}
+.hgm-figure .hg-three-crosshair{opacity:.18}
+.hgm-figure-watermark{color:#6e9ba9;letter-spacing:.7px;font-size:8px}
+.hgm-figure-status{background:rgba(7,23,35,.8);border:1px solid #254657;border-radius:40px;padding:6px 9px;right:12px;bottom:12px}
+.hgm-view-controls button{font-size:10px;padding:9px 14px}
+.hgm-view-controls button[aria-pressed="true"]{background:#184656}
+.hgm-region-pills{gap:7px;margin:9px 0 10px}
+.hgm-region-pills button{border-radius:8px;background:#102c3b;padding:9px 12px;font-size:11px}
+.hgm-region-pills button.selected{box-shadow:inset 0 0 0 1px #62c8c8}
+.hgm-layer-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:11px 0 5px}
+.hgm-layer-heading span{font-size:9px;color:#89adb9;letter-spacing:.8px;font-weight:700}
+.hgm-layer-heading button{display:inline-flex;align-items:center;gap:6px;border:0;background:transparent;color:#b6d9dc;font-size:11px;cursor:pointer;padding:5px 0}
+.hgm-layer-heading button:hover{color:#82e4e0}
+.hgm-anatomy-layer-controls{margin:7px 0 10px;padding:10px;background:#0a1c29;border:1px solid #284457;border-radius:9px}
+.hgm-figure-hint{font-size:10px;color:#84a4b1}
+.hgm-region-context{padding:10px 12px;background:#0b2432;margin-bottom:12px}
+.hgm-region-context strong{font-size:11px}
+.hgm-explanation .hgm-region-description{line-height:1.65;color:#b2c9d3}
+.hgm-apdra-card,.hgm-review-card{border-color:#2a4c60;background:#0e2939}
+.hgm-related-grid button{border-color:#29495b;background:#102a3b}
+.hgm-monitor{margin-top:2px}
+.hgm-chart-panel{background:#0b2230}
+.hg-real-anatomy .hg-anatomy-viewer{isolation:isolate}
+.hg-real-anatomy .oa3d-canvas canvas{outline:none}
+.hg-real-anatomy .oa3d-zoom,.hg-real-anatomy .oa3d-reset{transition:background-color .18s ease,border-color .18s ease!important;box-shadow:none!important}
+.hg-real-anatomy .oa3d-zoom:hover,.hg-real-anatomy .oa3d-reset:hover{background:#175369!important;border-color:#62caca!important}
+.hg-real-anatomy .hg-three-caption{bottom:11px;color:#799ea9;font-size:9px}
+@media(max-width:1050px){.hgm-figure{height:560px}}
+@media(max-width:670px){
+ .hgm-workstation{padding:19px 12px 28px}
+ .hgm-figure{height:430px;min-height:345px}
+ .hgm-region-pills{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .hgm-region-pills button{min-width:0}
+ .hgm-view-controls{gap:6px}
+ .hgm-view-controls button{padding:8px 11px}
+ .hgm-monitor-actions{flex-direction:row;flex-wrap:wrap;align-items:center}
+ .hgm-figure-status{bottom:34px;font-size:8px}
+ .hgm-figure-watermark{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){
+ .hgm-workstation button,.hg-real-anatomy .oa3d-zoom,.hg-real-anatomy .oa3d-reset{transition:none!important}
+}
