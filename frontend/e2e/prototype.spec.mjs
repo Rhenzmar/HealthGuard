@@ -161,6 +161,11 @@ test('scenario remains active after entering Moon or Mars suit HUD',async ({page
   // The heart-rate mini-trace uses component-local samples, not a missing parent variable.
   await expect(page.locator('.hgv-panel-left .hgv-signal').first()).toBeVisible();
   await expect(page.locator('.hgv-trend-box')).toBeVisible();
+  // Both newly simulated suit channels must display numbers, not NO FEED.
+  await expect(page.locator('.hgv-panel-right .hgv-system-row').filter({hasText:'Suit pressure'})).toContainText('psi');
+  await expect(page.locator('.hgv-panel-right .hgv-system-row').filter({hasText:'Suit battery'})).toContainText('%');
+  await expect(page.locator('.hgv-panel-right .hgv-system-row').filter({hasText:'Suit pressure'})).toContainText('SCRIPTED');
+  await expect(page.locator('.hgv-panel-right .hgv-system-row').filter({hasText:'Suit battery'})).toContainText('SCRIPTED');
   await expect(page.locator('.hgv-scenario-badge')).toContainText('OXYGENATION');
   await expect(page.locator('.hgv-telemetry')).toContainText('SERVER SCENARIO');
   await page.getByRole('button',{name:/Mars suit/i}).click();
