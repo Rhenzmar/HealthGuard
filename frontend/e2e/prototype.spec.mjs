@@ -189,7 +189,7 @@ test('suit pressure fault updates simulated HUD and critical alert',async ({page
   });
   await page.goto('/');
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
-  const modal=page.getByRole('dialog',{name:'Choose a training scenario'});
+  const modal=page.getByRole('dialog',{name:'Possible scenarios'});
   await modal.getByRole('tab',{name:/SPACECRAFT/}).click();
   await modal.getByRole('button',{name:/Suit pressure loss/i}).click();
   await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeEnabled({timeout:30000});
