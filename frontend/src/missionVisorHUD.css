@@ -67,3 +67,31 @@
 @media(max-width:800px){.hgv-helmet{min-height:860px;border-radius:27% 27% 23% 23% / 7% 7% 7% 7%;padding:10px}.hgv-visor{inset:12px 14px 34px;border-radius:27% 27% 23% 23% / 7% 7% 7% 7%}.hgv-topline{grid-template-columns:1fr 1fr;padding:28px 9% 7px}.hgv-brand{grid-column:1/-1;grid-row:1;margin-bottom:9px}.hgv-location{grid-column:1;grid-row:2}.hgv-telemetry{grid-column:2;grid-row:2}.hgv-sides{grid-template-columns:1fr 1fr;padding:10px 7%;gap:10px;align-content:start}.hgv-panel{padding:8px}.hgv-panel-left{grid-column:1;grid-row:2}.hgv-panel-right{grid-column:2;grid-row:2}.hgv-focus{grid-column:1/-1;grid-row:1;min-height:190px}.hgv-model-layer{inset:25% 4% 37%}.hgv-bottomline{padding:0 8% 55px;grid-template-columns:1fr 1fr}.hgv-trend-box{grid-column:1}.hgv-compass{grid-column:1/-1;grid-row:1}.hgv-review-note{grid-column:2}.hgv-signal-copy strong{font-size:21px}.hgv-system-text strong{font-size:19px}.hgv-system-source{font-size:7px}.hgv-trace{display:none}}
 @media(max-width:480px){.hgv-control-title span{display:none}.hgv-crew-picker select{max-width:140px}.hgv-helmet{min-height:860px}.hgv-panel-heading strong{font-size:9px}.hgv-signal-copy small,.hgv-system-text small{font-size:8px}.hgv-signal-copy strong,.hgv-system-text strong{font-size:17px}.hgv-signal-glyph,.hgv-system-icon{flex-basis:17px;width:17px}.hgv-signal-glyph svg,.hgv-system-icon svg{width:17px}.hgv-sides{padding:10px 6%;gap:5px}.hgv-topline{padding-left:8%;padding-right:8%}.hgv-brand-name strong{font-size:18px}.hgv-brand>span{font-size:7px}.hgv-physioalert strong{font-size:9px}.hgv-physioalert>span{font-size:9px}.hgv-bottomline{padding:0 7% 50px}.hgv-helmet-lower{height:54px}}
 @media(prefers-reduced-motion:reduce){.hgv-screen *,.hgv-screen *:before,.hgv-screen *:after{animation:none!important;transition:none!important}}
+
+
+/* Server-grounded scenario severity inside the Mars/Moon visor. */
+.hgv-screen.hgv-severity-optimal{--hgv-status:#78e3c5}
+.hgv-screen.hgv-severity-check{--hgv-status:#eac980}
+.hgv-screen.hgv-severity-warning{--hgv-status:#ffb470}
+.hgv-screen.hgv-severity-critical{--hgv-status:#ff747c}
+.hgv-screen.hgv-severity-unassessed{--hgv-status:#9ab1c4}
+.hgv-screen .hgv-visor{transition:border-color .25s,box-shadow .25s}
+.hgv-screen.hgv-severity-check .hgv-visor{border-color:#d8b979a1}
+.hgv-screen.hgv-severity-warning .hgv-visor{border-color:#ffac6bad;box-shadow:0 0 0 5px #080b0d,inset 0 0 24px #e9a0594a}
+.hgv-screen.hgv-severity-critical .hgv-visor{border-color:#fb777dd9;box-shadow:0 0 0 5px #090507,inset 0 0 48px #c8395048}
+.hgv-screen.hgv-severity-critical .hgv-panel{border-color:#df777a}
+.hgv-screen.hgv-severity-warning .hgv-panel{border-color:#c79e6b}
+.hgv-screen .hgv-scenario-badge{font-size:9px;color:#bff5ee;line-height:1.4;text-align:center;letter-spacing:.6px}
+.hgv-suit-alert-banner{position:absolute;z-index:6;top:38%;left:50%;transform:translate(-50%,-50%);width:min(420px,38%);border:1px solid var(--hgv-status);background:#11202ce8;border-radius:11px;padding:13px 16px;display:flex;gap:12px;align-items:center;color:#f5fafb;text-shadow:none;box-shadow:0 8px 35px #0009;pointer-events:none}
+.hgv-suit-alert-banner svg{color:var(--hgv-status);flex:none}
+.hgv-suit-alert-banner strong{display:block;color:var(--hgv-status);font-size:14px;letter-spacing:.9px}
+.hgv-suit-alert-banner span{display:block;font-size:11px;line-height:1.5;margin-top:5px}
+.hgv-suit-alert-critical{background:#3f1b28e8}
+.hgv-suit-alert-warning{background:#413225e8}
+.hgv-suit-alert-check{background:#393124e8}
+.hgv-alert-check{border-color:#e3c179;color:#ffe2ae}
+.hgv-alert-warning{border-color:#f4ae69;background:#533a26e0;color:#ffe5c9}
+.hgv-review-note strong{font-weight:750;color:var(--hgv-status)}
+@media(max-width:1000px){.hgv-suit-alert-banner{top:46%;width:min(420px,54%)}}
+@media(max-width:800px){.hgv-suit-alert-banner{top:44%;width:83%;padding:9px 12px}.hgv-suit-alert-banner strong{font-size:11px}.hgv-suit-alert-banner span{font-size:9px}}
+@media(prefers-reduced-motion:reduce){.hgv-screen .hgv-visor{transition:none}}
