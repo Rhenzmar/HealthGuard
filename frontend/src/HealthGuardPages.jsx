@@ -39,38 +39,95 @@ export function EnvironmentPicker({value,onChange,compact=false}) {
   </label>;
 }
 
-function Part({position,scale,rotation,kind='sphere',zone,color,selected,onSelect}) {
-  return <mesh position={position} rotation={rotation||[0,0,0]} scale={scale} onClick={event=>{event.stopPropagation();onSelect(zone)}} castShadow>
-    {kind==='cylinder'?<cylinderGeometry args={[1,1,1,20]}/>:kind==='capsule'?<capsuleGeometry args={[.62,1.15,8,16]}/>:<sphereGeometry args={[1,28,22]}/>}
-    <meshStandardMaterial color={selected===zone?'#54ece3':color||'#31566d'} transparent opacity={selected===zone?0.98:0.87} roughness={0.39} metalness={0.17} emissive={selected===zone?'#1a655e':'#04121e'} emissiveIntensity={selected===zone?.46:.09}/>
+
+const SYSTEM_COLORS = {
+  cardiac:'#ff8e9c', respiratory:'#6ee3ed', thermal:'#f6c28c',
+  brain:'#b7a4ff', renal:'#f1c17c', movement:'#73d9ce'
+};
+
+function HoloPart({position,scale,rotation=[0,0,0],kind='sphere',zone,color='#54bfcf',
+  selected,onSelect,opacity=.35,wire=false}) {
+  const highlighted=Boolean(zone&&zone===selected);
+  const clickable=Boolean(zone&&onSelect);
+  return <mesh position={position} rotation={rotation} scale={scale}
+    onClick={clickable?(e=>{e.stopPropagation();onSelect(zone)}):undefined}>
+    {kind==='capsule'?<capsuleGeometry args={[.62,1.1,8,18]}/>:
+      kind==='cylinder'?<cylinderGeometry args={[1,1,1,16]}/>:
+      kind==='torus'?<torusGeometry args={[1,.012,6,56]}/>:
+      <sphereGeometry args={[1,28,22]}/>}
+    <meshStandardMaterial color={highlighted?SYSTEM_COLORS[zone]:color}
+      transparent opacity={highlighted?.92:opacity} roughness={.36}
+      metalness={.25} wireframe={wire} depthWrite={false}
+      emissive={highlighted?SYSTEM_COLORS[zone]:'#061b2a'}
+      emissiveIntensity={highlighted?.34:.07} side={2}/>
   </mesh>;
 }
-
 function Figure({selected,onSelect}) {
-  return <group position={[0,-.16,0]} rotation={[0,.16,0]}>
-    <Part zone="brain" selected={selected} onSelect={onSelect} position={[0,1.69,0]} scale={[.33,.38,.29]} color="#3f7690"/>
-    <Part zone="thermal" selected={selected} onSelect={onSelect} kind="capsule" position={[0,.34,0]} scale={[.73,.79,.63]} color="#315a73"/>
-    <Part zone="movement" selected={selected} onSelect={onSelect} kind="cylinder" position={[-.77,.35,0]} scale={[.145,.69,.15]} rotation={[0,0,-.23]} color="#35617a"/>
-    <Part zone="movement" selected={selected} onSelect={onSelect} kind="cylinder" position={[.77,.35,0]} scale={[.145,.69,.15]} rotation={[0,0,.23]} color="#35617a"/>
-    <Part zone="movement" selected={selected} onSelect={onSelect} kind="cylinder" position={[-.28,-1.09,0]} scale={[.23,.87,.22]} rotation={[0,0,-.05]} color="#31566f"/>
-    <Part zone="movement" selected={selected} onSelect={onSelect} kind="cylinder" position={[.28,-1.09,0]} scale={[.23,.87,.22]} rotation={[0,0,.05]} color="#31566f"/>
-    <Part zone="respiratory" selected={selected} onSelect={onSelect} position={[-.225,.63,.47]} scale={[.23,.36,.12]} color="#40a7b4"/>
-    <Part zone="respiratory" selected={selected} onSelect={onSelect} position={[.225,.63,.47]} scale={[.23,.36,.12]} color="#40a7b4"/>
-    <Part zone="cardiac" selected={selected} onSelect={onSelect} position={[.055,.56,.61]} scale={[.135,.16,.11]} color="#ec8f99"/>
+  const shell=[
+    [[0,1.64,0],[.3,.35,.29],null,'brain'],
+    [[0,1.19,0],[.125,.17,.125],null,'thermal'],
+    [[0,.48,0],[.6,.79,.36],null,'thermal'],
+    [[0,-.4,0],[.47,.33,.32],null,'thermal'],
+    [[-.68,.57,0],[.17,.47,.17],[0,0,-.35],'movement'],
+    [[.68,.57,0],[.17,.47,.17],[0,0,.35],'movement'],
+    [[-.92,-.09,0],[.135,.43,.14],[0,0,-.19],'movement'],
+    [[.92,-.09,0],[.135,.43,.14],[0,0,.19],'movement'],
+    [[-.99,-.53,.02],[.13,.17,.12],null,'movement'],
+    [[.99,-.53,.02],[.13,.17,.12],null,'movement'],
+    [[-.27,-1.01,0],[.23,.57,.23],[0,0,-.06],'movement'],
+    [[.27,-1.01,0],[.23,.57,.23],[0,0,.06],'movement'],
+    [[-.28,-1.69,0],[.17,.45,.17],null,'movement'],
+    [[.28,-1.69,0],[.17,.45,.17],null,'movement'],
+    [[-.29,-2.07,.14],[.21,.12,.37],null,'movement'],
+    [[.29,-2.07,.14],[.21,.12,.37],null,'movement']
+  ];
+  return <group position={[0,.10,0]}>
+    {shell.map(([position,scale,rotation,zone],i)=><React.Fragment key={'shell-'+i}>
+      <HoloPart position={position} scale={scale} rotation={rotation||[0,0,0]} zone={zone}
+        onSelect={onSelect} selected={selected} color="#26748b" opacity={.12}/>
+      <HoloPart position={position} scale={scale.map(s=>s*1.014)} rotation={rotation||[0,0,0]}
+        color="#5cbbcd" opacity={.16} wire/>
+    </React.Fragment>)}
+    <HoloPart position={[0,1.71,.10]} scale={[.23,.19,.18]} zone="brain"
+      onSelect={onSelect} selected={selected} color="#8076c0" opacity={.72}/>
+    <HoloPart position={[0,1.67,.29]} scale={[.18,.085,.022]} color="#a9a0e9" opacity={.28} wire/>
+    {[-.215,.215].map((x,i)=><HoloPart key={'lung-'+i} position={[x,.62,.23]}
+      scale={[.21,.34,.145]} zone="respiratory" onSelect={onSelect} selected={selected}
+      color="#3c9bad" opacity={.77}/>)}
+    <HoloPart position={[.066,.53,.38]} rotation={[0,0,-.24]} scale={[.15,.185,.13]}
+      zone="cardiac" onSelect={onSelect} selected={selected} color="#d86f83" opacity={.9}/>
+    {[-.29,.29].map((x,i)=><HoloPart key={'kidney-'+i} position={[x,-.17,.235]}
+      rotation={[0,0,x<0?-.22:.22]} scale={[.12,.16,.10]}
+      zone="renal" onSelect={onSelect} selected={selected} color="#cf9464" opacity={.85}/>)}
+    {Array.from({length:12},(_,i)=><HoloPart key={'spine-'+i}
+      position={[0,.95-i*.17,.075]} scale={[.085,.071,.075]} color="#91cbd2" opacity={.52}/>)}
+    {Array.from({length:5},(_,i)=><HoloPart key={'rib-'+i}
+      kind="torus" position={[0,.82-i*.15,.07]} rotation={[Math.PI/2,0,0]}
+      scale={[.33+i*.028,.29,1]} color="#69a8b8" opacity={.4}/>)}
+    <HoloPart kind="torus" position={[0,-2.28,0]} rotation={[Math.PI/2,0,0]}
+      scale={[1.03,.78,1]} color="#3ad4de" opacity={.5}/>
+    <HoloPart kind="torus" position={[0,-2.28,0]} rotation={[Math.PI/2,0,0]}
+      scale={[.72,.48,1]} color="#3ad4de" opacity={.23}/>
   </group>;
 }
-export function AnatomyScene({selected='cardiac',onSelect=()=>{}}) {
+
+export function AnatomyScene({selected='cardiac',onSelect=()=>{},view='front'}) {
+  const cameraPosition=view==='side'?[6.4,.3,0]:view==='back'?[0,.3,-6.4]:[0,.3,6.4];
   return <div className="hg-three-shell">
     <div className="hg-three-crosshair" aria-hidden="true"/>
-    <Canvas camera={{position:[0,0.35,6.25],fov:38}} dpr={[1,1.75]} gl={{alpha:true,antialias:true}} fallback={<div className="hg-canvas-fallback">3D display unavailable. Use the region controls below.</div>}>
-      <ambientLight intensity={1.3}/>
-      <directionalLight position={[3,5,5]} intensity={2.2}/>
-      <pointLight position={[-3,1,3]} color="#39cddd" intensity={2.5}/>
-      <pointLight position={[2,-1,-3]} color="#206cc9" intensity={2}/>
+    <div className="hg-three-vertical-guide" aria-hidden="true"/>
+    <Canvas key={view} camera={{position:cameraPosition,fov:39}} dpr={[1,1.7]}
+      gl={{alpha:true,antialias:true}} fallback={<div className="hg-canvas-fallback">3D display unavailable. Select a region using the buttons.</div>}>
+      <ambientLight intensity={1.1}/>
+      <directionalLight position={[3,5,5]} intensity={1.6}/>
+      <pointLight position={[-3,1,3]} color="#4ad3e0" intensity={1.6}/>
+      <pointLight position={[3,-1,-3]} color="#4179c5" intensity={1.4}/>
       <Figure selected={selected} onSelect={onSelect}/>
-      <OrbitControls makeDefault enablePan={false} enableZoom minDistance={4.4} maxDistance={8.5} minPolarAngle={.4} maxPolarAngle={Math.PI-.4} target={[0,.05,0]}/>
+      <OrbitControls makeDefault enablePan={false} enableZoom minDistance={4.35}
+        maxDistance={9} minPolarAngle={.25} maxPolarAngle={Math.PI-.22}
+        target={[0,-.08,0]}/>
     </Canvas>
-    <div className="hg-three-caption">DRAG TO ROTATE · SCROLL TO ZOOM · SELECT ANATOMY</div>
+    <div className="hg-three-caption">DRAG TO ROTATE · SCROLL TO ZOOM · CLICK A BODY SYSTEM</div>
   </div>;
 }
 export function CrewBodyMini({onOpen}) {
