@@ -19,7 +19,8 @@ const LOCATIONS = {
     caption: 'Mars habitat approach',
     background: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23302/PIA23302.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=3200',
     credit: 'NASA / Artist’s concept',
-    source: 'https://science.nasa.gov/photojournal/first-humans-on-mars-artists-concept/'
+    source: 'https://science.nasa.gov/photojournal/first-humans-on-mars-artists-concept/',
+    fallback: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23727/PIA23727.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1500&w=2500'
   },
   lunar_base: {
     tab: 'Moon suit',
@@ -27,7 +28,8 @@ const LOCATIONS = {
     caption: 'Lunar habitat approach',
     background: 'https://www.nasa.gov/wp-content/uploads/2026/05/stmd-exteriorlunarbase-hdlandscapeversion-2026-0521.png',
     credit: 'NASA / Moon Base concept',
-    source: 'https://www.nasa.gov/image-detail/stmd-exteriorlunarbase-hdlandscapeversion-2026-0521/'
+    source: 'https://www.nasa.gov/image-detail/stmd-exteriorlunarbase-hdlandscapeversion-2026-0521/',
+    fallback: 'https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2005/10/STScI-01EVVM9G0CWEZJSKM1YBTQDZ76.tif/jcr%3Acontent/renditions/4196x2085.jpg'
   }
 };
 
@@ -107,6 +109,7 @@ export default function MissionVisorHUD({
   const [voiceEnabled,setVoiceEnabled]=useState(false);
   const [fullscreen,setFullscreen]=useState(false);
   const [sceneFailed,setSceneFailed]=useState(false);
+  const [useBackupScene,setUseBackupScene]=useState(false);
   const [clearView,setClearView]=useState(true);
   const current=environment==='mars_base'||environment==='rover'?'mars_base':'lunar_base';
   const location=LOCATIONS[current];
@@ -144,7 +147,7 @@ export default function MissionVisorHUD({
   };
   const headline=actions[severity]||actions.UNASSESSED;
 
-  useEffect(()=>setSceneFailed(false),[current]);
+  useEffect(()=>{setSceneFailed(false);setUseBackupScene(false);},[current]);
 
   useEffect(()=>{
     if(scenarioDisplay)return;
@@ -212,7 +215,7 @@ export default function MissionVisorHUD({
     <div className="hgv-helmet" role="group" aria-label={location.tab+' visor view'}>
       <div className="hgv-visor">
         <div className="hgv-world" aria-hidden="true">
-          {!sceneFailed&&<img className="hgv-landscape" key={current} src={location.background} alt="" onError={()=>setSceneFailed(true)} loading="eager"/>}
+          {!sceneFailed&&<img className="hgv-landscape" key={current+'-'+useBackupScene} src={useBackupScene?location.fallback:location.background} alt="" onError={()=>{if(useBackupScene)setSceneFailed(true);else setUseBackupScene(true);}} loading="eager"/>}
           <div className="hgv-world-shade"/>
 
         </div>
