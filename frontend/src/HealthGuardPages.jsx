@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { AnatomyViewer } from 'open-anatomy-3d-react';
-import { ANATOMY_STRUCTURES } from 'open-anatomy-3d';
 import 'open-anatomy-3d-react/styles.css';
 import { METRICS, formatValue, friendlyStatus } from './api.js';
 import { Icon, VitalChart } from './viz.jsx';
@@ -115,7 +114,7 @@ function Figure({selected,onSelect}) {
 }
 
 const HG_ANATOMY_LAYERS = Object.freeze({
-  skin:true, skeleton:true, joints:false, muscles:false, organs:true, vessels:true, nerves:false,
+  skin:true, skeleton:true, joints:false, muscles:false, organs:true, vessels:false, nerves:false,
 });
 const HG_ANATOMY_KEYS = {
   cardiac: ['Cardiovascular'],
@@ -125,11 +124,18 @@ const HG_ANATOMY_KEYS = {
   movement: ['Musculoskeletal'],
   thermal: ['Skin','Endocrine']
 };
-export function AnatomyScene({selected='cardiac',onSelect=()=>{},sex='male',
+const HG_FOCUS_KEYS = {
+  cardiac: ['heart'],
+  respiratory: ['lung_l','lung_r'],
+  brain: ['brain'],
+  renal: ['kidney_l','kidney_r'],
+  movement: ['femur_l','femur_r','spine_thoracic'],
+  thermal: [],
+};
+const HG_MODEL_URLS = {male:'/models/anatomy-male.glb',female:'/models/anatomy-female.glb'};
+export const AnatomyScene = React.memo(function AnatomyScene({selected='cardiac',onSelect=()=>{},sex='male',
   layers=HG_ANATOMY_LAYERS,onLayersChange}) {
-  const keys=useMemo(()=>ANATOMY_STRUCTURES
-    .filter(s=>(HG_ANATOMY_KEYS[selected]||[]).includes(s.category))
-    .map(s=>s.key),[selected]);
+  const keys=HG_FOCUS_KEYS[selected]||[];
   const handleStructure=(key,structure)=>{
     const category=structure?.category||'';
     const zone=Object.entries(HG_ANATOMY_KEYS).find(([,categories])=>categories.includes(category))?.[0];
@@ -139,15 +145,15 @@ export function AnatomyScene({selected='cardiac',onSelect=()=>{},sex='male',
     <div className="hg-three-crosshair" aria-hidden="true"/>
     <AnatomyViewer
       sex={sex} layers={layers} onLayersChange={onLayersChange}
-      modelUrls={{male:'/models/anatomy-male.glb',female:'/models/anatomy-female.glb'}}
+      modelUrls={HG_MODEL_URLS}
       highlightedKeys={keys} onStructureClick={handleStructure}
       showSexToggle={false} showLayerToggles={false} showRotateControl={false}
       showZoomControls={true} hoverColor="#75dfe9" highlightColor="#60d6df"
       hoverHint="Click to explore this system" className="hg-anatomy-viewer"
     />
-    <div className="hg-three-caption">DRAG TO ROTATE · ZOOM WITH + / − · SELECT ANATOMY</div>
+    <div className="hg-three-caption">Drag to rotate · Use + / − to zoom</div>
   </div>;
-}
+});
 export function CrewBodyMini({onOpen}) {
   const [zone,setZone]=useState('cardiac');
   return <div className="hg-mini-body">
