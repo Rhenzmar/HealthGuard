@@ -35,8 +35,8 @@ const LOCATIONS = {
 
 const SUIT_SYSTEMS = [
   { key:'suit_o2_remaining_percent',label:'O₂ reserve',digits:1,unit:'%',kind:'scripted',icon:'wind' },
-  { key:'suit_pressure',label:'Suit pressure',digits:1,unit:'',kind:'unconnected',icon:'activity' },
-  { key:'suit_battery',label:'Suit battery',digits:0,unit:'',kind:'unconnected',icon:'pulse' },
+  { key:'suit_pressure_psi',label:'Suit pressure',digits:2,unit:'psi',kind:'scripted',icon:'activity' },
+  { key:'suit_battery_percent',label:'Suit battery',digits:1,unit:'%',kind:'scripted',icon:'pulse' },
   { key:'radiation_rate_usv_h',label:'Radiation rate',digits:3,unit:'µSv/h',kind:'scripted',icon:'shield' },
   { key:'cabin_co2_ppm',label:'Habitat CO₂',digits:0,unit:'ppm',kind:'remote',icon:'wind' }
 ];
@@ -90,11 +90,11 @@ function BodyOverview({frame,active}) {
 }
 
 function SystemRow({system,value}) {
-  const available=system.kind!=='unconnected'&&typeof value==='number'&&Number.isFinite(value);
+  const available=typeof value==='number'&&Number.isFinite(value);
   return <div className="hgv-system-row">
     <span className="hgv-system-icon"><Icon name={system.icon} size={20}/></span>
     <span className="hgv-system-text"><small>{system.label}</small><strong>{available?formatValue(value,system.digits):'—'} <em>{available?system.unit:''}</em></strong></span>
-    <span className="hgv-system-source">{system.kind==='unconnected'?'NO FEED':system.kind==='remote'?'HABITAT SIM':'SCRIPTED'}</span>
+    <span className="hgv-system-source">{available?(system.kind==='remote'?'HABITAT SIM':'SCRIPTED'):'NO FEED'}</span>
   </div>;
 }
 
@@ -250,7 +250,7 @@ export default function MissionVisorHUD({
             <aside className="hgv-panel hgv-panel-right" aria-label="Fictional suit and environment telemetry">
               <div className="hgv-panel-heading"><Icon name="shield" size={16}/><strong>SUIT & LIFE SUPPORT</strong><span>SIMULATED</span></div>
               {SUIT_SYSTEMS.map(m=><SystemRow key={m.key} system={m} value={systems[m.key]}/>)}
-              <small className="hgv-system-warning">{scenarioDisplay?'BACKEND-SCRIPTED HABITAT VALUES · SUIT PRESSURE / BATTERY UNCONNECTED':engineeringError?'ENGINEERING FEED UNAVAILABLE':'SUIT METRICS ARE SCRIPTED OR UNCONNECTED'}</small>
+              <small className="hgv-system-warning">{scenarioDisplay?'FICTIONAL PRESSURE & BATTERY · NO SUIT SENSOR CONNECTED':engineeringError?'ENGINEERING FEED UNAVAILABLE':'ALL SUIT VALUES ARE SIMULATED · NOT REAL SENSOR DATA'}</small>
             </aside>
           </div>
           <div className="hgv-bottomline">
