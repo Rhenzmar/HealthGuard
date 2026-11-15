@@ -154,7 +154,7 @@ function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,
   return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/>{training?"Scenario response":"PhysioAlert"}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":isUnified?"17-CHANNEL TRAINING REVIEW":"CONTEXTUAL REVIEW"}</span></div>
     <div className={"hg6-alert-state hg6-alert-"+tone+(training?.alert?" hg6-alert-training":"")}><span className="hg6-alert-symbol"><Icon name={tone==='mint'?'check':'activity'} size={23}/></span><div><strong>{training?(attention+" · Training"):isUnified?(attention+" · Training"):friendlyStatus(status)}</strong><p>{training?training.reason:isUnified?unified.reason:review?.reason||"Collecting valid measurements to review simulated physiological patterns."}</p></div></div>
     {!training&&isUnified&&<div className="hg6-unified-summary"><span>{unified.models_ready?'17-channel and original model evidence available':'Collecting complete model evidence'}</span>{unified.explanation?.candidate_17ch?.top_reconstruction_residuals?.length>0&&<small>Largest numerical residual: {unified.explanation.candidate_17ch.top_reconstruction_residuals[0].channel.replaceAll('_',' ')}</small>}<small>Training attention, not medical severity</small>{unified.explanation?.apdra_live&&<small>APDRA baseline: {unified.explanation.apdra_live.status?.replaceAll("_"," ").toLowerCase()} · simulated research only</small>}</div>}
-    {!training&&isUnified&&<div className="hg6-live-alert-preference"><button type="button" aria-pressed={liveAlertsEnabled} onClick={onToggleLiveAlerts}><Icon name={liveAlertsEnabled?'volume':'mute'} size={13}/>{liveAlertsEnabled?'Critical voice enabled':'Enable critical voice'}</button><small>Opt-in · Critical only, every 5 seconds</small></div>}
+    {!training&&isUnified&&<div className="hg6-live-alert-preference"><button type="button" aria-pressed={liveAlertsEnabled} onClick={onToggleLiveAlerts}><Icon name={liveAlertsEnabled?'volume':'mute'} size={13}/>{liveAlertsEnabled?'Critical voice enabled':'Enable critical voice'}</button><small>{liveAlertsEnabled?'On by default · Critical only, every 5 seconds':'Muted · Critical only'}</small></div>}
     <div className="hg6-alert-bottom">{training?<button type="button" onClick={onTrainingSpeak}><Icon name="volume" size={15}/> Speak training guidance <Icon name="arrow" size={14}/></button>:voice?.text?<button type="button" onClick={speak}><Icon name={speaking?'mute':'volume'} size={15}/>{speaking?'Stop explanation':'Explain result'} <Icon name="arrow" size={14}/></button>:<span>Waiting for a review explanation</span>}<small>Not a diagnosis</small></div>
   </section>;
 }
@@ -254,7 +254,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const streamConnected=connection==='connected'&&hasTelemetry;
   const [showTelemetry,setShowTelemetry]=useState(false);
   const [infoProfile,setInfoProfile]=useState(null);
-  const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(false);
+  const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(true);
   const alertVoiceRef=useRef('');
   const toggleLiveAlerts=()=>setLiveAlertsEnabled(v=>!v);
   const scenarioId=scenario.id;
