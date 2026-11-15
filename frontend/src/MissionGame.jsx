@@ -4,6 +4,7 @@ import {QUESTS,ROUTINE_CREW,localDayKey,readRoutineStore,saveRoutineStore,getCre
   updateCrewRoutine,summarizeCrewRoutine} from './questLogic.js';
 import {MISSION_TRIALS,getCrewLifetimeXp,getMissionRank,getMissionStreak,
   missionAchievements,isMissionUnlocked,evaluateTrial} from './missionGameLogic.js';
+import WellnessGame from './WellnessGame.jsx';
 import './missionGame.css';
 
 const CREW=[
@@ -85,6 +86,7 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
   const [gameDay,setGameDay]=useState(()=>localDayKey());
   const [reward,setReward]=useState(null);
   const [showRules,setShowRules]=useState(false);
+  const [gameMode,setGameMode]=useState('knowledge');
   const state=getCrewRoutine(store,gameDay,crewId);
   const summary=summarizeCrewRoutine(store,gameDay,crewId);
   const lifetime=getCrewLifetimeXp(store,crewId);
@@ -150,18 +152,30 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
     <section className="mg-hero">
       <div className="mg-hero-copy"><span className="mg-eyebrow"><Icon name="satellite" size={15}/> HEALTHGUARD / CREW TRAINING ARCADE</span>
         <h1>MISSION <span>QUEST</span></h1>
-        <p>Build a mission-ready crew, complete interactive health-literacy challenges, and unlock your next rank.</p>
-        <div className="mg-hero-tags"><span><Icon name="shield-check" size={14}/> Simulation only</span><span><Icon name="gamepad-2" size={14}/> Five daily missions</span><span><Icon name="award" size={14}/> Earn fictional XP</span></div>
+        <p>Two ways to train: solve health-literacy missions or complete optional activity challenges. Earn progress in each game.</p>
+        <div className="mg-hero-tags"><span><Icon name="shield-check" size={14}/> Simulation only</span><span><Icon name="gamepad-2" size={14}/> Two playable game modes</span><span><Icon name="award" size={14}/> Earn fictional XP</span></div>
       </div>
       <div className="mg-hero-crewmate"><span className="mg-hero-halo"/><img src={crew.portrait} alt={'Illustration of fictional astronaut '+crew.name}/><span className="mg-crew-callsign"><strong>{crew.name}</strong><small>{crew.role.toUpperCase()}</small></span></div>
     </section>
 
+    <nav className="mg-game-modes" aria-label="Choose Health Routine game">
+      <button type="button" className={gameMode==='knowledge'?'active':''} aria-current={gameMode==='knowledge'?'page':undefined} onClick={()=>setGameMode('knowledge')}>
+        <Icon name="brain" size={22}/><span><strong>Knowledge Quest</strong><small>Learn about crew health through decisions and puzzles</small></span>
+        <span className="mg-mode-label">5 MISSIONS</span>
+      </button>
+      <button type="button" className={gameMode==='wellness'?'active':''} aria-current={gameMode==='wellness'?'page':undefined} onClick={()=>setGameMode('wellness')}>
+        <Icon name="activity" size={22}/><span><strong>Wellness Expedition</strong><small>Timed movement, mobility, calm, hydration and recovery</small></span>
+        <span className="mg-mode-label">5 CHALLENGES</span>
+      </button>
+    </nav>
     <section className="mg-toolbar">
       <div><span className="mg-kicker">PLAY AS</span><CrewChooser crewId={crewId} onChange={id=>{setCrewId(id);setActive('morning');setReward(null)}}/></div>
       <div className="mg-toolbar-info"><span><Icon name="calendar" size={15}/> MISSION DAY {gameDay}</span><button type="button" onClick={()=>setShowRules(v=>!v)} aria-expanded={showRules}><Icon name="info" size={15}/> How to play</button></div>
     </section>
     {showRules&&<div className="mg-rules" role="note">Read the crew brief, select a decision, and submit. Correct decisions clear a chapter and award XP. Earlier chapters unlock later ones; a task can be deferred without losing points. All scores and streaks are fictional game achievements recorded in this browser, not verified wellness or medical outcomes.</div>}
 
+    {gameMode==='wellness'?<WellnessGame crewId={crewId} crewName={crew.name}/>:
+    <>
     <section className="mg-stats" aria-label="Mission game statistics">
       <div className="mg-stat"><div><Icon name="zap" size={19}/><span>TOTAL XP</span></div><strong>{lifetime}<small> XP</small></strong><p>Earned across recorded mission days</p></div>
       <div className="mg-stat"><div><Icon name="crown" size={19}/><span>CURRENT RANK</span></div><strong className="mg-rank-name">{rank.title}</strong><div className="mg-mini-progress" role="progressbar" aria-label="XP toward next rank" aria-valuenow={rank.percent} aria-valuemin={0} aria-valuemax={100}><i style={{width:rank.percent+'%'}}/></div><p>{rank.nextTitle?rank.nextXp-lifetime+' XP to '+rank.nextTitle:'Maximum rank unlocked'}</p></div>
@@ -189,6 +203,7 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
         <section className="mg-side-panel mg-mission-status"><Icon name="shield-check" size={23}/><strong>TRAINING SIMULATOR</strong><p>Mission Quest is a game. Responses are educational, and challenge completion is not confirmed by sensors or NASA personnel. No task should override real mission safety procedures.</p></section>
       </aside>
     </section>
+    </>}
     {reward&&<div className="mg-reward-backdrop" role="dialog" aria-modal="true" aria-labelledby="mg-reward-title"><div className="mg-reward-card"><span className="mg-reward-glow"/><div className="mg-reward-medal"><Icon name="award" size={44}/></div><p>MISSION SUCCESS</p><h2 id="mg-reward-title">{reward.name}</h2><strong>+{reward.xp} XP</strong><span>You cleared an educational training mission for {crew.name}.</span><button type="button" onClick={nextMission}>{summary.done===QUESTS.length?'Return to mission map':'Continue mission'} <Icon name="arrow-right" size={17}/></button></div></div>}
   </main>;
 }
