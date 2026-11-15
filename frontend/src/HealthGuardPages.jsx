@@ -1,6 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+import { AnatomyViewer } from 'open-anatomy-3d-react';
+import { ANATOMY_STRUCTURES } from 'open-anatomy-3d';
+import 'open-anatomy-3d-react/styles.css';
 import { METRICS, formatValue, friendlyStatus } from './api.js';
 import { Icon, VitalChart } from './viz.jsx';
 import { QUESTS, getQuestPoints, getQuestCompletion } from './questLogic.js';
@@ -111,23 +114,38 @@ function Figure({selected,onSelect}) {
   </group>;
 }
 
-export function AnatomyScene({selected='cardiac',onSelect=()=>{},view='front'}) {
-  const cameraPosition=view==='side'?[6.4,.3,0]:view==='back'?[0,.3,-6.4]:[0,.3,6.4];
-  return <div className="hg-three-shell">
+const HG_ANATOMY_LAYERS = Object.freeze({
+  skin:true, skeleton:true, joints:false, muscles:false, organs:true, vessels:true, nerves:false,
+});
+const HG_ANATOMY_KEYS = {
+  cardiac: ['Cardiovascular'],
+  respiratory: ['Respiratory'],
+  brain: ['Neurological','Eye / Sensory'],
+  renal: ['Renal / Urinary'],
+  movement: ['Musculoskeletal'],
+  thermal: ['Skin','Endocrine']
+};
+export function AnatomyScene({selected='cardiac',onSelect=()=>{},sex='male',
+  layers=HG_ANATOMY_LAYERS,onLayersChange}) {
+  const keys=useMemo(()=>ANATOMY_STRUCTURES
+    .filter(s=>(HG_ANATOMY_KEYS[selected]||[]).includes(s.category))
+    .map(s=>s.key),[selected]);
+  const handleStructure=(key,structure)=>{
+    const category=structure?.category||'';
+    const zone=Object.entries(HG_ANATOMY_KEYS).find(([,categories])=>categories.includes(category))?.[0];
+    if(zone)onSelect(zone);
+  };
+  return <div className="hg-three-shell hg-real-anatomy">
     <div className="hg-three-crosshair" aria-hidden="true"/>
-    <div className="hg-three-vertical-guide" aria-hidden="true"/>
-    <Canvas key={view} camera={{position:cameraPosition,fov:39}} dpr={[1,1.7]}
-      gl={{alpha:true,antialias:true}} fallback={<div className="hg-canvas-fallback">3D display unavailable. Select a region using the buttons.</div>}>
-      <ambientLight intensity={1.1}/>
-      <directionalLight position={[3,5,5]} intensity={1.6}/>
-      <pointLight position={[-3,1,3]} color="#4ad3e0" intensity={1.6}/>
-      <pointLight position={[3,-1,-3]} color="#4179c5" intensity={1.4}/>
-      <Figure selected={selected} onSelect={onSelect}/>
-      <OrbitControls makeDefault enablePan={false} enableZoom minDistance={4.35}
-        maxDistance={9} minPolarAngle={.25} maxPolarAngle={Math.PI-.22}
-        target={[0,-.08,0]}/>
-    </Canvas>
-    <div className="hg-three-caption">DRAG TO ROTATE · SCROLL TO ZOOM · CLICK A BODY SYSTEM</div>
+    <AnatomyViewer
+      sex={sex} layers={layers} onLayersChange={onLayersChange}
+      modelUrls={{male:'/models/anatomy-male.glb',female:'/models/anatomy-female.glb'}}
+      highlightedKeys={keys} onStructureClick={handleStructure}
+      showSexToggle={false} showLayerToggles={false} showRotateControl={false}
+      showZoomControls={true} hoverColor="#75dfe9" highlightColor="#60d6df"
+      hoverHint="Click to explore this system" className="hg-anatomy-viewer"
+    />
+    <div className="hg-three-caption">DRAG TO ROTATE · ZOOM WITH + / − · SELECT ANATOMY</div>
   </div>;
 }
 export function CrewBodyMini({onOpen}) {
