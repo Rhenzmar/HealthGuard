@@ -1,4 +1,4 @@
-"""Seven real backend scenario analyses using the frozen 5- and 17-input models.
+"""Nine backend scenarios with five- and 17-input model evidence.
 
 Training labels remain synthetic. No scenario playback is inserted into the
 four independent live telemetry streams.
@@ -127,3 +127,24 @@ def test_backend_endpoints_are_read_only_and_subject_isolated(monkeypatch):
                         params={"second":64,"limit":3}).json()
         assert len(hist["samples"])==3
         assert hist["samples"][-1]["sequence"]==64
+
+
+@pytest.mark.parametrize("sid", list(CREW_BASELINES))
+@pytest.mark.parametrize("scenario,signal", [
+    ("suit_leak", "suit_pressure_psi"),
+    ("suit_power", "suit_battery_percent"),
+])
+def test_suit_failure_events_are_derived_from_server_data_and_recover(sid, scenario, signal):
+    start = scenario_frame(sid, scenario, 0)
+    peak = scenario_frame(sid, scenario, 35)
+    end = scenario_frame(sid, scenario, 64)
+    assert peak["engineering_values"][signal] < start["engineering_values"][signal]
+    assert peak["engineering_flags"][signal] is True
+    assert peak["severity"] == "CRITICAL"
+    assert peak["alert"] is True
+    assert end["engineering_flags"][signal] is False
+    assert abs(end["engineering_values"][signal] - start["engineering_values"][signal]) < 1.1
+    assert end["severity"] == "OPTIMAL"
+    assert set(peak["engineering_values"]) == set(start["engineering_values"])
+    assert len(simulated_values(sid, scenario, 35)[0]) == 5
+    assert len(simulated_values(sid, scenario, 35)[1]) == 12
