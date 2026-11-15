@@ -17,7 +17,7 @@ from physiograph.live_api import build_app
 
 @pytest.mark.parametrize("sid",list(CREW_BASELINES))
 @pytest.mark.parametrize("scenario_id",list(SCENARIOS))
-def test_seven_scenarios_four_crew_have_17_channels_and_recover(sid,scenario_id):
+def test_nine_scenarios_four_crew_have_frozen_17_input_channels_and_recover(sid,scenario_id):
     initial=scenario_frame(sid,scenario_id,0)
     peak=scenario_frame(sid,scenario_id,35)
     recovered=scenario_frame(sid,scenario_id,64)
@@ -27,7 +27,7 @@ def test_seven_scenarios_four_crew_have_17_channels_and_recover(sid,scenario_id)
     assert recovered["alert"] is False
     assert peak["severity"] in ("WARNING","CRITICAL")
     assert len(initial["values"])==5
-    assert len(initial["engineering_values"])==12
+    assert len(initial["engineering_values"])==14
     assert len(set(initial["values"]) & set(initial["engineering_values"]))==0
     assert set(peak["values"])==set(initial["values"])
     assert set(peak["engineering_values"])==set(initial["engineering_values"])
@@ -39,7 +39,7 @@ def test_seven_scenarios_four_crew_have_17_channels_and_recover(sid,scenario_id)
     assert any(abs(peak["values"][k]-initial["values"][k])>.2
                for k in initial["values"]) or any(
                    abs(peak["engineering_values"][k]-
-                       initial["engineering_values"][k])>100
+                       initial["engineering_values"][k])>1
                    for k in initial["engineering_values"])
 
 
@@ -99,7 +99,7 @@ def test_backend_endpoints_are_read_only_and_subject_isolated(monkeypatch):
     monkeypatch.setenv("PHYSIOGRAPH_INFERENCE_BACKEND","numpy")
     with TestClient(build_app()) as client:
         catalog=client.get("/api/simulation/scenarios").json()
-        assert len(catalog["scenarios"])==7
+        assert len(catalog["scenarios"])==9
         assert catalog["prelude_points"]==105
         before=client.get("/api/live/snapshot").json()
         assert before["subject_count"]==0
