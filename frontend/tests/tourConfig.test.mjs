@@ -16,3 +16,14 @@ test('no tour step changes or invents clinical data',()=>{
  assert.equal(getTourStep(100),null);
  assert.equal(typeof TOUR_SEEN_KEY,'string');
 });
+
+test('approved voice narration is a distinct explanation for every screen',()=>{
+ for(const step of TOUR_STEPS){
+   assert.equal(typeof step.narration,'string');
+   assert.ok(step.narration.length>170,step.title+' narration is too short');
+   assert.notEqual(step.narration,step.body,step.title+' should not simply read the screen');
+ }
+ assert.match(TOUR_STEPS[0].narration,/Welcome to HealthGuard/);
+ assert.match(TOUR_STEPS[6].narration,/not a connected or certified spacecraft display/);
+ assert.match(TOUR_STEPS[7].narration,/scripted demonstrations/);
+});
