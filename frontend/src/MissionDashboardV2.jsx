@@ -171,7 +171,7 @@ function Trend({hasTelemetry,samples,keyValue,onChange,training,engineeringValue
       </label>
     </div>
     <div className="hg6-trend-plot">
-      <VitalChart data={observations} metric={metric} observationMode={estimate?'engineering-poll':'simulated-second'}/>
+      <VitalChart data={observations} metric={metric} observationMode={estimate?'engineering-poll':'simulated-second'} expanded/>
     </div>
     <p className="hg6-trend-footer">
       {estimate
