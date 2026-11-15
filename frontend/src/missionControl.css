@@ -118,3 +118,19 @@
 @media(max-width:1100px){.hgc-environment-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hgc-primary-grid{grid-template-columns:1fr}.hgc-crew-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.hgc-crew-reading{margin-top:0}.hgc-engineering-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hgc-bottom-grid{grid-template-columns:1fr}.hgc-vital-pairs{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.hgc-page{padding:22px 15px 40px}.hgc-header{align-items:start;flex-direction:column;gap:13px}.hgc-header-flags{justify-content:flex-start}.hgc-environment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hgc-section-title{align-items:start;flex-direction:column}.hgc-section-title>span{text-align:left}.hgc-scene{height:340px}.hgc-scene-bottom>span{display:none}.hgc-action-strip button{flex-grow:1}.hgc-crew-choices{grid-template-columns:1fr 1fr}.hgc-crew-choice img{width:35px;height:35px}.hgc-crew-choice strong{font-size:10px}.hgc-vital-pairs{grid-template-columns:1fr 1fr}.hgc-engineering{padding:14px}.hgc-engineering-toolbar{align-items:start;flex-direction:column}.hgc-estimate-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hgc-unconnected{grid-template-columns:1fr}}
 @media(max-width:420px){.hgc-crew-choices{grid-template-columns:1fr}.hgc-scene{height:300px}.hgc-scene-bottom strong{font-size:18px}.hgc-engineering-grid{grid-template-columns:1fr 1fr}.hgc-system-tile{padding:10px}.hgc-system-tile>strong{font-size:19px}.hgc-unconnected b{font-size:7px}}
+
+
+/* Mission Control is a systems workspace; EVA environments belong to Mission HUD. */
+.hgc-topline{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:-12px 0 19px}
+.hgc-header-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}
+.hgc-header-actions button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 15px;background:#173c4a;border:1px solid #48788a;border-radius:9px;color:#e3f5f6;font-size:12px;font-weight:650;cursor:pointer;white-space:nowrap}
+.hgc-header-actions button:hover,.hgc-header-actions button:focus-visible{border-color:#77d8d1;background:#225461}
+.hgc-primary-grid{display:block}
+.hgc-crew-panel-wide{padding:23px}
+.hgc-crew-overview{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.4fr);gap:22px;align-items:start}
+.hgc-crew-panel-wide .hgc-crew-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hgc-crew-panel-wide .hgc-crew-reading{margin:0;padding:16px;border:1px solid #31556a;background:#0a1d2d;border-radius:11px}
+.hgc-crew-panel-wide .hgc-vital-pairs{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:1050px){.hgc-crew-overview{grid-template-columns:1fr}.hgc-crew-panel-wide .hgc-vital-pairs{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.hgc-header-actions{justify-content:flex-start}.hgc-topline{margin:0 0 16px}.hgc-crew-panel-wide{padding:15px}.hgc-crew-panel-wide .hgc-vital-pairs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:450px){.hgc-crew-panel-wide .hgc-crew-choices{grid-template-columns:1fr}}
