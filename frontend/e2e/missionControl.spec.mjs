@@ -7,11 +7,10 @@ test('Mission Control environment, crew, telemetry filters and navigation', asyn
   const navigation = page.getByRole('navigation', {name:'Primary navigation'});
   await navigation.getByRole('button', {name:/Mission Control/i}).click();
   await expect(page.getByRole('heading', {name:'Mission Control.'})).toBeVisible();
-  const environments = page.getByRole('region', {name:'Choose a fictional mission environment'});
-  const mars = environments.getByRole('button', {name:/Mars habitat/i});
-  await mars.click();
-  await expect(mars).toHaveAttribute('aria-pressed','true');
-  await expect(page.getByText('Mars surface habitat')).toBeVisible();
+  await expect(page.getByText('Select an environment')).toHaveCount(0);
+  await expect(page.locator('.hgc-scene')).toHaveCount(0);
+  await expect(page.locator('.hgc-crew-panel')).toBeVisible();
+  await expect(page.getByRole('button', {name:'Open Scenario Lab'})).toBeVisible();
   const crew = page.getByRole('button', {name:/Dr. Marcus Reed Medical officer/i});
   await crew.click();
   await expect(crew).toHaveAttribute('aria-pressed','true');
