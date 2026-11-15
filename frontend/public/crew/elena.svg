@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg role="img" aria-label="Fictional HealthGuard astronaut portrait" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 <defs>
 <radialGradient id="space" cx="35%" cy="17%"><stop stop-color="#2a547b"/><stop offset="1" stop-color="#07172e"/></radialGradient>
-<linearGradient id="skin" x2="1" y2="1"><stop stop-color="#f7c9aa"/><stop offset=".58" stop-color="#cb9476"/><stop offset="1" stop-color="#8b5c4b"/></linearGradient>
-<linearGradient id="hair" x2="1" y2="1"><stop stop-color="#514754"/><stop offset=".55" stop-color="#29202a"/><stop offset="1" stop-color="#0b1220"/></linearGradient>
-<linearGradient id="suit" x2="1" y2="1"><stop stop-color="#f3f7fa"/><stop offset=".55" stop-color="#b5d6e4"/><stop offset="1" stop-color="#56768c"/></linearGradient>
+<linearGradient id="skin" x2="1" y2="1"><stop stop-color="#f6c8a8"/><stop offset=".58" stop-color="#d79e81"/><stop offset="1" stop-color="#a36c57"/></linearGradient>
+<linearGradient id="hair" x2="1" y2="1"><stop stop-color="#4c434e"/><stop offset=".55" stop-color="#29202c"/><stop offset="1" stop-color="#111825"/></linearGradient>
+<linearGradient id="suit" x2="1" y2="1"><stop stop-color="#f3f7fa"/><stop offset=".55" stop-color="#b9cadd"/><stop offset="1" stop-color="#56768c"/></linearGradient>
 <linearGradient id="visor" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a2e3f9" stop-opacity=".32"/><stop offset=".4" stop-color="#86b9dd" stop-opacity="0"/><stop offset="1" stop-color="#82b8d9" stop-opacity=".20"/></linearGradient>
 </defs>
 <rect width="512" height="512" fill="url(#space)"/>
@@ -12,20 +12,27 @@
 <path d="M55 513Q75 390 185 360L257 383 325 360Q433 390 458 513Z" fill="url(#suit)" stroke="#8aafbd" stroke-width="6"/>
 <path d="M138 503V435L185 377 257 417 326 377 375 435V503" fill="none" stroke="#607f99" stroke-width="9"/>
 <path d="M211 327L210 366 256 401 305 365 301 326" fill="url(#skin)"/>
-<path d="M180 155Q178 88 255 79Q341 76 339 165L340 333Q320 359 300 353L301 274H208L205 356Q178 359 173 323Z" fill="url(#hair)"/>
-<ellipse cx="255" cy="215" rx="80" ry="113" fill="url(#skin)" stroke="#8b5c4b" stroke-width="1.5"/>
-<path d="M181 181Q193 124 222 127Q255 162 311 125Q334 154 331 200L321 179Q291 156 273 143Q236 164 218 151L191 204Z" fill="url(#hair)"/>
-<path d="M209 204Q227 196 244 203M272 203Q290 195 307 204" fill="none" stroke="#29202a" stroke-width="5" stroke-linecap="round"/>
-<path d="M211 222Q227 216 242 222M273 222Q290 215 306 222" fill="none" stroke="#4f3938" stroke-width="3.4" stroke-linecap="round"/>
-<ellipse cx="227" cy="222" rx="5" ry="5.6" fill="#252631"/><ellipse cx="289" cy="222" rx="5" ry="5.6" fill="#252631"/><circle cx="225.5" cy="220.2" r="1.65" fill="#eff9ff" opacity=".9"/><circle cx="287.5" cy="220.2" r="1.65" fill="#eff9ff" opacity=".9"/>
-<path d="M257 227L248 262Q256 267 268 262" fill="none" stroke="#8b5c4b" stroke-width="3.3" stroke-linecap="round"/>
-<path d="M227 286Q257 300 285 284" fill="none" stroke="#865a54" stroke-width="4" stroke-linecap="round"/>
-<path d="M201 240Q205 259 214 270M298 268Q307 250 308 240" fill="none" stroke="#9c644e" stroke-opacity=".35" stroke-width="2.5"/><ellipse cx="211" cy="259" rx="18" ry="10" fill="#da927f" opacity=".17"/><ellipse cx="299" cy="259" rx="18" ry="10" fill="#da927f" opacity=".17"/><path d="M226 289Q256 306 286 288" fill="none" stroke="#713c3b" stroke-width="2" opacity=".55"/><path d="M220 218Q227 214 238 218M278 218Q289 213 300 218" stroke="#f6cfb0" stroke-opacity=".6" stroke-width="1.6" fill="none"/><path d="M195 166Q204 128 229 119" fill="none" stroke="#73535b" stroke-opacity=".55" stroke-width="5" stroke-linecap="round"/>
+
+
+<!-- Simple bob hairstyle, behind the face. -->
+<path d="M174 172Q168 101 220 88Q256 72 301 91Q343 110 341 171L345 319Q327 347 299 344L291 287L214 287L209 345Q178 346 168 315Z" fill="url(#hair)"/>
+<ellipse cx="255" cy="215" rx="79" ry="112" fill="url(#skin)"/>
+<!-- Side-swept fringe, drawn as one clean silhouette. -->
+<path d="M177 177Q173 116 209 97Q255 66 304 102Q333 120 335 182L320 162Q293 143 282 125Q259 150 222 154Q205 160 188 183Z" fill="url(#hair)"/>
+<path d="M198 165Q223 126 250 130" fill="none" stroke="#574750" stroke-width="4" opacity=".45" stroke-linecap="round"/>
+
+<!-- Deliberately simple features, same visual vocabulary as Marcus and Daniel. -->
+<path d="M209 205Q227 197 244 203M273 203Q290 197 307 205" fill="none" stroke="#332831" stroke-width="5" stroke-linecap="round"/>
+<path d="M210 224Q228 218 242 223M272 223Q289 216 306 223" fill="none" stroke="#4b3736" stroke-width="3.1" stroke-linecap="round"/>
+<ellipse cx="227" cy="224" rx="4.8" ry="5.4" fill="#242735"/>
+<ellipse cx="289" cy="224" rx="4.8" ry="5.4" fill="#242735"/>
+<path d="M256 231L250 262Q257 268 265 261" fill="none" stroke="#986850" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M229 285Q256 300 284 284" fill="none" stroke="#895a50" stroke-width="3.8" stroke-linecap="round"/>
 <path d="M256 53C160 53 98 139 98 255Q98 309 132 353Q178 394 256 393Q334 394 380 353Q414 309 414 255C414 139 352 53 256 53Z" fill="url(#visor)" stroke="#bad6e7" stroke-width="15"/>
 <path d="M256 64C164 64 110 149 110 255Q110 313 142 348" fill="none" stroke="#4c839f" stroke-width="6"/>
 <path d="M256 64C348 64 402 149 402 255Q402 313 370 348" fill="none" stroke="#4c839f" stroke-width="6"/>
 <path d="M140 129Q164 90 211 81" fill="none" stroke="#ecffff" stroke-opacity=".40" stroke-width="8" stroke-linecap="round"/><path d="M359 146Q381 198 375 248" fill="none" stroke="#b9f3ff" stroke-opacity=".21" stroke-width="7" stroke-linecap="round"/><path d="M168 380Q256 415 341 381" fill="none" stroke="#ffffff" stroke-opacity=".25" stroke-width="3"/>
-<path d="M164 372Q257 415 349 372" fill="none" stroke="#3b647d" stroke-width="17"/><path d="M166 374Q256 401 348 374" fill="none" stroke="#36d3d9" stroke-width="5"/>
-<path d="M95 438L171 426M419 438L344 426" stroke="#36d3d9" stroke-width="8" opacity=".9"/>
-<rect x="375" y="467" width="45" height="15" rx="6" fill="#36d3d9" opacity=".8"/>
+<path d="M164 372Q257 415 349 372" fill="none" stroke="#3b647d" stroke-width="17"/><path d="M166 374Q256 401 348 374" fill="none" stroke="#48d4d7" stroke-width="5"/>
+<path d="M95 438L171 426M419 438L344 426" stroke="#48d4d7" stroke-width="8" opacity=".9"/>
+<rect x="375" y="467" width="45" height="15" rx="6" fill="#48d4d7" opacity=".8"/>
 </svg>
