@@ -79,11 +79,41 @@ function HistoricalBrowser({assay,subject,setSubject}){
     <a href={assay==='CBC'?'https://osdr.nasa.gov/bio/repo/data/studies/OSD-569':'https://osdr.nasa.gov/bio/repo/data/studies/OSD-575'} rel="noreferrer" target="_blank">View official {assay==='CBC'?'OSD-569':'OSD-575'} study information</a>
   </div>;
 }
-export default function TelemetryBiomarkerHub({person,latest,training}){
+export default function TelemetryBiomarkerHub({person,latest,training,compact=false}){
   const [opened,setOpened]=useState(false);
   const [group,setGroup]=useState('cmp');
   const [subject,setSubject]=useState('C001');
   const selected=useMemo(()=>GROUPS.find(x=>x.id===group)||GROUPS[0],[group]);
+  if(compact){
+    const catalog=GROUPS.filter(item=>!item.keys);
+    const chosen=catalog.find(item=>item.id===group)||catalog[0];
+    return <section className="hg-bio-hub hg-bio-compact" aria-label="Additional NASA research datasets">
+      <div className="hg-bio-heading">
+        <div><span className="hg-bio-overline">VERIFIED RESEARCH SOURCES</span>
+          <h2>Additional NASA datasets</h2>
+          <p>Browse one source at a time. These historical records are separate from the fictional crew simulator.</p>
+        </div>
+      </div>
+      <label className="hg-bio-compact-selector">Research dataset
+        <select value={chosen.id} onChange={event=>setGroup(event.target.value)}>
+          {catalog.map(item=><option key={item.id} value={item.id}>{item.title} · {item.assay?'Historical measurements':item.source==='PENDING'?'Unconnected':'Reference only'}</option>)}
+        </select>
+      </label>
+      <div className="hg-bio-compact-detail">
+        <div className="hg-bio-expanded-heading">
+          <h3>{chosen.title}</h3>
+          <span className="hg-bio-label">{chosen.assay?'NASA LAB':chosen.source==='PENDING'?'NO FEED':'RESEARCH'}</span>
+        </div>
+        {chosen.assay?<HistoricalBrowser assay={chosen.assay} subject={subject} setSubject={setSubject}/>:
+          <div className="hg-bio-description">
+            <p>{chosen.desc}. No measured, per-astronaut numerical time series is attached to this source.</p>
+            {CATALOG_LINKS[chosen.id]&&<a target="_blank" rel="noreferrer" href={CATALOG_LINKS[chosen.id]}>Open official NASA reference</a>}
+          </div>}
+      </div>
+      <p className="hg-bio-foot">Source boundary: NASA OSD-575 and OSD-569 laboratory records describe historical participants, not HealthGuard's four fictional astronaut profiles. They are not streamed or assigned AI severity levels.</p>
+    </section>;
+  }
+
   return <section className="hg-bio-hub" aria-label="Subsystems and research biomarkers">
     <div className="hg-bio-heading">
       <div><span className="hg-bio-overline">SUBSYSTEMS & BIOMARKERS</span><h2>Extended monitoring and NASA research</h2><p>5 fictional physiological signals · 322 assay-specific biomarkers from verified historical NASA OSDR source files</p></div>
