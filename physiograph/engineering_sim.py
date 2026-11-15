@@ -22,8 +22,18 @@ SIGNALS: dict[str, dict[str, str]] = {
     "cabin_humidity_percent": {"label": "Relative humidity", "unit": "%", "system": "environment", "origin": "SCRIPTED_ESTIMATE_NOT_CABIN_SENSOR"},
     "radiation_rate_usv_h": {"label": "Radiation dose rate", "unit": "µSv/h", "system": "radiation", "origin": "SCRIPTED_ESTIMATE_NOT_DOSIMETER"},
     "cumulative_dose_usv": {"label": "Accumulated simulated dose", "unit": "µSv", "system": "radiation", "origin": "SCRIPTED_ILLUSTRATION_NOT_HISTORICAL_EXPOSURE"},
-    "suit_o2_remaining_percent": {"label": "Illustrative suit O₂ reserve", "unit": "%", "system": "suit", "origin": "SCRIPTED_ESTIMATE_NOT_SUIT_SENSOR"}
+    "suit_o2_remaining_percent": {"label": "Illustrative suit O₂ reserve", "unit": "%", "system": "suit", "origin": "SCRIPTED_ESTIMATE_NOT_SUIT_SENSOR"},
+    "suit_pressure_psi": {"label": "Illustrative suit pressure", "unit": "psi", "system": "suit", "origin": "SCRIPTED_ESTIMATE_NOT_PRESSURE_SENSOR"},
+    "suit_battery_percent": {"label": "Illustrative suit battery reserve", "unit": "%", "system": "suit", "origin": "SCRIPTED_ESTIMATE_NOT_BATTERY_SENSOR"}
 }
+
+# The trained 17-input CNN uses exactly five physiological and 12 engineering
+# signals. Additional HUD-only channels must NEVER silently alter that
+# checkpoint's fixed feature order or imply the CNN was retrained.
+FROZEN_17CH_ENGINEERING_KEYS = tuple(
+    k for k in SIGNALS if k not in {"suit_pressure_psi", "suit_battery_percent"}
+)
+assert len(FROZEN_17CH_ENGINEERING_KEYS) == 12
 
 def engineering_snapshot(subject_id: str, sequence: int) -> dict[str, Any]:
     if subject_id not in CREW_IDS:
@@ -47,7 +57,11 @@ def engineering_snapshot(subject_id: str, sequence: int) -> dict[str, Any]:
         "cabin_humidity_percent": round(43 + 2*slow, 1),
         "radiation_rate_usv_h": round(.42 + .04*abs(slow), 3),
         "cumulative_dose_usv": round((.42 + .04*abs(slow)) * t/3600, 4),
-        "suit_o2_remaining_percent": round(max(0, 94 - .002*t - crew*.5), 2)
+        "suit_o2_remaining_percent": round(max(0, 94 - .002*t - crew*.5), 2),
+        # Nominal examples are illustrative, not NASA EMU design specifications.
+        "suit_pressure_psi": round(4.3 + .025*sin(t/36 + p), 2),
+        # Battery decays gradually across the synthetic EVA sequence.
+        "suit_battery_percent": round(max(0, 88 - 1.5*crew - .015*t), 2)
     }
     return {
         "subject_id": subject_id,
@@ -60,5 +74,5 @@ def engineering_snapshot(subject_id: str, sequence: int) -> dict[str, Any]:
         "values": values,
         "channels": SIGNALS,
         "classification": "NOT_EVALUATED",
-        "warning": "Fictional reproducible numbers. No cabin sensor, dosimeter, blood pressure cuff, capnograph, or suit oxygen instrument is connected."
+        "warning": "Fictional reproducible numbers. No cabin, suit pressure, battery, oxygen, or dosimetry instruments are connected. All displayed numbers are fictional."
     }
