@@ -170,7 +170,8 @@ export default function MissionVisorHUD({
   },[]);
 
   useEffect(()=>{
-    if(!critical||!voiceEnabled||typeof window==='undefined'||!window.speechSynthesis)return;
+    // Scenario voice and the onset tone are shared globally across all pages.
+    if(scenarioDisplay||!critical||!voiceEnabled||typeof window==='undefined'||!window.speechSynthesis)return;
     let cancelled=false,timeout;
     const speech=scenarioDisplay
       ? scenarioVoiceAnnouncement(scenarioFrame?.scenario_id||scenario?.id,'CRITICAL')
@@ -207,7 +208,7 @@ export default function MissionVisorHUD({
           <Icon name="eye" size={16}/><span>{clearView?'Clear view':'High contrast'}</span>
         </button>
         <button className="hgv-tool-button" type="button" onClick={onOpenScenario}><Icon name="activity" size={15}/>{scenarioDisplay?'Scenario Lab · '+scenario.elapsed+'s':'Scenario Lab'}</button>
-        <button className={'hgv-tool-button'+(voiceEnabled?' active':'')} type="button" onClick={()=>setVoiceEnabled(v=>!v)} aria-pressed={voiceEnabled} title="Toggle critical training voice alerts"><Icon name={voiceEnabled?'volume':'mute'} size={16}/><span>Voice {voiceEnabled?'on':'off'}</span></button>
+        <button className={'hgv-tool-button'+((scenarioDisplay?scenario?.soundEnabled:voiceEnabled)?' active':'')} type="button" onClick={scenarioDisplay?scenario?.toggleSound:()=>setVoiceEnabled(v=>!v)} aria-pressed={scenarioDisplay?scenario?.soundEnabled:voiceEnabled} title="Toggle critical training voice alerts"><Icon name={(scenarioDisplay?scenario?.soundEnabled:voiceEnabled)?'volume':'mute'} size={16}/><span>Voice {(scenarioDisplay?scenario?.soundEnabled:voiceEnabled)?'on':'off'}</span></button>
         <button className="hgv-tool-button" type="button" onClick={toggleFullscreen}>{fullscreen?'Exit full view':'Full screen'}</button>
         <button className="hgv-tool-button hgv-exit" type="button" onClick={onExit}><Icon name="x" size={15}/>Exit HUD</button>
       </div>
