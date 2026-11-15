@@ -1,22 +1,20 @@
-# PhysioGraph | Mission Console v0.2
+# HealthGuard Frontend
 
-The v0.2 redesign replaces the introductory marketing layout with a live, compact mission operations cockpit. It uses horizontal navigation, five selectable signal cards, a crew pod, waveform inspector, PhysioAlert evidence review, event log, and direct NASA research entry. The backend API and all scientific boundaries are unchanged.
+The **HealthGuard** interface is a React/Vite application for a **fictional astronaut health-monitoring and mission-support demonstration**. The main project overview is in [../README.md](../README.md).
 
-The application is a research simulation, not a medical device or clinical diagnosis tool. Simulated telemetry is distinct from the historical NASA OSD-575 data, and the models do not provide clinical risk estimates.
+[Try the deployed app](https://physiograph-dashboard.onrender.com/) · [Reviewer guide](../docs/REVIEWER_GUIDE.md)
 
-# PhysioGraph frontend v0.1
+## Sections
 
-A React/Vite research demonstration dashboard for the existing PhysioGraph v1.5 backend.
+The current navigation includes Mission Dashboard, Crew Telemetry, Body Explorer (**three monitored body systems**), Health Routine, Health Library, Mission Control, Mission HUD and a **Scenario Lab** popup. A replayable eight-step guided tutorial provides explanatory narration through optional browser text-to-speech.
 
-## Views
+Four fictional astronauts have independent simulated streams. The dashboard includes five original physiological signals, four *separately scripted* physiological estimates and engineering simulator data. The experimental **17-input CNN** is a **5+12** input model; those 12 additional inputs are selected scripted engineering/estimate channels, not 12 more physical sensors.
 
-- Overview: fictional simulated live telemetry, five physiological metrics, CNN/covariance outputs, evidence review, and optional browser speech of backend-provided deterministic explanation text.
-- NASA Research: source-labeled NASA OSD-575 discrete lab draws, biomarker and crew filters, and frozen APDRA review rows.
-- Mission Systems: honest status of unconnected spacesuit and environment sensors.
-- Method & evidence: what has been implemented, trained, and validated, and what has not.
-- Guided tour accessible from sidebar.
+Scripted events are fictional, nonclinical and do not represent NASA operational limits. The full Scenario Lab catalog has **nine** event types. Normal simulation, explicit scripted events, and historical NASA research data are not interchangeable.
 
 ## Run locally
+
+Requires Node.js 22 (recommended) and the FastAPI backend.
 
 ```bash
 cd frontend
@@ -24,21 +22,35 @@ npm install
 npm run dev
 ```
 
-Vite reads `VITE_PHYSIOGRAPH_API_BASE` from `.env.local` (see `.env.example`). The default points to the deployed Render API. For local split-site use, run the backend with `PHYSIOGRAPH_CORS_ORIGINS=http://localhost:5173` (or the actual Vite origin). The WebSocket uses HTTPS -> WSS automatically. 
+Create `frontend/.env.local` if you need an API on a different origin:
 
-Run pure client tests using `npm test`, and build with `npm run build`.
+```dotenv
+VITE_PHYSIOGRAPH_API_BASE=http://127.0.0.1:8000
+```
 
-## Render static site
+Start the backend from the repository root:
 
-- Repository: `https://github.com/Rhenzmar/PhysioGraph`
-- Branch: `main`
-- Build command: `cd frontend && npm ci && npm run build` (or `npm install` if lockfile not yet committed)
-- Publish directory: `frontend/dist`
-- Build-time public variable: `VITE_PHYSIOGRAPH_API_BASE=https://physiograph-api-lurx.onrender.com`
-- After creation, add the exact static site HTTPS origin to backend `PHYSIOGRAPH_CORS_ORIGINS` (no trailing slash). This is required for browser REST calls across Render subdomains. The backend deliberately rejects wildcard CORS origins.
+```bash
+python -m pip install -r requirements-live-lite.txt
+python -m uvicorn physiograph.live_api:app --host 127.0.0.1 --port 8000
+```
 
-The frontend never contains an ingest API key. Research and mission endpoints are read-only.
+Allow the exact Vite origin with `PHYSIOGRAPH_CORS_ORIGINS=http://localhost:5173` on the backend. These `PHYSIOGRAPH_*` names are **retained API configuration identifiers**. Renaming the displayed product or GitHub repository does not automatically rename backend environment variables.
 
-## Scientific guardrails
+## Quality checks
 
-The simulated vital signals are synthetic and not astronaut measurements. CNN and covariance flags are experimental numerical novelty comparisons trained on synthetic normal data. Real NASA OSD-575 observations are *historical pre/postflight assays*, not continuous live readings. APDRA is a frozen retrospective lab screening-stability research method, not a clinical classifier. Mission HUD feed values that are not connected remain null / absent.
+```bash
+cd frontend
+npm test
+npm run build
+```
+
+`npm run build` already runs the client tests before creating `dist/`. The project also includes a separately configured Playwright end-to-end suite. Historical browser test reports describe **the specific software version and date tested**, not a guarantee that every later UI change has been manually retested.
+
+## Hosting
+
+The active Render static site is [physiograph-dashboard.onrender.com](https://physiograph-dashboard.onrender.com/). Its current build command is `cd frontend && npm install --no-audit --no-fund && npm run build`, with publish directory `frontend/dist`. The frontend's public build variable is `VITE_PHYSIOGRAPH_API_BASE`; it must contain **only a public API origin, never a secret**.
+
+**Audio:** Critical-event voice and guided-tour narration use `SpeechSynthesisUtterance` in the browser. A brief procedural alarm tone uses Web Audio. Browser autoplay policies and device settings can prevent sound until the user interacts with the page. These are demonstration alerts, not certified alarms.
+
+**Science and data provenance:** See [architecture](../docs/ARCHITECTURE.md), [reviewer guide](../docs/REVIEWER_GUIDE.md) and [research reports](../research/). Neither the displayed simulated readings nor model pattern flags constitute clinical diagnostics, real astronaut measurements or flight-ready telemetry.
