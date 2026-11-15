@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { API_BASE, METRICS, readApi, websocketUrl, researchParams, formatValue, friendlyStatus, statusTone, timelineLabel, lastSamples } from './api.js';
 import { Icon, MiniTrend, VitalChart, ResearchDotChart } from './viz.jsx';
-import { ENVIRONMENTS, EnvironmentPicker, CrewBodyMini, BodyExplorer, MissionHUD } from './HealthGuardPages.jsx';
+import { ENVIRONMENTS, EnvironmentPicker, CrewBodyMini, BodyExplorer } from './HealthGuardPages.jsx';
 import MissionGame from './MissionGame.jsx';
 import MissionDashboard from './MissionDashboardV2.jsx';
 import EngineeringTelemetry from './EngineeringTelemetry.jsx';
