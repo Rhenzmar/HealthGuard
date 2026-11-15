@@ -86,10 +86,10 @@ function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTe
   if(!hasTelemetry)return <section className="hg6-card hg6-selected" aria-label={'Selected crew '+person.name}>
     <div className="hg6-card-heading"><h2><Icon name="user" size={19}/> Selected crew: {person.name}</h2><span className="hg6-quiet-badge">FICTIONAL CREW 0{CREW.indexOf(person)+1}</span></div>
     <div className="hg6-selected-body">
-      <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={'Fictional astronaut '+person.name+' wearing a space suit'}/><button type="button" onClick={onProfile}>View crew profile <Icon name="arrow" size={13}/></button></div>
+      <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={'Fictional astronaut '+person.name+' wearing a space suit'}/><span className="hg6-portrait-label">CREW 0{CREW.indexOf(person)+1}</span></div>
       <div className="hg6-health-summary hg6-unavailable-summary"><div className="hg6-crew-unavailable" role="status"><span className="hg6-crew-unavailable-icon"><Icon name="radio" size={26}/></span><h3>Awaiting simulator stream</h3><p>{person.name} has an independent fictional telemetry source assigned. Waiting for its first valid packet.</p><div className="hg6-crew-no-data"><span>Vital signs</span><strong>Not available</strong></div><div className="hg6-crew-no-data"><span>PhysioAlert</span><strong>Awaiting data</strong></div></div></div>
     </div>
-    <div className="hg6-selected-foot"><span>Only the selected crew member’s simulator packets are displayed.</span><button type="button" onClick={onProfile}>View crew profile <Icon name="arrow" size={15}/></button></div>
+    <div className="hg6-selected-foot"><span>Awaiting this astronaut's simulator packets.</span><div className="hg6-selected-actions"><button type="button" onClick={onBody}>Body Explorer <Icon name="arrow" size={14}/></button><button type="button" onClick={onProfile}>Crew profile <Icon name="arrow" size={14}/></button></div></div>
   </section>;
   const status=review?.status||'AWAITING_DATA';
   const trainingAttention=unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY'?unified.status:null;
@@ -97,7 +97,7 @@ function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTe
   return <section className={"hg6-card hg6-selected "+(training?"hg6-selected-training":"")}>
     <div className="hg6-card-heading"><h2><Icon name="user" size={19}/> Selected crew: {person.name}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":"FICTIONAL CREW 0"+(CREW.indexOf(person)+1)}</span></div>
     <div className="hg6-selected-body">
-      <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={"Illustration of fictional astronaut "+person.name+" wearing a space suit"}/><button type="button" onClick={onBody}>Open Body Explorer <Icon name="arrow" size={13}/></button></div>
+      <div className="hg6-small-human hg6-selected-portrait"><img src={person.image} alt={"Illustration of fictional astronaut "+person.name+" wearing a space suit"}/><span className="hg6-portrait-label">CREW 0{CREW.indexOf(person)+1}</span></div>
       <div className="hg6-health-summary">
         <div className="hg6-summary-intro"><div><h3>Health monitoring summary</h3><p>{training?'17 scripted channels · Backend model inference':'17 simulated signals · Experimental pattern review'}</p></div><span className={'hg6-state '+(training?.alert?'hg6-state-danger':statusTone(status)==='mint'?'hg6-state-mint':'')}>{training?(training.alert?'Training alert':'Scenario playback'):trainingAttention?trainingAttention+' · Training':friendlyStatus(status)}</span></div>
         <RowSummary glyph="heart" label="Cardiovascular" note="Simulated"><span>HR {formatValue(latest?.values?.heart_rate_bpm,0)} bpm</span><span className="hg6-sep"> · </span><span>HRV {formatValue(latest?.values?.hrv_rmssd_ms,1)} ms</span></RowSummary>
@@ -107,7 +107,7 @@ function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTe
         <RowSummary glyph="activity" label="Signal quality" note={training?"Not evaluated":"Quality check"}>{training?"Not evaluated":friendlyStatus(quality||"NOT_EVALUATED")}</RowSummary>
       </div>
     </div>
-    <div className="hg6-selected-foot"><span>{training?'Scripted scenario · No clinical diagnosis or actual sensor feed.':'Model status is not a clinical diagnosis.'}</span><button type="button" onClick={onTelemetry}>View detailed telemetry <Icon name="arrow" size={15}/></button></div>
+    <div className="hg6-selected-foot"><span>{training?'Scripted scenario · No actual sensor feed.':'Experimental monitoring · Not a diagnosis.'}</span><div className="hg6-selected-actions"><button type="button" onClick={onBody}>Body Explorer <Icon name="arrow" size={14}/></button><button type="button" onClick={onTelemetry}>Telemetry details <Icon name="arrow" size={14}/></button></div></div>
   </section>;
 }
 function LiveVitals({hasTelemetry,latest,connection,onMetric,metricKey,training}){
