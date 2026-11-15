@@ -66,8 +66,6 @@ export default function LiveSubsystemExplorer({person,latest,engineering,trainin
         'These values come from the independent fictional engineering simulator, not connected spacecraft instruments.'}
         {engineeringIssue?' The engineering simulator is currently unavailable.':''}</p>
     </div>}
-    <footer className="hg-subsystems-foot"><Icon name="shield" size={15}/>
-      Experimental 17-channel model inputs are synthetic, not astronaut sensor measurements or clinical diagnoses. Historical NASA laboratory records remain in Health Library.
-    </footer>
+
   </section>;
 }
