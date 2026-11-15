@@ -81,6 +81,7 @@ function HistoricalBrowser({assay,subject,setSubject}){
 }
 export default function TelemetryBiomarkerHub({person,latest,training,compact=false}){
   const [opened,setOpened]=useState(false);
+  const [filter,setFilter]=useState('all');
   const [group,setGroup]=useState('cmp');
   const [subject,setSubject]=useState('C001');
   const selected=useMemo(()=>GROUPS.find(x=>x.id===group)||GROUPS[0],[group]);
@@ -114,21 +115,52 @@ export default function TelemetryBiomarkerHub({person,latest,training,compact=fa
     </section>;
   }
 
-  return <section className="hg-bio-hub" aria-label="Subsystems and research biomarkers">
+  const filters=[
+    {id:'all',label:'All subsystems'},
+    {id:'simulated',label:'Live simulator'},
+    {id:'historical',label:'NASA lab'},
+    {id:'context',label:'Research context'}
+  ];
+  const filteredGroups=GROUPS.filter(item=>{
+    if(filter==='all')return true;
+    if(filter==='simulated')return Boolean(item.keys);
+    if(filter==='historical')return item.source==='HISTORICAL';
+    return item.source==='CONTEXT'||item.source==='PENDING';
+  });
+  const countFor=key=>GROUPS.filter(item=>key==='all'||(key==='simulated'&&item.keys)||(key==='historical'&&item.source==='HISTORICAL')||(key==='context'&&(item.source==='CONTEXT'||item.source==='PENDING'))).length;
+  return <section className="hg-bio-hub hg-bio-refined" aria-label="Subsystems and research biomarkers">
     <div className="hg-bio-heading">
-      <div><span className="hg-bio-overline">SUBSYSTEMS & BIOMARKERS</span><h2>Extended monitoring and NASA research</h2><p>5 fictional physiological signals · 322 assay-specific biomarkers from verified historical NASA OSDR source files</p></div>
-      <button type="button" onClick={()=>setOpened(x=>!x)} aria-expanded={opened}>{opened?'Collapse biomarker explorer':'Explore all subsystems'} <Icon name="chevron" size={16}/></button>
+      <div><span className="hg-bio-overline">MONITORING / NASA RESEARCH</span>
+        <h2>Extended monitoring and NASA research</h2>
+        <p>Explore current simulated systems and verified historical NASA laboratory evidence.</p>
+      </div>
+      <span className="hg-bio-source-summary">11 SUBSYSTEMS · 3 DATA TYPES</span>
+    </div>
+    <div className="hg-bio-filterbar" role="group" aria-label="Filter research subsystems">
+      {filters.map(item=><button type="button" key={item.id} aria-pressed={filter===item.id}
+        className={filter===item.id?'active':''} onClick={()=>{setFilter(item.id);setOpened(false);}}>
+        {item.label}<span>{countFor(item.id)}</span>
+      </button>)}
     </div>
     <div className="hg-bio-group-grid">
-      {GROUPS.map(item=>{
+      {filteredGroups.map(item=>{
         const tier=statusOf(item,training);
-        return <button type="button" key={item.id} className={'hg-bio-group '+(group===item.id&&opened?'hg-bio-group-active':'')} onClick={()=>{setGroup(item.id);setOpened(true);}}>
-          <div className="hg-bio-card-top"><Icon name={item.icon} size={18}/><strong>{item.title}</strong><span className={'hg-bio-label hg-bio-label-'+(tier||item.source).toLowerCase()}>{tier|| (item.source==='HISTORICAL'?'NASA LAB':item.source==='PENDING'?'NO FEED':'RESEARCH')}</span></div>
+        const isActive=group===item.id&&opened;
+        return <button type="button" key={item.id} aria-pressed={isActive}
+          className={'hg-bio-group '+(isActive?'hg-bio-group-active':'')+' hg-bio-group-'+item.source.toLowerCase()}
+          onClick={()=>{if(isActive){setOpened(false);}else{setGroup(item.id);setOpened(true);}}}>
+          <div className="hg-bio-card-top"><Icon name={item.icon} size={17}/><strong>{item.title}</strong>
+            <span className={'hg-bio-label hg-bio-label-'+(tier||item.source).toLowerCase()}>
+              {tier|| (item.source==='HISTORICAL'?'NASA LAB':item.source==='PENDING'?'NO FEED':'RESEARCH')}
+            </span>
+          </div>
           {item.keys?<div className="hg-bio-signal-rows">{item.keys.map(key=>{
             const m=METRICS.find(x=>x.key===key);
             return <div key={key}><span>{m?.label||key}</span><strong>{formatValue(latest?.values?.[key],m?.digits??1)} <small>{m?.unit||''}</small></strong></div>;
           })}</div>:<p>{item.desc}</p>}
-          <small className="hg-bio-source">{item.keys?(training?'SCRIPTED TRAINING':'FICTIONAL CONTINUOUS STREAM'):item.source==='HISTORICAL'?'DISCRETE LAB SAMPLES':item.source==='PENDING'?'NOT CONNECTED':'BACKGROUND RESEARCH'}</small>
+          <span className="hg-bio-card-footer"><small className="hg-bio-source">
+            {item.keys?(training?'SCRIPTED TRAINING':'SIMULATED DATA'):item.source==='HISTORICAL'?'HISTORICAL NASA LAB':item.source==='PENDING'?'NOT CONNECTED':'RESEARCH REFERENCE'}
+          </small><Icon name="arrow" size={14}/></span>
         </button>;
       })}
     </div>
@@ -139,6 +171,8 @@ export default function TelemetryBiomarkerHub({person,latest,training,compact=fa
           {selected.keys.map(key=><div className="hg-bio-single" key={key}><span>{METRICS.find(m=>m.key===key)?.label||key}</span><strong>{formatValue(latest?.values?.[key],METRICS.find(m=>m.key===key)?.digits??1)}</strong><span>{training?(training.metric_levels?.[key]||'OPTIMAL'):'Simulated, unclassified'}</span></div>)}
         </div>:<div className="hg-bio-description"><p>{selected.desc}. No measured, per-astronaut numerical series is currently attached to this subsystem. Its presence here is a <strong>data-source roadmap</strong>, not evidence of live measurements or clinical status.</p>{CATALOG_LINKS[selected.id]&&<a target="_blank" rel="noreferrer" href={CATALOG_LINKS[selected.id]}>Open official NASA reference</a>}</div>}
     </div>}
-    <p className="hg-bio-foot">Data provenance: NASA OSD-575 historical research participants C001–C004 are not the four fictional dashboard astronauts. Historical CBC, CMP, Eve and Alamar records are not streamed, interpolated, or classified as Optimal/Check/Warning/Critical. Original OSDR source hashes are verified; C003 CBC outliers remain explicitly flagged for scientific review. Scenario tiers are demonstration-only.</p>
+    <details className="hg-bio-provenance"><summary><Icon name="shield" size={15}/> Data sources and limitations <Icon name="chevron" size={14}/></summary>
+      <p>NASA OSD-575 participants C001–C004 are not the four fictional dashboard astronauts. Historical CBC, CMP, Eve and Alamar records are not streamed, interpolated or classified as Optimal/Check/Warning/Critical. Source hashes are verified. C003 CBC outliers remain flagged for scientific review; scenario tiers are demonstration-only.</p>
+    </details>
   </section>;
 }
