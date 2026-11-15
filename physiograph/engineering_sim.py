@@ -42,6 +42,13 @@ def engineering_snapshot(subject_id: str, sequence: int) -> dict[str, Any]:
         raise ValueError("Sequence must be a non-negative integer")
     crew = CREW_IDS.index(subject_id)
     t = float(sequence)
+    # The regular live demonstration is an indefinitely running *rest* stream.
+    # Consumables have no resupply/EVA mission clock, so do not drain toward
+    # emergencies as an artifact of web-service uptime. Keep the first 10
+    # fictional minutes of gradual change, then hold those illustrative values.
+    # Scripted suit-power / suit-oxygen failures are injected separately by
+    # scenario_engine, not by ordinary live sequence growth.
+    nominal_elapsed_seconds = min(t, 600.0)
     p = crew * 1.13
     slow = sin(t/55 + p)
     fast = sin(t/13 + p)
@@ -56,12 +63,12 @@ def engineering_snapshot(subject_id: str, sequence: int) -> dict[str, Any]:
         "cabin_temp_c": round(22.2 + .25*slow, 2),
         "cabin_humidity_percent": round(43 + 2*slow, 1),
         "radiation_rate_usv_h": round(.42 + .04*abs(slow), 3),
-        "cumulative_dose_usv": round((.42 + .04*abs(slow)) * t/3600, 4),
-        "suit_o2_remaining_percent": round(max(0, 94 - .002*t - crew*.5), 2),
+        "cumulative_dose_usv": round((.42 + .04*abs(slow)) * nominal_elapsed_seconds/3600, 4),
+        "suit_o2_remaining_percent": round(max(0, 94 - .002*nominal_elapsed_seconds - crew*.5), 2),
         # Nominal examples are illustrative, not NASA EMU design specifications.
         "suit_pressure_psi": round(4.3 + .025*sin(t/36 + p), 2),
         # Battery decays gradually across the synthetic EVA sequence.
-        "suit_battery_percent": round(max(0, 88 - 1.5*crew - .015*t), 2)
+        "suit_battery_percent": round(max(0, 88 - 1.5*crew - .015*nominal_elapsed_seconds), 2)
     }
     return {
         "subject_id": subject_id,
