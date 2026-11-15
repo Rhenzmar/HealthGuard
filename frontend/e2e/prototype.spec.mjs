@@ -78,10 +78,7 @@ test('all seven selectable scenarios yield real backend CNN evidence and recover
   await modal.getByRole('button',{name:/Restart/i}).first().click();
   await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeEnabled({timeout:30000});
   await page.keyboard.press('Escape');
-  await expect(modal).toBeVisible();
-  await expect(page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i})).toHaveAttribute('aria-current','page');
-  // Starting playback must not navigate to Mission Dashboard.
-  await expect(modal.getByRole('button',{name:/Pause/i}).first()).toBeVisible();
+  await expect(modal).not.toBeVisible();
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
   await expect(modal).toBeVisible();
 });
@@ -113,7 +110,9 @@ test('scenario critical voice, no beep, and recovery behavior respond to real ba
   await expect.poll(()=>page.evaluate(()=>window.__healthguardSpeechEvents.filter(x=>x.kind==='speak').length)).toBeGreaterThan(0);
   await modal.getByRole('button',{name:/Hide training controls/i}).click();
   await modal.getByRole('button',{name:/Start scenario/i}).click();
-  await expect(modal).not.toBeVisible();
+  await expect(modal).toBeVisible();
+  await expect(page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i})).toHaveAttribute('aria-current','page');
+  await expect(modal.getByRole('button',{name:/Pause/i}).first()).toBeVisible();
   // The current approved design deliberately has NO pulse/beep alarm.
   await expect(modal.locator('.hg6-scenario-event-alert').first()).toBeVisible({timeout:20000});
   expect(await page.evaluate(()=>window.__healthguardAudioBeepCount)).toBe(0);
