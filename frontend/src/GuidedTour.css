@@ -1,0 +1,21 @@
+.hg-tour-root{position:fixed;inset:0;z-index:99999;pointer-events:auto;color:#eaf9fa}
+.hg-tour-dim{position:fixed;inset:0;background:rgba(1,9,19,.69);pointer-events:auto}
+.hg-tour-spotlight{position:fixed;z-index:1;border-radius:10px;box-shadow:0 0 0 2px #62e0da,0 0 0 9999px rgba(1,9,19,.18),0 0 22px #36b8bd66;pointer-events:none;transition:top .16s,left .16s,width .16s,height .16s}
+.hg-tour-panel{position:fixed;z-index:2;width:min(385px,calc(100vw - 24px));box-sizing:border-box;border:1px solid #4fa0ad;border-radius:14px;padding:18px;background:#0b2436f5;box-shadow:0 22px 65px #000b;backdrop-filter:blur(18px);max-height:calc(100dvh - 24px);overflow:auto}
+.hg-tour-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}
+.hg-tour-top span{font-size:9px;letter-spacing:1px;color:#79ddd6;font-weight:800}
+.hg-tour-top button{cursor:pointer;background:#19394b;border:1px solid #456d7b;border-radius:7px;color:#d9f4f5;padding:7px;display:flex}
+.hg-tour-count{font-size:10px;color:#9cc8d0;font-weight:700;margin-bottom:7px}
+.hg-tour-panel h2{margin:0 0 9px;font-size:21px;letter-spacing:-.3px}
+.hg-tour-panel p{margin:0;font-size:12px;line-height:1.65;color:#c4dce5}
+.hg-tour-dots{display:flex;gap:6px;margin:20px 0 16px}
+.hg-tour-dots span{height:4px;border-radius:4px;flex:1;background:#315267}
+.hg-tour-dots span.done{background:#398d94}.hg-tour-dots span.active{background:#6ce3d7}
+.hg-tour-actions,.hg-tour-actions>div{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.hg-tour-actions button{cursor:pointer;font-size:11px;font-weight:700;min-height:34px;padding:7px 12px;border-radius:8px}
+.hg-tour-skip{color:#b3cfda;background:transparent;border:0}
+.hg-tour-back{color:#d6edf0;background:#193649;border:1px solid #416a7b}
+.hg-tour-next{display:flex;align-items:center;gap:7px;color:#002c34;background:#65e1d7;border:1px solid #65e1d7}
+.hg-tour-root button:focus-visible{outline:2px solid #f8ffff;outline-offset:2px}
+@media(max-width:700px){.hg-tour-panel{padding:15px}.hg-tour-panel h2{font-size:18px}.hg-tour-spotlight{transition:none}}
+@media(prefers-reduced-motion:reduce){.hg-tour-spotlight{transition:none}}
