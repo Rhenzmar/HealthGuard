@@ -165,3 +165,16 @@ def test_authentic_nasa_evaluation_api_is_source_aware_and_not_cnn_validation():
             assert d.status_code==200
             assert d.json()['data']==evaluation['assays'][assay]
         assert c.get('/api/research/evaluation/nasa-original/unknown').status_code==422
+
+def test_real_nasa_iss_eda_evaluation_endpoint_no_cnn_accuracy_claim():
+    with TestClient(build_app()) as client:
+        resp=client.get('/api/research/evaluation/nasa-rr1-environment')
+        assert resp.status_code==200
+        data=resp.json()
+        assert data['evaluation_domain']=='REAL_NASA_ISS_ENVIRONMENTAL_TELEMETRY'
+        assert data['telemetry']['n_records']==12087
+        assert data['radiation']['n_daily_records']==39
+        assert data['model_17ch_scored_on_this_dataset'] is False
+        assert data['physiological_channels_present']==0
+        assert data['environmental_heuristic_screen']['used_synthetic_data'] is False
+        assert data['environmental_heuristic_screen']['independently_labeled_events'] is False
