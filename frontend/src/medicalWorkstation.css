@@ -323,3 +323,18 @@
 .hgm-systems-stage.hgm-stage-critical .hgm-figure-stage{border-color:#d16d76}
 .hgm-stage-critical .hgm-model-overline{color:#ffb6c1}
 .hgm-training-notice,.hgm-stage-critical,.hgm-section-card.is-training-alert{animation:none!important}
+
+
+/* Three monitored sections only: balance the single left tile against two right tiles. */
+.hgm-sections-workstation .hgm-systems-left{
+  grid-template-rows:minmax(95px,115px);
+  align-content:center;
+}
+.hgm-sections-workstation .hgm-systems-right{
+  grid-template-rows:repeat(2,minmax(95px,115px));
+  align-content:center;
+}
+@media(max-width:900px){
+ .hgm-sections-workstation .hgm-systems-left{grid-template-rows:minmax(78px,auto)}
+ .hgm-sections-workstation .hgm-systems-right{grid-template-rows:repeat(2,minmax(78px,auto));gap:8px}
+}
