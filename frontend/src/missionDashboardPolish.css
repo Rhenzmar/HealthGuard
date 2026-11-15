@@ -307,3 +307,10 @@
  .hg6-auxiliary-detail .hg6-card-heading{align-items:flex-start}
  .hg6-auxiliary-chart-current>strong{font-size:21px}
 }
+
+/* One shared chart layout for the five streamed and four estimated signals. */
+.hg6-telemetry-compact .hg6-unified-trend{display:flex;flex-direction:column;min-height:330px}
+.hg6-telemetry-compact .hg6-unified-trend .hg6-trend-plot{padding:12px 17px 4px;min-height:195px;flex:1}
+.hg6-telemetry-compact .hg6-unified-trend .hg6-trend-plot svg{width:100%;height:auto;max-height:210px}
+.hg6-telemetry-compact .hg6-unified-trend .hg6-trend-footer{margin-top:auto;padding:12px 16px 14px;line-height:1.5}
+.hg6-unified-trend .hg6-card-heading select{max-width:190px}
