@@ -149,3 +149,14 @@
 .hl-error{color:#ebc695;display:flex;gap:12px;padding:15px;margin:14px 0;border:1px solid #65543f;background:#3c342745;border-radius:8px;font-size:12px}
 @media(max-width:1100px){.hl-topic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hl-apdra-layout,.hl-measurement-layout,.hl-bottom-grid{grid-template-columns:1fr}.hl-apdra-denominator{margin-top:18px}.hl-hero{grid-template-columns:1fr}.hl-hero-aside{min-height:80px}.hl-orbit-art{display:none}.hl-dataset-banner{flex-direction:column;align-items:stretch}.hl-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.hl-page{padding-left:16px!important;padding-right:16px!important}.hl-hero{padding:26px 22px}.hl-hero-actions{flex-direction:column;align-items:stretch}.hl-hero-aside{min-height:0}.hl-topic-grid,.hl-article-columns,.hl-filter-grid{grid-template-columns:1fr}.hl-topic-card{min-height:175px}.hl-feature-article,.hl-apdra-explainer,.hl-apdra-findings{padding:20px}.hl-section-heading{align-items:flex-start;flex-direction:column}.hl-dataset-stats{min-width:0}.hl-dataset-stats>div{padding:0 9px}.hl-dataset-stats strong{font-size:22px}.hl-dataset-banner{padding:22px}.hl-records summary>span{flex-wrap:wrap}.hl-records summary small{width:100%;padding-left:30px}}
+
+.hl-live-apdra{border:1px solid #386c75;border-radius:12px;background:linear-gradient(120deg,#153547,#0d2533);padding:23px;margin-bottom:15px}
+.hl-live-apdra-top{display:flex;justify-content:space-between;align-items:start;gap:12px}
+.hl-live-apdra-top h3{font-size:20px;margin:0;color:#ebfafa}
+.hl-live-apdra-top p:not(.hl-kicker){font-size:11px;color:#91b5c4;margin:7px 0 0}
+.hl-live-apdra-content{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0 13px}
+.hl-live-apdra-content>div{border:1px solid #365566;border-radius:9px;background:#0d2534;padding:14px}
+.hl-live-apdra-content span{font-size:10px;color:#92b4c1;display:block;margin-bottom:8px}
+.hl-live-apdra-content strong{font-size:15px;color:#e0f7f5;line-height:1.4;word-break:break-word}
+.hl-live-apdra>p{font-size:11px;color:#a9c5cd;line-height:1.7;max-width:1000px}
+@media(max-width:650px){.hl-live-apdra-content{grid-template-columns:1fr}.hl-live-apdra-top{flex-direction:column}}
