@@ -314,3 +314,44 @@
 .hg6-telemetry-compact .hg6-unified-trend .hg6-trend-plot svg{width:100%;height:auto;max-height:210px}
 .hg6-telemetry-compact .hg6-unified-trend .hg6-trend-footer{margin-top:auto;padding:12px 16px 14px;line-height:1.5}
 .hg6-unified-trend .hg6-card-heading select{max-width:190px}
+
+/* Detail graph fills its card instead of leaving a blank lower half.
+   Scoped only to the expanded nine-vital Crew Telemetry chart. */
+.hg6-telemetry-compact .hg6-unified-trend{
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  height:auto;
+  align-self:start;
+}
+.hg6-telemetry-compact .hg6-unified-trend .hg6-trend-plot{
+  flex:none;
+  min-height:0;
+  padding:4px 14px 0;
+}
+.hg6-telemetry-compact .hg6-unified-trend .vital-chart-wrap{
+  padding:0;
+  width:100%;
+}
+.hg6-telemetry-compact .hg6-unified-trend .vital-chart-expanded svg,
+.hg6-telemetry-compact .hg6-unified-trend .hg6-trend-plot svg{
+  display:block;
+  width:100%;
+  height:auto;
+  max-height:none;
+  overflow:visible;
+}
+.hg6-telemetry-compact .hg6-unified-trend .chart-axis{
+  margin:3px 7px 0;
+  gap:12px;
+  font-size:9px;
+}
+.hg6-telemetry-compact .hg6-unified-trend .hg6-trend-footer{
+  margin:0;
+  padding:10px 16px 14px;
+  line-height:1.6;
+}
+@media(max-width:800px){
+ .hg6-telemetry-compact .hg6-unified-trend .hg6-trend-plot{padding:5px 9px 0}
+ .hg6-telemetry-compact .hg6-unified-trend .chart-axis{font-size:8px;margin-inline:5px}
+}
