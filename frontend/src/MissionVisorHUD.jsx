@@ -57,7 +57,7 @@ function SignalRow({metric,value,samples,selected,onSelect}) {
   return <button type="button" className={'hgv-signal'+(selected?' active':'')} onClick={onSelect} aria-pressed={selected} title={'Inspect '+metric.label}>
     <span className="hgv-signal-glyph"><Icon name={metric.glyph} size={21}/></span>
     <span className="hgv-signal-copy"><small>{metric.short}</small><strong>{formatValue(value,metric.digits)} <em>{metric.unit}</em></strong></span>
-    {metric.key==='heart_rate_bpm'&&<Trace samples={samples} metric={metric}/>}
+    {metric.key==='heart_rate_bpm'&&<Trace samples={hudSamples} metric={metric}/>}
   </button>;
 }
 
@@ -108,7 +108,6 @@ export default function MissionVisorHUD({
     ? (scenarioFrame?.reason||'Loading scenario frame from the backend.')
     : (reviewForCrew?.reason||review?.reason||'Collecting context and model evidence.');
   const scenarioPending=Boolean(scenarioDisplay&&!currentFrame);
-  const scenarioValuesReady=Boolean(scenarioFrame);
   const actions={
     OPTIMAL:'No current scripted trigger. Continue observation.',
     CHECK:'Check the readings and confirm the measurement source.',
@@ -186,6 +185,10 @@ export default function MissionVisorHUD({
         </div>
         <div className="hgv-visor-reflection" aria-hidden="true"/>
         <div className="hgv-overlay">
+          {scenarioDisplay&&severity!=='OPTIMAL'&&severity!=='UNASSESSED'&&<div className={'hgv-suit-alert-banner hgv-suit-alert-'+severity.toLowerCase()} role="status" aria-live="polite">
+            <Icon name={critical?'alert':'shield'} size={23}/>
+            <div><strong>{severity} · TRAINING EVENT</strong><span>{headline}</span></div>
+          </div>}
           <div className="hgv-topline">
             <div className="hgv-location"><span>EVA VIEW / SIMULATION</span><strong>{location.title}</strong><small>{crew}</small></div>
             <div className="hgv-brand">
@@ -194,12 +197,12 @@ export default function MissionVisorHUD({
               <div className={'hgv-physioalert hgv-alert-'+severity.toLowerCase()} role="status" aria-live="polite"><Icon name={critical?'alert':severity==='OPTIMAL'?'check':'shield'} size={17}/><strong>PHYSIOALERT</strong><span>{statusText}</span></div>
               {scenarioDisplay&&<small className="hgv-scenario-badge">SCENARIO: {scenario.id.replaceAll('_',' ').toUpperCase()} · T+{String(scenario.elapsed).padStart(2,'0')}s {scenarioPending?'· UPDATING':''}</small>}
             </div>
-            <div className="hgv-telemetry"><span>{isConnected?'SIMULATOR CONNECTED':'AWAITING TELEMETRY'}</span><strong>{latest?.sequence!=null?'SAMPLE #'+latest.sequence:'NO LIVE PACKET'}</strong><small>NOT A REAL SPACESUIT FEED</small></div>
+            <div className="hgv-telemetry"><span>{scenarioDisplay?'SERVER SCENARIO':isConnected?'SIMULATOR CONNECTED':'AWAITING TELEMETRY'}</span><strong>{latest?.sequence!=null?(scenarioDisplay?'FRAME #':'SAMPLE #')+latest.sequence:scenarioDisplay?'AWAITING SCENARIO':'NO LIVE PACKET'}</strong><small>{scenarioDisplay?'SYNTHETIC PLAYBACK · NOT SUIT SENSORS':'NOT A REAL SPACESUIT FEED'}</small></div>
           </div>
           <div className="hgv-sides">
             <aside className="hgv-panel hgv-panel-left" aria-label="Fictional physiological signals">
               <div className="hgv-panel-heading"><Icon name="activity" size={16}/><strong>BIOMETRICS</strong><span>{scenarioDisplay?'TRAINING':'LIVE SIM'}</span></div>
-              {METRICS.map(m=><SignalRow key={m.key} metric={m} value={latest?.values?.[m.key]} samples={samples} selected={selectedMetric===m.key} onSelect={()=>setSelectedMetric(m.key)}/>)}
+              {METRICS.map(m=><SignalRow key={m.key} metric={m} value={latest?.values?.[m.key]} samples={hudSamples} selected={selectedMetric===m.key} onSelect={()=>setSelectedMetric(m.key)}/>)}
             </aside>
             <div className="hgv-focus" aria-hidden="true">
               <div className="hgv-focus-marker"><span/><span/><span/><span/></div>
@@ -208,13 +211,13 @@ export default function MissionVisorHUD({
             <aside className="hgv-panel hgv-panel-right" aria-label="Fictional suit and environment telemetry">
               <div className="hgv-panel-heading"><Icon name="shield" size={16}/><strong>SUIT & LIFE SUPPORT</strong><span>DEMO</span></div>
               {SUIT_SYSTEMS.map(m=><SystemRow key={m.key} system={m} value={systems[m.key]}/>)}
-              <small className="hgv-system-warning">{engineeringError?'ENGINEERING FEED UNAVAILABLE':'SUIT METRICS ARE SCRIPTED OR UNCONNECTED'}</small>
+              <small className="hgv-system-warning">{scenarioDisplay?'BACKEND-SCRIPTED HABITAT VALUES · SUIT PRESSURE / BATTERY UNCONNECTED':engineeringError?'ENGINEERING FEED UNAVAILABLE':'SUIT METRICS ARE SCRIPTED OR UNCONNECTED'}</small>
             </aside>
           </div>
           <div className="hgv-bottomline">
             <div className="hgv-trend-box"><span><Icon name="pulse" size={16}/>{metric.label.toUpperCase()} · SIMULATED TREND</span><Trace samples={samples} metric={metric}/></div>
             <div className="hgv-compass"><div className="hgv-ticks" aria-hidden="true"/><span>HEADING / RANGE UNAVAILABLE</span></div>
-            <div className={'hgv-review-note'+(critical?' critical':'')}><span>MONITOR SUMMARY</span><p>{explanation}</p></div>
+            <div className={'hgv-review-note'+(critical?' critical':'')}><span>{scenarioDisplay?'SCENARIO RESPONSE':'MONITOR SUMMARY'}</span><p><strong>{headline}</strong> {explanation}</p></div>
           </div>
         </div>
       </div>
