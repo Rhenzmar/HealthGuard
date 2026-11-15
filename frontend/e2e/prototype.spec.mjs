@@ -46,17 +46,10 @@ test('crew switching and primary/remainder navigation work',async ({page})=>{
     await expect(button).toHaveAttribute('aria-pressed','true');
   }
   const nav=page.getByRole('navigation',{name:'Primary navigation'});
-  for(const [label,title] of [
-    ['Crew Telemetry','Crew Telemetry'],
-    ['Anomaly Center','Anomaly Center'],
-    ['Mission Dashboard','ARTEMIS IV']]){
-    await nav.getByRole('button',{name:new RegExp(label,'i')}).click();
-    await expect(page.getByRole('heading',{name:new RegExp(title,'i')}).first()).toBeVisible();
-  }
-  for(const label of ['Health Library','Mission Control','Health Routine']){
-    await page.getByRole('button',{name:'More',exact:true}).click();
-    await page.getByRole('group',{name:'More destinations'}).getByRole('button',{name:new RegExp(label,'i')}).click();
-    await expect(page.getByRole('heading').first()).toBeVisible();
+  for(const label of ['Crew Telemetry','Body Explorer','Health Routine','Health Library','Mission Control','Mission HUD','Mission Dashboard']){
+    const button=nav.getByRole('button',{name:new RegExp(label,'i')});
+    await button.click();
+    await expect(button).toHaveAttribute('aria-current','page');
   }
   expect(errors).toEqual([]);
 });
@@ -90,7 +83,7 @@ test('all seven selectable scenarios yield real backend CNN evidence and recover
   await expect(modal).toBeVisible();
 });
 
-test('scenario audio and speech controls respond to real backend evidence',async ({page,request})=>{
+test('scenario critical voice, no beep, and recovery behavior respond to real backend evidence',async ({page,request})=>{
   const backend='http://127.0.0.1:8000';
   // Test fixture remaps the next browser tick to an actual server-generated
   // peak and the following tick to actual server-generated recovery.
@@ -118,11 +111,16 @@ test('scenario audio and speech controls respond to real backend evidence',async
   await modal.getByRole('button',{name:/Hide training controls/i}).click();
   await modal.getByRole('button',{name:/Start scenario/i}).click();
   await expect(modal).not.toBeVisible();
-  await expect.poll(()=>page.evaluate(()=>window.__healthguardAudioBeepCount),{timeout:20000}).toBeGreaterThan(0);
+  // The current approved design deliberately has NO pulse/beep alarm.
+  await expect(page.locator('.hg6-alert-red').first()).toBeVisible({timeout:20000});
+  expect(await page.evaluate(()=>window.__healthguardAudioBeepCount)).toBe(0);
   await expect.poll(()=>page.evaluate(()=>window.__healthguardSpeechEvents.filter(x=>x.kind==='speak').length),{timeout:20000}).toBeGreaterThan(1);
+  // The deterministic UI fixture advances to the real backend recovery
+  // frame on the next tick. Recovery must stop repeating the critical voice.
+  await expect.poll(()=>page.evaluate(()=>window.__healthguardSpeechEvents.some(x=>x.kind==='cancel')),{timeout:20000}).toBe(true);
   // There is one additional backend frame after peak that clears the
   // scripted alarm. Speech cancel is instrumented in the fake browser API.
-  await expect.poll(()=>page.evaluate(()=>window.__healthguardSpeechEvents.filter(x=>x.kind==='cancel').length),{timeout:20000}).toBeGreaterThan(2);
+  expect(await page.evaluate(()=>window.__healthguardAudioBeepCount)).toBe(0);
 });
 
 test('failed backend scenario request cannot substitute local fabricated data',async ({page})=>{
