@@ -181,6 +181,6 @@ export default function MissionVisorHUD({
         </div>
       </div>
     </div>
-    <div className="hgv-footer"><span>Research prototype · fictional crew and engineering simulations · not a medical or EVA safety instrument</span><span>{showMars ? <a href="https://commons.wikimedia.org/wiki/File:Panorama_of_Jezero_crater_on_Mars,_sol_44_of_Perseverance_mission.png" target="_blank" rel="noreferrer">Mars landscape: NASA/JPL-Caltech</a> : 'Mission environment is an illustration'} · Habitat and overlays are concept art</span></div>
+    <div className="hgv-footer"><span>Research prototype · fictional crew and engineering simulations · not a medical or EVA safety instrument</span><span>Landscape, habitat and overlays are illustrative concept graphics, not NASA photographs</span></div>
   </section>;
 }
