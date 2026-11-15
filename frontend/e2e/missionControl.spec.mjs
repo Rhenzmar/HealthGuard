@@ -18,10 +18,10 @@ test('Mission Control environment, crew, telemetry filters and navigation', asyn
   const radiation = page.getByRole('group',{name:'Filter mission system channels'});
   await radiation.getByRole('button',{name:'Radiation'}).click();
   await expect(radiation.getByRole('button',{name:'Radiation'})).toHaveAttribute('aria-pressed','true');
-  await expect(page.getByText('Radiation rate')).toBeVisible();
-  await expect(page.getByText('Cabin humidity')).toHaveCount(0);
+  await expect(page.locator('.hgc-engineering-grid .hgc-system-tile')).toHaveCount(2);
+  await expect(page.locator('.hgc-engineering-grid .hgc-system-tile').first()).toContainText('Radiation / synthetic estimate');
   await radiation.getByRole('button',{name:'All systems'}).click();
-  await expect(page.getByText('Cabin humidity')).toBeVisible();
+  await expect(page.locator('.hgc-engineering-grid .hgc-system-tile')).toHaveCount(8);
   await page.getByRole('button',{name:'Crew telemetry'}).click();
   await expect(navigation.getByRole('button',{name:/Crew Telemetry/i})).toHaveAttribute('aria-current','page');
   expect(errors).toEqual([]);
