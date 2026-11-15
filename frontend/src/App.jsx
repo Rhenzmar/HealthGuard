@@ -439,7 +439,7 @@ export default function App() {
       scenarioPending={scenario.pending}
       scenarioError={scenario.error}
     />}
-    {tour>=0&&<GuidedTour index={tour} onNext={()=>moveGuidedTour(tour+1)} onBack={()=>moveGuidedTour(tour-1)} onExit={stopGuidedTour}/>}
+    {tour>=0&&<GuidedTour index={tour} onNext={()=>moveGuidedTour(tour+1)} onBack={()=>moveGuidedTour(tour-1)} onExit={stopGuidedTour} narrationAllowed={!scenario.running}/>}
 
   </div>;
 }
