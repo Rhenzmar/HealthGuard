@@ -1,0 +1,56 @@
+import {test,expect} from '@playwright/test';
+
+test('Wellness Expedition is a second playable game and safely pauses, skips and isolates crew progress',async ({page})=>{
+  await page.goto('/');
+  await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Health Routine/}).click();
+  await expect(page.getByRole('heading',{name:/MISSION QUEST/})).toBeVisible();
+  await page.getByRole('navigation',{name:'Choose Health Routine game'}).getByRole('button',{name:/Wellness Expedition/}).click();
+  await expect(page.getByRole('heading',{name:/TRAIN YOUR CREW/})).toBeVisible();
+  await expect(page.getByRole('region',{name:'Wellness challenge list'})).toBeVisible();
+  await expect(page.getByRole('button',{name:/Orbit Warm-Up/})).toBeVisible();
+  await expect(page.getByRole('button',{name:/Hydration Station/})).toBeVisible();
+  await expect(page.getByRole('button',{name:/Seated \/ gentle/})).toHaveAttribute('aria-pressed','true');
+  await page.getByRole('button',{name:/Standing \/ mobile/}).click();
+  await page.getByRole('button',{name:/Begin challenge/}).click();
+  await expect(page.getByRole('button',{name:/Pause challenge/})).toBeVisible();
+  await page.getByRole('button',{name:/Pause challenge/}).click();
+  await expect(page.getByRole('button',{name:/Resume challenge/})).toBeVisible();
+  await page.getByRole('button',{name:/Restart timer/}).click();
+  await page.getByRole('button',{name:/Skip challenge/}).click();
+  await expect(page.getByRole('button',{name:/Orbit Warm-Up/})).toContainText('SKIPPED');
+  await expect(page.getByText(/0 XP today/)).toBeVisible();
+  await page.getByRole('button',{name:/Hydration Station/}).click();
+  await expect(page.getByRole('heading',{name:'Hydration Station'})).toBeVisible();
+  await page.getByRole('button',{name:'Play as Marcus Reed'}).click();
+  await expect(page.getByText(/fictional crew profile Marcus Reed/)).toBeVisible();
+  await expect(page.getByRole('button',{name:/Orbit Warm-Up/})).toContainText('ACTIVE');
+  await page.getByRole('button',{name:'Play as Elena Park'}).click();
+  await expect(page.getByRole('button',{name:/Orbit Warm-Up/})).toContainText('SKIPPED');
+  await page.reload();
+  await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Health Routine/}).click();
+  await page.getByRole('navigation',{name:'Choose Health Routine game'}).getByRole('button',{name:/Wellness Expedition/}).click();
+  await expect(page.getByRole('button',{name:/Orbit Warm-Up/})).toContainText('SKIPPED');
+  await page.getByRole('navigation',{name:'Choose Health Routine game'}).getByRole('button',{name:/Knowledge Quest/}).click();
+  await expect(page.getByRole('region',{name:'Mission game statistics'})).toBeVisible();
+});
+
+test('timer must finish and user must explicitly confirm before wellness XP is logged',async ({page})=>{
+  await page.goto('/');
+  await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Health Routine/}).click();
+  await page.getByRole('navigation',{name:'Choose Health Routine game'}).getByRole('button',{name:/Wellness Expedition/}).click();
+  await page.getByRole('button',{name:/Hydration Station/}).click();
+  await page.clock.install();
+  await page.getByRole('button',{name:/Begin challenge/}).click();
+  await expect(page.getByRole('button',{name:/Pause challenge/})).toBeVisible();
+  await page.clock.runFor(21000);
+  await expect(page.getByText(/Timer finished\. Did you actually complete the activity\?/)).toBeVisible();
+  await expect(page.getByRole('button',{name:/Log completion/})).toBeDisabled();
+  await expect(page.getByText(/0 XP today/)).toBeVisible();
+  await page.getByRole('checkbox',{name:/I completed this optional activity/}).check();
+  await page.getByRole('button',{name:/Log completion/}).click();
+  await expect(page.getByText(/15 XP today/)).toBeVisible();
+  await expect(page.getByText('First Step')).toBeVisible();
+  await expect(page.getByRole('button',{name:/Replay challenge/})).toBeVisible();
+  await page.getByRole('button',{name:/Replay challenge/}).click();
+  await expect(page.getByText(/0 XP today/)).toBeVisible();
+});
