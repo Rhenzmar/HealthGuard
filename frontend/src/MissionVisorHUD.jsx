@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { METRICS, formatValue, readApi } from './api.js';
 import { Icon } from './viz.jsx';
+import {liveVoiceAnnouncement,scenarioVoiceAnnouncement} from './healthguardVoice.js';
 import './missionVisorHUD.css';
 
 // A first-person concept of HealthGuard inside an EVA suit.
@@ -172,8 +173,8 @@ export default function MissionVisorHUD({
     if(!critical||!voiceEnabled||typeof window==='undefined'||!window.speechSynthesis)return;
     let cancelled=false,timeout;
     const speech=scenarioDisplay
-      ? (scenarioFrame?.alarm?.voice_ready_script||headline)
-      : (reviewForCrew?.voice_ready_script||headline);
+      ? scenarioVoiceAnnouncement(scenarioFrame?.scenario_id||scenario?.id,'CRITICAL')
+      : liveVoiceAnnouncement(reviewForCrew);
     const announce=()=>{
       if(cancelled)return;
       window.speechSynthesis.cancel();
