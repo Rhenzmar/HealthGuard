@@ -52,3 +52,14 @@ Render cold starts and redeploys can reset in-memory simulated stream state. No 
 **Do not rename active API environment variables or the `physiograph/` Python import directory casually.** Rename the GitHub repository only after checking its connection in Render; GitHub redirects are not a sufficient deployment test. Keep the current working static URL until a new custom hostname has actually been verified.
 
 See [repository naming and separate public reader-repo plan](docs/REPOSITORY_RENAME_AND_PUBLICATION.md).
+
+## HealthGuard-branded service pair (created November 15, 2026)
+
+- **Frontend:** https://healthguard-dashboard.onrender.com/ (`healthguard-dashboard`; static site)
+- **API:** https://healthguard-api-19xg.onrender.com/ (`healthguard-api`; Docker/FastAPI, free Singapore)
+- The new frontend build variable `VITE_PHYSIOGRAPH_API_BASE` points to the new API. The new API's `PHYSIOGRAPH_CORS_ORIGINS` allowlist includes both old and new frontend origins.
+- All original Render services remain available as fallbacks. Their URLs have **not** been reassigned or deleted.
+- Render generated the `-19xg` suffix for the new API hostname. Do not assume changing its dashboard display name changes the `onrender.com` address.
+- The legacy `PHYSIOGRAPH_*` configuration keys and `physiograph/` Python import package are retained to avoid breaking the running application. The public product and API title are HealthGuard.
+
+After any future change to `frontend/src/api.js`, verify the **new** frontend and API have both built from the same commit; the old site remains available during migration.

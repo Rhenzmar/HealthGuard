@@ -85,7 +85,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                 except asyncio.CancelledError:
                     pass
 
-    api = FastAPI(title="PhysioGraph simulated live telemetry", version="1.5.0", lifespan=lifespan)
+    api = FastAPI(title="HealthGuard simulated live telemetry", version="1.5.0", lifespan=lifespan)
     # Restrict browser CORS to operator-configured exact origins. The frontend
     # may use a same-origin reverse proxy instead, requiring no CORS setup.
     allowed_origins = [x.strip() for x in os.getenv("PHYSIOGRAPH_CORS_ORIGINS", "").split(",") if x.strip()]
