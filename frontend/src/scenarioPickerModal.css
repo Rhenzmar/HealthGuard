@@ -59,3 +59,14 @@
 .hg-scenario-detail-expanded .hg6-scenario-heading{display:none}
 @media(max-width:700px){.hg-scenario-backdrop{padding:10px}.hg-scenario-modal{max-height:calc(100dvh - 20px)}.hg-scenario-modal-header{padding:13px}.hg-scenario-modal-header h2{font-size:17px}.hg-scenario-modal-header p{max-width:340px}.hg-scenario-modal-body{padding:12px}.hg-scenario-tabs{padding:0 10px}.hg-scenario-cards{grid-template-columns:1fr}.hg-scenario-option{min-height:115px}.hg-scenario-modal-footer{padding:12px;flex-direction:column;align-items:stretch}.hg-scenario-footer-actions{justify-content:flex-end}.hg-scenario-reset{font-size:0;gap:0}.hg-scenario-reset svg{width:17px;height:17px}}
 @media(prefers-reduced-motion:reduce){.hg-scenario-progress i{transition:none}}
+
+
+/* Keep scenario evidence and alert severity visible throughout playback. */
+.hg-scenario-modal{max-height:calc(100dvh - 30px)}
+.hg-scenario-detail-expanded{max-height:min(46vh,470px)}
+.hg-scenario-level{font-size:10px;letter-spacing:.6px;border:1px solid #477c78;border-radius:6px;padding:5px 9px;font-weight:800}
+.hg-scenario-level-optimal{color:#95e9d2;border-color:#478b7c}
+.hg-scenario-level-check{color:#f0d496;border-color:#9c8651}
+.hg-scenario-level-warning{color:#ffc082;border-color:#c38b58;background:#352719}
+.hg-scenario-level-critical{color:#ffc8ce;border-color:#e87c82;background:#4a1c2b}
+@media(max-width:700px){.hg-scenario-detail-expanded{max-height:38vh}.hg-scenario-modal-header-actions{flex-wrap:wrap;justify-content:flex-end}.hg-scenario-modal{max-height:calc(100dvh - 16px)}}
