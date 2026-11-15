@@ -19,7 +19,7 @@ const LIVE_MESSAGES = Object.freeze({
   OPTIMAL: 'No unusual pattern has been flagged in the current simulated window. Continue monitoring.',
   CHECK: 'A simulated reading needs another look. Check signal quality, recent activity, and the measurements.',
   WARNING: 'A simulated pattern needs review. Verify the readings and follow the mission checklist.',
-  CRITICAL: 'A simulated engineering reading has crossed its training threshold. Verify the reading and follow the mission checklist.'
+  CRITICAL: 'A simulated engineering reading has crossed its simulated threshold. Verify the reading and follow the mission checklist.'
 });
 
 const label=status=>status==='CRITICAL'?'Critical alert':
@@ -39,8 +39,8 @@ export function liveVoiceAnnouncement(review) {
 /** The scenario ID comes from the app's own trusted training scenario catalog. */
 export function scenarioVoiceAnnouncement(scenarioId,status='CHECK',mode='alert') {
   const message=SCENARIO_MESSAGES[scenarioId];
-  if(!message)return 'HealthGuard training. Review the simulated measurements and follow the approved mission checklist.';
-  const prefix=mode==='guidance'?'HealthGuard training guidance':
-    'HealthGuard '+label(status)+' - training';
+  if(!message)return 'HealthGuard. Review the simulated measurements and follow the approved mission checklist.';
+  const prefix=mode==='guidance'?'HealthGuard guidance':
+    'HealthGuard '+label(status);
   return prefix+'. '+message;
 }
