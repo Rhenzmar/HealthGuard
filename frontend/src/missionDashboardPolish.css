@@ -227,3 +227,25 @@
 .hg6-model-disclosure>summary:focus-visible{outline:2px solid #86efe4;outline-offset:2px}
 .hg6-model-disclosure .hg6-analysis-grid{margin-top:0}
 .hg6-model-disclosure .hg6-analysis-history{margin-bottom:0}
+
+/* Nine clearly sourced dashboard readings, without forcing a tall card. */
+.hg6-vitals{display:flex;flex-direction:column}
+.hg6-vital-section-label{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 13px 5px;color:#78e1d8}
+.hg6-vital-section-label strong{font-size:8px;letter-spacing:1.05px}
+.hg6-vital-section-label span{font-size:8px;color:#99b9c7;text-align:right}
+.hg6-vital-estimate-label{padding-top:13px;border-top:1px solid #304f63;margin:3px 11px 0}
+.hg6-vital-lines{padding:2px 12px 8px}
+.hg6-vital-lines button,.hg6-vital-estimate{display:grid;grid-template-columns:19px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:37px;padding:7px 3px}
+.hg6-vital-lines button>span:nth-child(2),.hg6-vital-estimate>span:nth-child(2){font-size:10px;line-height:1.35}
+.hg6-vital-lines button strong,.hg6-vital-estimate strong{font-size:14px;line-height:1.25;font-variant-numeric:tabular-nums;text-align:right}
+.hg6-vital-estimate{border-bottom:1px solid #29495d;color:#d2e5ed}
+.hg6-vital-estimate:last-child{border-bottom:0}
+.hg6-vital-estimate strong{color:#e6f4f7}
+.hg6-vital-estimate strong small{font-size:9px;font-weight:500;color:#a6c2cb}
+.hg6-vital-source-note{padding:8px 13px 12px;color:#90b4c3;font-size:9px;line-height:1.55;margin:0;border-top:1px solid #254356}
+.hg6-vital-lines button:disabled{cursor:default;opacity:.68}
+@media(max-width:1280px){
+ .hg6-vital-lines button strong,.hg6-vital-estimate strong{font-size:12px}
+ .hg6-vital-lines button,.hg6-vital-estimate{gap:5px;grid-template-columns:17px minmax(0,1fr) auto}
+ .hg6-vital-lines button>span:nth-child(2),.hg6-vital-estimate>span:nth-child(2){font-size:9px}
+}
