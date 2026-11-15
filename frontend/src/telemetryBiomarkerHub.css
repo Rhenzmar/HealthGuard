@@ -53,3 +53,16 @@
 .hg-bio-foot{border-top:1px solid #24495e;margin:16px 0 0;padding-top:12px}
 @media(max-width:1100px){.hg-bio-group-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:650px){.hg-bio-hub{padding:13px}.hg-bio-heading{align-items:stretch;flex-direction:column}.hg-bio-group-grid{grid-template-columns:1fr}.hg-bio-group{min-height:110px}.hg-bio-pagination{align-items:flex-start;flex-direction:column}}
+
+/* Health Library compact dataset browser: one source rather than a dense tile wall. */
+.hg-bio-compact{margin:20px 0 12px;padding:20px}
+.hg-bio-compact .hg-bio-heading{margin-bottom:13px}
+.hg-bio-compact .hg-bio-heading h2{font-size:18px}
+.hg-bio-compact-selector{display:flex;flex-direction:column;gap:7px;font-size:10px;font-weight:750;color:#a9cfdb;max-width:620px}
+.hg-bio-compact-selector select{border:1px solid #42748a;border-radius:8px;background:#102b3f;color:#e4f5f9;padding:11px 13px;font:inherit;font-size:12px;min-height:42px;cursor:pointer;width:100%}
+.hg-bio-compact-selector select:focus-visible{outline:2px solid #73ddd9;outline-offset:2px}
+.hg-bio-compact-detail{border:1px solid #304f63;border-radius:10px;background:#0a1c2c;margin-top:14px;padding:16px}
+.hg-bio-compact-detail .hg-bio-expanded-heading{margin-bottom:10px}
+.hg-bio-compact-detail .hg-bio-expanded-heading h3{font-size:14px}
+.hg-bio-compact .hg-bio-foot{margin-top:12px}
+@media(max-width:650px){.hg-bio-compact{padding:14px}.hg-bio-compact-detail{padding:12px}.hg-bio-compact .hg-bio-heading h2{font-size:16px}}
