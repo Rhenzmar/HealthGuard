@@ -9,6 +9,13 @@ import './scenarioPickerModal.css';
 const CREW=new Set(['oxygenation','exertion','thermal','sensor']);
 const CATS=[{id:'crew',label:'Crew health',icon:'heart'},{id:'ship',label:'Spacecraft',icon:'satellite'}];
 const levels=['OPTIMAL','CHECK','WARNING','CRITICAL'];
+const ENGINEERING_EVENTS={
+  co2:[['cabin_co2_ppm','Cabin CO₂','ppm']],
+  cabin_leak:[['cabin_pressure_kpa','Cabin pressure','kPa']],
+  radiation:[['radiation_rate_usv_h','Radiation rate','µSv/h']],
+  suit_leak:[['suit_pressure_psi','Suit pressure','psi']],
+  suit_power:[['suit_battery_percent','Suit battery','%']]
+};
 export default function ScenarioPickerModal({
   open,onClose,onBody,onHUD,person,scenarioId,onSelectScenario,onStart,onPause,onReset,onExit,
   running,elapsed,sample,latestFrame,soundEnabled,onToggleSound,onSpeak,scenarioPending=false,scenarioError=''
@@ -76,6 +83,12 @@ export default function ScenarioPickerModal({
               {scenarioPending&&<p role="status" className="hg-scenario-pending">Loading the next verified scenario frame…</p>}
               <div className="hg-scenario-readings">{METRICS.map(m=><div key={m.key} className={frame?.metric_levels?.[m.key]==='CRITICAL'?'critical':''}>
                 <span>{m.label}</span><strong>{formatValue(frame?.values?.[m.key],m.digits)} <small>{m.unit}</small></strong></div>)}</div>
+              {ENGINEERING_EVENTS[scenarioId]&&frame&&<div className="hg-scenario-engineering">
+                <strong>Spacecraft simulator</strong>
+                {ENGINEERING_EVENTS[scenarioId].map(([key,label,unit])=><div key={key} className={frame.engineering_flags?.[key]?'critical':''}>
+                  <span>{label}</span><b>{formatValue(frame.engineering_values?.[key],1)} <small>{unit}</small></b>
+                </div>)}
+              </div>}
               <details className="hg-scenario-evidence"><summary>Training details and model evidence <Icon name="chevron" size={14}/></summary>
                 <p>{selected.cause}</p><p>Illustrative trigger: {selected.triggerLabel}</p>
                 <div>17-channel CNN <b>{frame?.model_evidence?.candidate_17ch?.status||'Awaiting evidence'}</b></div>
