@@ -106,4 +106,6 @@ HealthGuard was developed by **CNHS-STE** for NASA Space Apps 2026. NASA data ar
 
 The team used **ChatGPT (OpenAI)** as an AI-assisted collaborator for research planning, software design and implementation, code review, testing, documentation and demonstration preparation. The team remains responsible for the accuracy and interpretation of its work. Spoken alerts and tour narration use **predetermined scripts and browser text-to-speech**, not a dynamically conversing medical AI.
 
-The interactive anatomical components include third-party content with separate licenses; see the app's attribution and upstream dependencies. **No repository-wide open-source license is currently granted by this README.** Do not assume every bundled dataset or third-party asset is redistributable without its applicable terms.
+## License
+
+Original HealthGuard source code and documentation in this repository are released under the [MIT License](LICENSE), to the extent the project contributors own the necessary rights. **Third-party content is not relicensed by the MIT file.** The interactive anatomy assets, external libraries, models, NASA research data, illustrations, and other materials originating from third parties remain subject to their respective terms and attribution requirements. See the app's attributions, dependencies, and [research sources](research/sources.md) before redistributing those materials.
