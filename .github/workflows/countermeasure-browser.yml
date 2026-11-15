@@ -1,0 +1,46 @@
+name: Countermeasure Ops independent Chromium acceptance
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/src/CountermeasureGame.jsx'
+      - 'frontend/src/countermeasureLogic.js'
+      - 'frontend/src/countermeasureGame.css'
+      - 'frontend/e2e/countermeasureGame.spec.mjs'
+      - '.github/workflows/countermeasure-browser.yml'
+permissions:
+  contents: read
+jobs:
+  countermeasure-acceptance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install API and browser prerequisites
+        run: |
+          python -m pip install -r requirements-live-lite.txt httpx
+          cd frontend
+          npm install --no-audit --no-fund
+          npm install --no-save --no-audit --no-fund @playwright/test
+          npx playwright install --with-deps chromium
+      - name: Validate full frontend and unit tests
+        working-directory: frontend
+        run: npm run build
+      - name: Run isolated Countermeasure Ops gameplay checks
+        working-directory: frontend
+        run: npx playwright test --config=playwright.config.mjs e2e/countermeasureGame.spec.mjs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: countermeasure-browser-evidence
+          retention-days: 14
+          path: |
+            frontend/e2e-results/
+            frontend/test-results/
