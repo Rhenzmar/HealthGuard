@@ -233,7 +233,7 @@ function CrewProfile({person,onClose,onMission,latest,training}){
   </section>;
 }
 
-export default function MissionDashboard({view='dashboard',onDashboard=()=>{},onTelemetryPage=()=>{},onScenarioPage=()=>{},error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment,contextHistory=[]}){
+export default function MissionDashboard({view='dashboard',onDashboard=()=>{},onTelemetryPage=()=>{},onScenarioPage=()=>{},error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment,contextHistory=[],scenario}){
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
   const [auxiliaryTelemetry,setAuxiliaryTelemetry]=useState(null);
   const [engineeringHistory,setEngineeringHistory]=useState([]);
@@ -263,101 +263,42 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const streamConnected=connection==='connected'&&hasTelemetry;
   const [showTelemetry,setShowTelemetry]=useState(false);
   const [infoProfile,setInfoProfile]=useState(null);
-  const [scenarioId,setScenarioId]=useState('');
-  const [scenarioSecond,setScenarioSecond]=useState(0);
-  const [scenarioRevision,setScenarioRevision]=useState(0);
-  const [scenarioRunning,setScenarioRunning]=useState(false);
-  const [scenarioFrame,setScenarioFrame]=useState(null);
-  const [scenarioFetchError,setScenarioFetchError]=useState('');
-  const [scenarioPending,setScenarioPending]=useState(false);
-  const [scenarioSound,setScenarioSound]=useState(true);
-  const [scenarioCritical,setScenarioCritical]=useState(false);
-  const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(false);
-  const alertVoiceRef=useRef('');
-  const toggleLiveAlerts=()=>setLiveAlertsEnabled(v=>!v);
-  const stopScenario=()=>{
-    setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
-    setScenarioRunning(false);setScenarioId('');setScenarioSecond(0);
-    setScenarioCritical(false);
-    if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
-  };
-  const selectScenario=id=>{
-    setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
-    setScenarioRunning(false);setScenarioId(id);setScenarioSecond(0);
-    setScenarioRevision(v=>v+1);
-    setScenarioCritical(false);
-    if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
-  };
-  const startScenario=()=>{
-    if(!scenarioId||!training||scenarioPending)return;
-    setScenarioRunning(true);
-  };
+  const scenarioId=scenario.id;
+  const scenarioSecond=scenario.elapsed;
+  const scenarioRunning=scenario.running;
+  const scenarioPending=scenario.pending;
+  const scenarioFetchError=scenario.error;
+  const scenarioSound=scenario.soundEnabled;
+  const training=scenario.sample;
+  const trainingHistory=training?.history||[];
+  const stopScenario=scenario.stop;
+  const selectScenario=scenario.select;
+  const startScenario=scenario.start;
   const speakScenario=()=>{
     if(!scenarioId||typeof window==='undefined'||!window.speechSynthesis)return;
     const item=SCENARIOS.find(x=>x.id===scenarioId);
     if(!item)return;
     window.speechSynthesis.cancel();
-    const speech=training?.alarm?.voice_ready_script||('HealthGuard training guidance for '+activeCrew.name+'. '+item.guidance);
+    const speech=scenario.latest?.alarm?.voice_ready_script||
+      ('HealthGuard training guidance for '+activeCrew.name+'. '+item.guidance);
     const utterance=new SpeechSynthesisUtterance(speech);
     utterance.lang='en-US';utterance.rate=.95;
     window.speechSynthesis.speak(utterance);
   };
-  useEffect(()=>{
-    if(!scenarioRunning||!scenarioId||scenarioPending)return;
-    const timer=setInterval(()=>setScenarioSecond(v=>{
-      if(v>=SCENARIO_LENGTH){setScenarioRunning(false);return v;}
-      return v+1;
-    }),1000);
-    return()=>clearInterval(timer);
-  },[scenarioRunning,scenarioId,scenarioPending]);
-  // Backend owns all seven scripted signals and their CNN model evaluations.
-  // Never use the older browser-side generator as a model prediction fallback.
-  useEffect(()=>{
-    if(!scenarioId){
-      setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
-      return;
-    }
-    let cancelled=false;
-    setScenarioPending(true);
-    readApi('/api/simulation/scenarios/'+encodeURIComponent(activeCrew.subjectId)+'/'+encodeURIComponent(scenarioId)
-      +'?second='+encodeURIComponent(scenarioSecond)+'&include_history=true')
-      .then(frame=>{
-        if(cancelled)return;
-        if(frame.subject_id!==activeCrew.subjectId||frame.scenario_id!==scenarioId
-           ||frame.elapsed_seconds!==scenarioSecond
-           ||frame.source!=='SERVER_SCRIPTED_TRAINING_SCENARIO'){
-          throw new Error('Backend returned mismatched scenario data');
-        }
-        setScenarioFrame(frame);setScenarioFetchError('');setScenarioPending(false);
-      })
-      .catch(error=>{if(cancelled)return;setScenarioFetchError(error.message||'Scenario model analysis unavailable');
-        setScenarioFrame(null);setScenarioPending(false);setScenarioRunning(false);});
-    return()=>{cancelled=true;};
-  },[activeCrew.subjectId,scenarioId,scenarioSecond,scenarioRevision]);
-  const training=(scenarioFrame?.scenario_id===scenarioId
-                  &&scenarioFrame?.subject_id===activeCrew.subjectId
-                  &&scenarioFrame?.elapsed_seconds===scenarioSecond)?scenarioFrame:null;
-  const trainingHistory=training?.history||[];
-  // Keep the last VERIFIED scenario severity while its next backend frame loads.
-  // A missing frame is not evidence of recovery.
-  useEffect(()=>{
-    if(training?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'){
-      setScenarioCritical(training.severity==='CRITICAL');
-    }
-  },[training?.sequence,training?.elapsed_seconds,training?.severity,training?.source]);
   const liveCritical=Boolean(
     !scenarioId && unified?.subject_id===selected &&
     unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY' &&
     unified?.status==='CRITICAL'
   );
-  const scenarioCriticalActive=Boolean(scenarioId&&scenarioRunning&&scenarioCritical);
+  const scenarioCriticalActive=Boolean(
+    scenarioId&&scenarioRunning&&scenario.latest?.severity==='CRITICAL'
+  );
   const voiceActive=scenarioId?scenarioCriticalActive&&scenarioSound:liveCritical&&liveAlertsEnabled;
-  const liveVoice=unified?.voice_ready_script||'HealthGuard training alert. A critical numerical pattern requires review. Confirm context and readings.';
-  const scenarioVoice=training?.alarm?.voice_ready_script||
+  const liveVoice=unified?.voice_ready_script||
+    'HealthGuard training alert. Verify the simulated readings.';
+  const scenarioVoice=scenario.latest?.alarm?.voice_ready_script||
     ('HealthGuard critical scripted scenario for '+activeCrew.name+'. Check the readings and follow the mission training checklist.');
   alertVoiceRef.current=scenarioId?scenarioVoice:liveVoice;
-  // A single opt-in speech channel, never an electronic beep. Five seconds
-  // between attempts; skip any attempt while an announcement is still speaking.
   useEffect(()=>{
     if(!voiceActive||typeof window==='undefined'||!window.speechSynthesis)return;
     const speech=window.speechSynthesis;
@@ -370,10 +311,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
     };
     announce();
     const timer=window.setInterval(announce,5000);
-    return()=>{
-      window.clearInterval(timer);
-      speech.cancel();
-    };
+    return()=>{window.clearInterval(timer);speech.cancel();};
   },[voiceActive,scenarioId,selected]);
   useEffect(()=>()=>{if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();},[]);
   const subjects=Object.keys(snapshot?.subjects||{});
@@ -383,7 +321,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const progress=getRoutine(activeCrew.subjectId);
   const connected=connection==='connected'&&subjects.length>0;
   useEffect(()=>{if(showTelemetry||infoProfile)window.scrollTo({top:0,behavior:'smooth'})},[showTelemetry,infoProfile]);
-  const selectCrew=i=>{stopScenario();setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);setMetricKey(METRICS[0].key);};
+  const selectCrew=i=>{setSelected(CREW[i].subjectId);setShowTelemetry(false);setInfoProfile(null);setMetricKey(METRICS[0].key);};
   useEffect(()=>{setShowTelemetry(false);setInfoProfile(null);},[view]);
   const pageHead=(title,subtitle)=>(
     <header className="hg6-subpage-heading">
@@ -415,10 +353,10 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
       </>:null}
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
-        onPause={()=>setScenarioRunning(false)}
-        onReset={()=>{setScenarioFrame(null);setScenarioFetchError('');setScenarioSecond(0);setScenarioRunning(false);setScenarioCritical(false);setScenarioRevision(v=>v+1);}}
+        onPause={scenario.pause}
+        onReset={scenario.reset}
         onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond} sample={training}
-        soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
+        soundEnabled={scenarioSound} onToggleSound={scenario.toggleSound}
         onSpeak={speakScenario}/>}
     </main>}
   </div>;
