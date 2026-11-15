@@ -354,7 +354,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   <Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/>}</div>
         <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
       </>:null}
-      {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
+      {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} onHUD={onHUD} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
         onPause={scenario.pause}
         onReset={scenario.reset}
