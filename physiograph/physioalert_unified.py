@@ -200,7 +200,7 @@ def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
         "voice_requires_user_permission": True,
         "automatic_treatment_or_diagnosis": False,
         "historical_nasa_biomarkers_in_inference": False,
-        "live_apdra_applied": apdra is not None,
+        "live_apdra_applied": apdra is not None and apdra.get("status") != "MODEL_ERROR",
         "clinical_validation": False, "operational_limit_validation": False,
         "disclaimer": ("Training-only combined evidence. Optimal/Check/Warning/Critical are "
                        "fictional monitoring attention labels, not astronaut health, "
