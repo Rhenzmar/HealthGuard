@@ -33,9 +33,10 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
  const [metricKey,setMetricKey]=useState('heart_rate_bpm');
  const [engineering,setEngineering]=useState(null);
  const [issue,setIssue]=useState('');
- const [showAll,setShowAll]=useState(true);
+ const [showAll,setShowAll]=useState(false);
  const [bodySex,setBodySex]=useState('male');
- const [layers,setLayers]=useState({skin:true,skeleton:true,joints:false,muscles:false,organs:true,vessels:true,nerves:false});
+ const [layersOpen,setLayersOpen]=useState(false);
+ const [layers,setLayers]=useState({skin:true,skeleton:true,joints:false,muscles:false,organs:true,vessels:false,nerves:false});
  const selectedCrew=CREW.find(x=>x.id===selected)||CREW[0];
  const region=REGIONS.find(x=>x.id===regionId)||REGIONS[0];
  const metric=metricFor(metricKey)||METRICS[0];
@@ -94,25 +95,29 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
     <div className="hgm-panel-heading"><div><span>01 / INTERACTIVE ANATOMY</span><h2>{selectedCrew.name}</h2></div><span className="hgm-source-indicator">LAYERED 3D ANATOMY</span></div>
     <div className="hgm-view-controls" aria-label="Anatomical body options">
       {['male','female'].map(v=><button type="button" key={v} aria-pressed={bodySex===v} onClick={()=>setBodySex(v)}>{v==='male'?'BODY A':'BODY B'}</button>)}
-      <span>ROTATE THE MODEL TO VIEW ALL SIDES</span>
+      <span>Drag to rotate</span>
     </div>
     <div className="hgm-figure">
-      <div className="hgm-figure-watermark">HEALTHGUARD / ANATOMICAL OVERVIEW</div>
+      <div className="hgm-figure-watermark">INTERACTIVE HUMAN ANATOMY</div>
       <AnatomyScene selected={regionId} sex={bodySex} layers={layers} onLayersChange={setLayers} onSelect={changeRegion}/>
       <div className="hgm-figure-status"><span className="hgm-status-dot"/>{online?'SIMULATOR CONNECTED':'MODEL VIEW · OFFLINE'}</div>
     </div>
-    <div className="hgm-anatomy-layer-controls" aria-label="Toggle anatomical layers">
+    <div className="hgm-layer-heading">
+      <span>ANATOMY LAYERS</span>
+      <button type="button" aria-expanded={layersOpen} aria-controls="hgm-layer-choices" onClick={()=>setLayersOpen(v=>!v)}>{layersOpen?'Hide options':'Customize layers'} <Icon name={layersOpen?'chevron-up':'chevron-down'} size={14}/></button>
+    </div>
+    {layersOpen&&<div id="hgm-layer-choices" className="hgm-anatomy-layer-controls" aria-label="Toggle anatomical layers">
       {[['skin','Body outline'],['skeleton','Skeleton'],['organs','Organs'],['vessels','Vessels'],['muscles','Muscles'],['nerves','Nerves']].map(([key,label])=>
         <button type="button" key={key} aria-pressed={Boolean(layers[key])}
           onClick={()=>setLayers(old=>({...old,[key]:!old[key]}))}>{label}</button>)}
-    </div>
+    </div>}
     <div className="hgm-region-pills" aria-label="Select physiological system">{REGIONS.map(r=><button type="button" key={r.id} aria-pressed={regionId===r.id} onClick={()=>changeRegion(r.id)} className={regionId===r.id?'selected':''}>{r.short}</button>)}</div>
-    <div className="hgm-figure-hint"><Icon name="activity" size={15}/> Select a system or click a visible organ to inspect it. Selection colors are not health-risk indicators.</div>
+    <div className="hgm-figure-hint"><Icon name="activity" size={15}/> Click an organ or choose a system. Highlights show anatomy, not medical risk.</div>
    </section>
    <section className="hgm-explanation" aria-label="Selected system and physiological evidence">
     <div className="hgm-panel-heading"><div><span>02 / BODY SYSTEM</span><h2>{region.name}</h2></div><span className="hgm-source-indicator">REGION REVIEW</span></div>
     <p className="hgm-region-description">{region.description}</p>
-    <div className="hgm-region-context"><span>SELECTED SYSTEM</span><strong>{region.short}</strong><small>{region.keys.length?region.keys.length+' linked measurement'+(region.keys.length===1?'':'s'):'Educational view · no direct sensor'}</small></div>
+    <div className="hgm-region-context"><span>RELATED DATA</span><strong>{region.keys.length?region.keys.length+' available readings':'No direct sensors'}</strong></div>
     <div className="hgm-related-heading">RELATED SIMULATED MEASUREMENTS</div>
     <div className="hgm-related-grid">{region.keys.length?region.keys.map(key=>{
       const m=metricFor(key);
@@ -120,7 +125,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
        <span>{m?.label||m?.short}</span><strong>{formatValue(valueFor(key),m?.digits??1)} <small>{m?.unit}</small></strong>
        <em>{isCore(key)?'CORE SIMULATOR':'SCRIPTED ESTIMATE'}</em>
       </button>;
-    }):<p className="hgm-unavailable">No physiological measurement is connected to this region. The model is for anatomy exploration only.</p>}</div>
+    }):<p className="hgm-unavailable">No direct sensor measurements for this system.</p>}</div>
     <div className="hgm-apdra-card">
       <div className="hgm-apdra-title"><Icon name="activity" size={17}/><span>APDRA / PERSONAL BASELINE CHECK</span></div>
       <strong>{apdraLabel}</strong>
@@ -137,7 +142,7 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
   </div>
 
   <section className="hgm-monitor" aria-label="Crew measurement overview">
-   <div className="hgm-panel-heading"><div><span>03 / MONITORING</span><h2>Physiological signals</h2></div><div className="hgm-monitor-actions"><span className={online?'online':''}>{online?'SIMULATOR CONNECTED':'AWAITING SIMULATOR'}</span><button type="button" onClick={()=>setShowAll(v=>!v)}>{showAll?'Compact view':'All 9 readings'}</button></div></div>
+   <div className="hgm-panel-heading"><div><span>03 / MONITORING</span><h2>Physiological signals</h2></div><div className="hgm-monitor-actions"><span className={online?'online':''}>{online?'SIMULATOR CONNECTED':'AWAITING SIMULATOR'}</span><button type="button" onClick={()=>setShowAll(v=>!v)}>{showAll?'Show fewer':'Show all 9'}</button></div></div>
    <div className="hgm-measurements">{(showAll?ALL:ALL.filter(m=>region.keys.includes(m.key))).map(m=><button type="button" key={m.key} aria-pressed={metricKey===m.key} onClick={()=>setMetricKey(m.key)} className={metricKey===m.key?'selected':''}><span>{m.short||m.label}</span><strong>{formatValue(valueFor(m.key),m.digits)} <small>{m.unit}</small></strong><em>{isCore(m.key)?'CORE SIMULATOR':'SCRIPTED ESTIMATE'}</em></button>)}</div>
    <div className="hgm-chart-panel">
     <div className="hgm-chart-title"><div><span>SELECTED SIGNAL / {selectedReading}</span><h3>{metric.label}</h3></div><button type="button" onClick={onTelemetry}>Detailed telemetry <Icon name="arrow" size={15}/></button></div>
