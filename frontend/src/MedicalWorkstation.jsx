@@ -34,7 +34,8 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
  const [engineering,setEngineering]=useState(null);
  const [issue,setIssue]=useState('');
  const [showAll,setShowAll]=useState(true);
- const [view,setView]=useState('front');
+ const [bodySex,setBodySex]=useState('male');
+ const [layers,setLayers]=useState({skin:true,skeleton:true,joints:false,muscles:false,organs:true,vessels:true,nerves:false});
  const selectedCrew=CREW.find(x=>x.id===selected)||CREW[0];
  const region=REGIONS.find(x=>x.id===regionId)||REGIONS[0];
  const metric=metricFor(metricKey)||METRICS[0];
@@ -90,15 +91,23 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
 
   <div className="hgm-main-layout">
    <section className="hgm-anatomy-panel" aria-label="Three-dimensional anatomical explorer">
-    <div className="hgm-panel-heading"><div><span>01 / INTERACTIVE ANATOMY</span><h2>{selectedCrew.name}</h2></div><span className="hgm-source-indicator">HOLOGRAPHIC MODEL</span></div>
-    <div className="hgm-view-controls" aria-label="Anatomy camera view">{['front','side','back'].map(v=><button type="button" key={v} aria-pressed={view===v} onClick={()=>setView(v)}>{v.toUpperCase()}</button>)}<span>6 BODY SYSTEMS</span></div>
+    <div className="hgm-panel-heading"><div><span>01 / INTERACTIVE ANATOMY</span><h2>{selectedCrew.name}</h2></div><span className="hgm-source-indicator">LAYERED 3D ANATOMY</span></div>
+    <div className="hgm-view-controls" aria-label="Anatomical body options">
+      {['male','female'].map(v=><button type="button" key={v} aria-pressed={bodySex===v} onClick={()=>setBodySex(v)}>{v==='male'?'BODY A':'BODY B'}</button>)}
+      <span>ROTATE THE MODEL TO VIEW ALL SIDES</span>
+    </div>
     <div className="hgm-figure">
       <div className="hgm-figure-watermark">HEALTHGUARD / ANATOMICAL OVERVIEW</div>
-      <AnatomyScene selected={regionId} view={view} onSelect={changeRegion}/>
+      <AnatomyScene selected={regionId} sex={bodySex} layers={layers} onLayersChange={setLayers} onSelect={changeRegion}/>
       <div className="hgm-figure-status"><span className="hgm-status-dot"/>{online?'SIMULATOR CONNECTED':'MODEL VIEW · OFFLINE'}</div>
     </div>
-    <div className="hgm-region-pills">{REGIONS.map(r=><button type="button" key={r.id} aria-pressed={regionId===r.id} onClick={()=>changeRegion(r.id)} className={regionId===r.id?'selected':''}>{r.short}</button>)}</div>
-    <div className="hgm-figure-hint"><Icon name="activity" size={15}/> Drag to rotate and select a body region. Selected systems are highlighted. Colors do not indicate medical risk.</div>
+    <div className="hgm-anatomy-layer-controls" aria-label="Toggle anatomical layers">
+      {[['skin','Body outline'],['skeleton','Skeleton'],['organs','Organs'],['vessels','Vessels'],['muscles','Muscles'],['nerves','Nerves']].map(([key,label])=>
+        <button type="button" key={key} aria-pressed={Boolean(layers[key])}
+          onClick={()=>setLayers(old=>({...old,[key]:!old[key]}))}>{label}</button>)}
+    </div>
+    <div className="hgm-region-pills" aria-label="Select physiological system">{REGIONS.map(r=><button type="button" key={r.id} aria-pressed={regionId===r.id} onClick={()=>changeRegion(r.id)} className={regionId===r.id?'selected':''}>{r.short}</button>)}</div>
+    <div className="hgm-figure-hint"><Icon name="activity" size={15}/> Select a system or click a visible organ to inspect it. Selection colors are not health-risk indicators.</div>
    </section>
    <section className="hgm-explanation" aria-label="Selected system and physiological evidence">
     <div className="hgm-panel-heading"><div><span>02 / BODY SYSTEM</span><h2>{region.name}</h2></div><span className="hgm-source-indicator">REGION REVIEW</span></div>
@@ -136,6 +145,6 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
    </div>
    {issue&&<p className="hgm-warning">{issue}. Missing values are not replaced.</p>}
   </section>
-  <p className="hgm-footer">All crew readings are simulated. This interactive model is educational, not a medical scan. PhysioAlert and APDRA flags describe numerical patterns, not diagnoses. Core simulator readings and separately scripted estimates are labeled distinctly.</p>
+  <p className="hgm-footer">All crew readings are simulated. Anatomy: BodyParts3D © DBCLS (CC BY 4.0); HuBMAP (CC BY 4.0); MakeHuman (CC0). Modified by open-anatomy-3d (CC BY 4.0). This model is educational, not a medical scan. PhysioAlert and APDRA flags describe numerical patterns, not diagnoses. Core simulator readings and separately scripted estimates are labeled distinctly.</p>
  </div>;
 }
