@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Icon, ResearchDotChart } from './viz.jsx';
+import TelemetryBiomarkerHub from './TelemetryBiomarkerHub.jsx';
 import { formatValue } from './api.js';
 import './healthLibrary.css';
 
@@ -224,6 +225,7 @@ export default function HealthLibrary({
           <p>Original sample IDs are kept. Up to 200 records are shown per search. Missing values are not invented.</p>
         </div>
       </details>
+      <TelemetryBiomarkerHub compact/>
       <div className="hl-source-boundary"><Icon name="shield" size={18}/><p><strong>Important:</strong> These NASA lab results are separate from HealthGuard's simulated live readings. APDRA is a research tool, not a medical diagnosis system.</p></div>
     </section>
   </div>;
