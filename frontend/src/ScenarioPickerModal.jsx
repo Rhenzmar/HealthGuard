@@ -15,7 +15,7 @@ const CATEGORIES = [
  * MissionDashboard, even when this dialog is closed.
  */
 export default function ScenarioPickerModal({
-  open,onClose,person,scenarioId,onSelectScenario,onStart,onPause,onReset,onExit,
+  open,onClose,onHUD,person,scenarioId,onSelectScenario,onStart,onPause,onReset,onExit,
   running,elapsed,sample,soundEnabled,onToggleSound,onSpeak,scenarioPending=false,scenarioError=''
 }){
   const [category,setCategory]=useState('crew');
@@ -62,6 +62,7 @@ export default function ScenarioPickerModal({
       <header className="hg-scenario-modal-header">
         <div><span className="hg-scenario-kicker">HEALTHGUARD · TRAINING SIMULATION</span><h2 id="hg-scenario-title">Possible scenarios</h2><p>Choose a fictional event to demonstrate changing astronaut health indicators.</p></div>
         <div className="hg-scenario-modal-header-actions">
+          {selected&&<button type="button" className="hg-scenario-reset" onClick={onHUD} title="View the same scenario in the astronaut suit display"><Icon name="radio" size={15}/> View in suit HUD</button>}
           <button type="button" className="hg-scenario-reset" onClick={()=>{onExit();onClose();}} title="Stop scenario and return to normal simulated feed"><Icon name="radio" size={15}/> Reset to live</button>
           <button ref={closeRef} type="button" className="hg-scenario-close" onClick={onClose} aria-label="Close scenario picker"><Icon name="x" size={18}/></button>
         </div>
