@@ -5,6 +5,7 @@ import {QUESTS,ROUTINE_CREW,localDayKey,readRoutineStore,saveRoutineStore,getCre
 import {MISSION_TRIALS,getCrewLifetimeXp,getMissionRank,getMissionStreak,
   missionAchievements,isMissionUnlocked,evaluateTrial} from './missionGameLogic.js';
 import WellnessGame from './WellnessGame.jsx';
+import CrewCheckinGame from './CrewCheckinGame.jsx';
 import './missionGame.css';
 
 const CREW=[
@@ -152,8 +153,8 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
     <section className="mg-hero">
       <div className="mg-hero-copy"><span className="mg-eyebrow"><Icon name="satellite" size={15}/> HEALTHGUARD / CREW TRAINING ARCADE</span>
         <h1>MISSION <span>QUEST</span></h1>
-        <p>Two ways to train: solve health-literacy missions or complete optional activity challenges. Earn progress in each game.</p>
-        <div className="mg-hero-tags"><span><Icon name="shield-check" size={14}/> Simulation only</span><span><Icon name="gamepad-2" size={14}/> Two playable game modes</span><span><Icon name="award" size={14}/> Earn fictional XP</span></div>
+        <p>Three ways to train: make health-literacy decisions, try optional wellness activities, or complete a private daily check-in.</p>
+        <div className="mg-hero-tags"><span><Icon name="shield-check" size={14}/> Simulation only</span><span><Icon name="gamepad-2" size={14}/> Three playable game modes</span><span><Icon name="award" size={14}/> Earn fictional XP</span></div>
       </div>
       <div className="mg-hero-crewmate"><span className="mg-hero-halo"/><img src={crew.portrait} alt={'Illustration of fictional astronaut '+crew.name}/><span className="mg-crew-callsign"><strong>{crew.name}</strong><small>{crew.role.toUpperCase()}</small></span></div>
     </section>
@@ -167,14 +168,18 @@ export default function MissionGame({selected='SIM_CREW_01',onNavigate=()=>{}}){
         <Icon name="activity" size={22}/><span><strong>Wellness Expedition</strong><small>Timed movement, mobility, calm, hydration and recovery</small></span>
         <span className="mg-mode-label">5 CHALLENGES</span>
       </button>
+      <button type="button" className={gameMode==='checkin'?'active':''} aria-current={gameMode==='checkin'?'page':undefined} onClick={()=>setGameMode('checkin')}>
+        <Icon name="clipboard-list" size={22}/><span><strong>Crew Check-In</strong><small>A personal daily mission with sleep, mood and body-map challenges</small></span>
+        <span className="mg-mode-label">4 STAGES</span>
+      </button>
     </nav>
     <section className="mg-toolbar">
       <div><span className="mg-kicker">PLAY AS</span><CrewChooser crewId={crewId} onChange={id=>{setCrewId(id);setActive('morning');setReward(null)}}/></div>
       <div className="mg-toolbar-info"><span><Icon name="calendar" size={15}/> MISSION DAY {gameDay}</span><button type="button" onClick={()=>setShowRules(v=>!v)} aria-expanded={showRules}><Icon name="info" size={15}/> How to play</button></div>
     </section>
-    {showRules&&<div className="mg-rules" role="note">Read the crew brief, select a decision, and submit. Correct decisions clear a chapter and award XP. Earlier chapters unlock later ones; a task can be deferred without losing points. All scores and streaks are fictional game achievements recorded in this browser, not verified wellness or medical outcomes.</div>}
+    {showRules&&<div className="mg-rules" role="note">Knowledge Quest rewards educational decisions. Wellness Expedition uses short optional activity timers. Crew Check-In rewards completing or skipping a private self-report, never the health values entered. The three games keep separate browser-only records; none measure or diagnose real health.</div>}
 
-    {gameMode==='wellness'?<WellnessGame crewId={crewId} crewName={crew.name}/>:
+    {gameMode==='checkin'?<CrewCheckinGame crewId={crewId} crewName={crew.name}/>:gameMode==='wellness'?<WellnessGame crewId={crewId} crewName={crew.name}/>:
     <>
     <section className="mg-stats" aria-label="Mission game statistics">
       <div className="mg-stat"><div><Icon name="zap" size={19}/><span>TOTAL XP</span></div><strong>{lifetime}<small> XP</small></strong><p>Earned across recorded mission days</p></div>
