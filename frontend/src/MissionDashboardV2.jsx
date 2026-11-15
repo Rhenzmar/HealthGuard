@@ -4,6 +4,7 @@ import ScenarioConsole from './ScenarioConsole.jsx';
 import ScenarioPickerModal from './ScenarioPickerModal.jsx';
 import {crewIndexForSubject,crewFeedStatus,latestForSubject,samplesForSubject} from './missionDashboardState.js';
 import EngineeringTelemetry from './EngineeringTelemetry.jsx';
+import TelemetryBiomarkerHub from './TelemetryBiomarkerHub.jsx';
 import {SCENARIOS,SCENARIO_LENGTH} from './scenarioSimulator.js';
 import {METRICS,formatValue,friendlyStatus,statusTone,timelineLabel,readApi} from './api.js';
 import {currentActivity,primaryPattern,recentBaselineComparison} from './crewContext.js';
@@ -405,11 +406,12 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         </div>
       </>:null}
       {view==='telemetry'?<>
-        {pageHead('Crew Telemetry','Select a physiological signal or simulated estimate to view its trend. Historical NASA laboratory data is in Health Library.')}
+        {pageHead('Crew Telemetry','Inspect nine simulated vital and estimated values, explore trend graphs, or open a NASA research subsystem below.')}
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
         <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/>{AUXILIARY_VITALS.some(m=>m.key===metricKey)?
   <AuxiliaryEstimateDetail metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'} engineeringHistory={engineeringHistory}/>:
   <Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/>}</div>
+        <TelemetryBiomarkerHub person={activeCrew} latest={latest} training={training}/>
       </>:null}
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
