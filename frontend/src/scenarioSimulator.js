@@ -133,6 +133,9 @@ export function scenarioAt(subjectId, scenarioId, second) {
     values.heart_rate_bpm = round(values.heart_rate_bpm + 24*disturbance);
     values.respiratory_rate_bpm = round(values.respiratory_rate_bpm + 13*disturbance);
     values.spo2_percent = round(values.spo2_percent - 7.2*disturbance);
+  } else if (scenarioId === 'suit_leak') {
+    values.spo2_percent = round(values.spo2_percent - 5 * disturbance, 1);
+    values.respiratory_rate_bpm = round(values.respiratory_rate_bpm + 6 * disturbance);
   } else if (scenarioId === 'sensor') {
     values.spo2_percent = round(values.spo2_percent - 16 * disturbance, 1);
     values.heart_rate_bpm = round(values.heart_rate_bpm + 0.7 * disturbance);
@@ -150,12 +153,16 @@ export function scenarioAt(subjectId, scenarioId, second) {
     cabin_co2_ppm:round(650 + (scenarioId==='co2'?5400*disturbance:0),1),
     cabin_pressure_kpa:round(101.2 - (scenarioId==='cabin_leak'?27*disturbance:0),2),
     cabin_o2_percent:20.9,
-    radiation_rate_usv_h:round(.45 + (scenarioId==='radiation'?2200*disturbance:0),2)
+    radiation_rate_usv_h:round(.45 + (scenarioId==='radiation'?2200*disturbance:0),2),
+    suit_pressure_psi:round(4.3 - (scenarioId==='suit_leak'?2*disturbance:0),2),
+    suit_battery_percent:round(Math.max(0,88 - (scenarioId==='suit_power'?70*disturbance:0)),2)
   };
   const engineering_flags={
     cabin_co2_ppm:scenarioId==='co2'&&engineering_values.cabin_co2_ppm>4000,
     cabin_pressure_kpa:scenarioId==='cabin_leak'&&engineering_values.cabin_pressure_kpa<85,
-    radiation_rate_usv_h:scenarioId==='radiation'&&disturbance>.55
+    radiation_rate_usv_h:scenarioId==='radiation'&&disturbance>.55,
+    suit_pressure_psi:scenarioId==='suit_leak'&&engineering_values.suit_pressure_psi<3.4,
+    suit_battery_percent:scenarioId==='suit_power'&&engineering_values.suit_battery_percent<50
   };
   const alert=Object.values(flags).some(Boolean)||Object.values(engineering_flags).some(Boolean);
   // Severity is a scripted training progression, not a diagnostic score.
@@ -171,7 +178,9 @@ export function scenarioAt(subjectId, scenarioId, second) {
     sensor: ['spo2_percent'],
     co2: ['heart_rate_bpm','respiratory_rate_bpm'],
     cabin_leak: ['heart_rate_bpm','respiratory_rate_bpm','spo2_percent'],
-    radiation: []
+    radiation: [],
+    suit_leak:['spo2_percent','respiratory_rate_bpm'],
+    suit_power:[]
   }[scenarioId];
   const metric_levels = Object.fromEntries(Object.keys(values).map(key=>[
     key,affected.includes(key) ? tier : 'OPTIMAL'
