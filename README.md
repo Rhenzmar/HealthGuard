@@ -3,7 +3,7 @@
 **AI-assisted astronaut health monitoring and mission-support research prototype**  
 NASA Space Apps Challenge 2026 · *Create Health Monitoring Software for Astronauts on Space Missions*
 
-[Live interactive demo](https://physiograph-dashboard.onrender.com/) · [Project page](https://www.spaceappschallenge.org/2026/find-a-team/cnhs-ste/?tab=project) · [Reviewer guide](docs/REVIEWER_GUIDE.md) · [Architecture](docs/ARCHITECTURE.md)
+[Live interactive demo](https://healthguard-dashboard.onrender.com/) · [Project page](https://www.spaceappschallenge.org/2026/find-a-team/cnhs-ste/?tab=project) · [Reviewer guide](docs/REVIEWER_GUIDE.md) · [Architecture](docs/ARCHITECTURE.md)
 
 > **Research demonstration, not operational healthcare.** All continually updating crew, spacesuit, and mission readings in the app are **fictional simulations**. HealthGuard is not connected to astronaut sensors, is not a medical device, and has not been validated to diagnose disease, predict health outcomes, or determine mission safety.
 
