@@ -22,7 +22,7 @@ export default function GuidedTour({index,onNext,onBack,onExit,narrationAllowed=
     // Critical PhysioAlert speech must always take priority.
     if(synth.speaking||synth.pending)return;
     const speech=new window.SpeechSynthesisUtterance(
-      'HealthGuard guide. '+step.title+'. '+step.body
+      step.narration || step.body
     );
     speech.lang='en-US';
     speech.rate=.95;
