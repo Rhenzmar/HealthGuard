@@ -56,8 +56,10 @@ export function MiniTrend({ data, metric, color }) {
   return <svg className="mini-trend" viewBox="0 0 124 48" role="img" aria-label={`Recent simulated ${metric} trend`}><polyline points={g.points.map(p => `${p.x},${p.y}`).join(' ')} fill="none" stroke={color} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke"/></svg>;
 }
 
-export function VitalChart({ data, metric, observationMode = 'simulated-second' }) {
-  const W = 930, H = 270, pad = 35;
+export function VitalChart({ data, metric, observationMode = 'simulated-second', expanded = false }) {
+  // The detailed Crew Telemetry card has more vertical room than compact charts.
+  // This alters SVG layout only; input samples and values are untouched.
+  const W = 930, H = expanded ? 370 : 270, pad = expanded ? 42 : 35;
   const g = chartGeometry(data, metric.key, W, H, pad);
   if (!g || g.points.length < 2) return <div className="chart-empty">Waiting for simulated samples. Charts appear when the backend supplies data.</div>;
   const line = smoothChartPath(g.points);
@@ -66,11 +68,13 @@ export function VitalChart({ data, metric, observationMode = 'simulated-second' 
   const engineering = observationMode === 'engineering-poll';
   const firstTime = engineering ? new Date(g.valid[0].received_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : null;
   const lastTime = engineering ? new Date(g.valid.at(-1).received_at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}) : null;
-  return <div className="vital-chart-wrap">
+  return <div className={'vital-chart-wrap'+(expanded?' vital-chart-expanded':'')}>
     <svg className="vital-chart" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${metric.label} over ${g.valid.length} ${engineering?'simulator HTTP poll observations':'fictional one-second samples'}, latest ${formatValue(g.points.at(-1).value, metric.digits)} ${metric.unit}`}>
       <defs><linearGradient id={name} x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stopColor={metric.color} stopOpacity=".26"/><stop offset="100%" stopColor={metric.color} stopOpacity="0"/></linearGradient></defs>
       {[0, .25, .5, .75, 1].map(t => <g key={t}><line x1={pad} y1={pad + t * (H - 2 * pad)} x2={W - pad} y2={pad + t * (H - 2 * pad)} stroke="#2c3a45" strokeDasharray="5 7"/><text x="0" y={pad + t * (H - 2 * pad) + 4} fontSize="12" fill="#8395a5">{(g.high - t * (g.high - g.low)).toFixed(metric.digits > 1 ? 2 : 1)}</text></g>)}
-      <path d={area} fill={`url(#${name})`}/><path d={line} fill="none" stroke={metric.color} strokeWidth="2.7" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d={area} fill={`url(#${name})`}/>
+      {expanded&&<path d={line} fill="none" stroke={metric.color} strokeWidth="7" opacity=".13" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round"/>}
+      <path d={line} fill="none" stroke={metric.color} strokeWidth={expanded?3.3:2.7} vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round"/>
       <circle cx={g.points.at(-1).x} cy={g.points.at(-1).y} r="5" fill={metric.color} stroke="#101d29" strokeWidth="3"/>
     </svg>
     <div className="chart-axis">{engineering?<><span>{firstTime}</span><span>Simulator poll receipt times · not a sensor recording</span><span>{lastTime}</span></>:<><span>Sample #{g.points[0].seq}</span><span>Simulation timeline · 1 fictional second / sample</span><span>Sample #{g.points.at(-1).seq}</span></>}</div>
