@@ -1,4 +1,4 @@
-/** Short, one-shot training tone at the onset of a verified critical event.
+/** Short, one-shot low-volume alert tone at the onset of a verified critical event.
  * The voice reminder is separately scheduled at five-second intervals.
  */
 let context=null;
@@ -15,14 +15,14 @@ export function playScenarioAlarm(){
   if(!context||context.state!=='running')return;
   try{
     const t=context.currentTime;
-    for(const [offset,freq] of [[0,660],[.3,495]]){
+    for(const [offset,freq] of [[0,640],[.23,490]]){
       const oscillator=context.createOscillator(),gain=context.createGain();
       oscillator.type='sine';oscillator.frequency.value=freq;
       gain.gain.setValueAtTime(0,t+offset);
-      gain.gain.linearRampToValueAtTime(.075,t+offset+.025);
-      gain.gain.exponentialRampToValueAtTime(.001,t+offset+.25);
+      gain.gain.linearRampToValueAtTime(.035,t+offset+.02);
+      gain.gain.exponentialRampToValueAtTime(.001,t+offset+.18);
       oscillator.connect(gain);gain.connect(context.destination);
-      oscillator.start(t+offset);oscillator.stop(t+offset+.27);
+      oscillator.start(t+offset);oscillator.stop(t+offset+.20);
     }
   }catch{/* Silent fallback. */}
 }
