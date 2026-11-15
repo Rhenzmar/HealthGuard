@@ -42,7 +42,7 @@ def _assert_matching(subject_id: str, sequence: int, item: dict, name: str) -> N
 
 def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
                    cnn: dict, comparison: dict, context: dict,
-                   candidate: dict, engineering: dict) -> dict[str, Any]:
+                   candidate: dict, engineering: dict, apdra: dict | None = None) -> dict[str, Any]:
     """Return evidence-based attention levels, not model-predicted illness."""
     if physiological_packet.get("subject_id") != subject_id or physiological_packet.get("sequence") != sequence:
         raise ValueError("Physiological packet subject/sequence mismatch")
@@ -59,6 +59,13 @@ def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
         raise ValueError("17-channel model must retain synthetic-only provenance")
     if candidate.get("NASA_laboratory_data_used") is not False:
         raise ValueError("Candidate cannot claim historical NASA laboratory inference")
+
+    if apdra is not None:
+        _assert_matching(subject_id, sequence, apdra, "live_apdra")
+        if (apdra.get("source") != SOURCE
+                or apdra.get("algorithm") != "APDRA_LIVE_BASELINE_STABILITY_EXPERIMENTAL"
+                or apdra.get("nasa_laboratory_data_used") is not False):
+            raise ValueError("Live APDRA must be experimental, simulated and source-isolated")
 
     candidate_status = candidate.get("status", "MODEL_UNAVAILABLE")
     old_a,old_b = cnn.get("status"),comparison.get("status")
@@ -94,6 +101,20 @@ def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
     else:
         model_tier = "OPTIMAL"
         model_reason = "The available models do not flag this simulated window; this does not establish astronaut health."
+
+    # APDRA adds independent evidence for a cautious measurement CHECK only.
+    # It cannot cause a training WARNING/CRITICAL, or reduce existing severity.
+    apdra_check = bool(
+        apdra is not None and
+        apdra.get("status") == "STABLE_DEVIATION" and
+        apdra.get("persistence_confirmed") is True and
+        not quality_issue and
+        context.get("activity_state") == "REST"
+    )
+    if apdra_check and model_tier == "OPTIMAL":
+        model_tier = "CHECK"
+        model_reason = ("The experimental live APDRA check found a persistent "
+                        "personal-baseline change. Verify the simulated measurements.")
 
     # CRITICAL is possible only through clearly labelled engineering demo
     # heuristics, never by an AI score or human vital sign alone.
@@ -132,6 +153,17 @@ def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
                     "activity_state": context.get("activity_state"),
                     "measurement_quality": quality.get("status"),
                     "quality_issues": quality.get("issues", [])},
+        "apdra_live": {
+            "status": apdra.get("status") if apdra else "NOT_AVAILABLE",
+            "version": apdra.get("algorithm_version") if apdra else None,
+            "stable_channels": apdra.get("stable_channels", []) if apdra else [],
+            "baseline_sensitive_channels": apdra.get("baseline_sensitive_channels", []) if apdra else [],
+            "channels": apdra.get("channels", []) if apdra else [],
+            "spaced_confirmations": apdra.get("spaced_confirmations", 0) if apdra else 0,
+            "persistence_confirmed": apdra.get("persistence_confirmed", False) if apdra else False,
+            "contributed_check": apdra_check,
+            "classification": "EXPERIMENTAL_SIMULATED_BASELINE_STABILITY_ONLY",
+        },
         "engineering": {
             "status": engineering_tier, "flagged_channels": flagged,
             "channels": [
@@ -152,7 +184,7 @@ def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
         "basis": basis, "reason": reason, "model_attention_level": model_tier,
         "engineering_attention_level": engineering_tier,
         "models_ready": candidate_ready and both_legacy_ready,
-        "measurement_verification_required": bool(quality_issue),
+        "measurement_verification_required": bool(quality_issue or apdra_check),
         "explanation": details,
         "actions": [
             "Verify measurement source, cadence, individual context and current readings.",
@@ -165,6 +197,7 @@ def compose_review(subject_id: str, sequence: int, physiological_packet: dict,
         "voice_requires_user_permission": True,
         "automatic_treatment_or_diagnosis": False,
         "historical_nasa_biomarkers_in_inference": False,
+        "live_apdra_applied": apdra is not None,
         "clinical_validation": False, "operational_limit_validation": False,
         "disclaimer": ("Training-only combined evidence. Optimal/Check/Warning/Critical are "
                        "fictional monitoring attention labels, not astronaut health, "
@@ -181,9 +214,9 @@ class UnifiedReviewMonitor:
 
     def process(self, subject_id: str, sequence: int, packet: dict,
                 cnn: dict, comparison: dict, context: dict,
-                candidate: dict, engineering: dict) -> dict:
+                candidate: dict, engineering: dict, apdra: dict | None = None) -> dict:
         result = compose_review(subject_id, sequence, packet, cnn, comparison,
-                                context, candidate, engineering)
+                                context, candidate, engineering, apdra)
         with self._lock:
             prev = self._latest.get(subject_id)
             if prev and sequence <= prev["sequence"]:
