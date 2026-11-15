@@ -31,8 +31,8 @@
   "five_channel_checkpoint_loaded": true,
   "statistical_detector_loaded": true,
   "live_store_unchanged_by_replay": true,
-  "median_api_processing_ms": 8.48,
-  "p95_api_processing_ms": 12.15,
+  "median_api_processing_ms": 14.12,
+  "p95_api_processing_ms": 24.33,
   "errors": [],
   "all_contract_checks_passed": true,
   "per_combination": [
@@ -54,7 +54,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 14.08
+          "api_processing_ms": 16.91
         },
         {
           "second": 14,
@@ -70,7 +70,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.87
+          "api_processing_ms": 9.63
         },
         {
           "second": 22,
@@ -78,7 +78,7 @@
           "scripted_alert": true,
           "alarm_status": "ACTIVE",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 0.0981244,
+          "cnn_17ch_reconstruction_error": 0.0981245,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -86,7 +86,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.39
+          "api_processing_ms": 10.48
         },
         {
           "second": 35,
@@ -102,7 +102,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.72
+          "api_processing_ms": 12.23
         },
         {
           "second": 50,
@@ -118,7 +118,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.32
+          "api_processing_ms": 14.88
         },
         {
           "second": 64,
@@ -134,7 +134,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.47
+          "api_processing_ms": 24.82
         }
       ],
       "checks_returned": 6,
@@ -162,7 +162,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.2
+          "api_processing_ms": 15.24
         },
         {
           "second": 14,
@@ -178,7 +178,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.32
+          "api_processing_ms": 15.31
         },
         {
           "second": 22,
@@ -194,7 +194,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.4
+          "api_processing_ms": 11.54
         },
         {
           "second": 35,
@@ -210,7 +210,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.34
+          "api_processing_ms": 12.05
         },
         {
           "second": 50,
@@ -226,7 +226,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.35
+          "api_processing_ms": 26.13
         },
         {
           "second": 64,
@@ -234,7 +234,7 @@
           "scripted_alert": false,
           "alarm_status": "CLEARED",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 1.2219874,
+          "cnn_17ch_reconstruction_error": 1.2219872,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -242,7 +242,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.84
+          "api_processing_ms": 17.44
         }
       ],
       "checks_returned": 6,
@@ -270,7 +270,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.5
+          "api_processing_ms": 8.9
         },
         {
           "second": 14,
@@ -286,7 +286,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.54
+          "api_processing_ms": 9.03
         },
         {
           "second": 22,
@@ -302,7 +302,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.34
+          "api_processing_ms": 11.25
         },
         {
           "second": 35,
@@ -318,7 +318,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 13.8
+          "api_processing_ms": 12.03
         },
         {
           "second": 50,
@@ -334,7 +334,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 19.09
+          "api_processing_ms": 14.02
         },
         {
           "second": 64,
@@ -350,7 +350,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 12.15
+          "api_processing_ms": 17.04
         }
       ],
       "checks_returned": 6,
@@ -378,7 +378,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.6
+          "api_processing_ms": 14.29
         },
         {
           "second": 14,
@@ -394,7 +394,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.96
+          "api_processing_ms": 10.78
         },
         {
           "second": 22,
@@ -410,7 +410,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.49
+          "api_processing_ms": 10.21
         },
         {
           "second": 35,
@@ -426,7 +426,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.86
+          "api_processing_ms": 12.02
         },
         {
           "second": 50,
@@ -442,7 +442,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.54
+          "api_processing_ms": 17.85
         },
         {
           "second": 64,
@@ -458,7 +458,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 12.0
+          "api_processing_ms": 16.94
         }
       ],
       "checks_returned": 6,
@@ -486,7 +486,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.71
+          "api_processing_ms": 8.89
         },
         {
           "second": 14,
@@ -502,7 +502,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.66
+          "api_processing_ms": 9.15
         },
         {
           "second": 22,
@@ -518,7 +518,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.5
+          "api_processing_ms": 10.26
         },
         {
           "second": 35,
@@ -534,7 +534,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.18
+          "api_processing_ms": 12.08
         },
         {
           "second": 50,
@@ -550,7 +550,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.73
+          "api_processing_ms": 14.07
         },
         {
           "second": 64,
@@ -566,7 +566,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.92
+          "api_processing_ms": 16.16
         }
       ],
       "checks_returned": 6,
@@ -594,7 +594,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.77
+          "api_processing_ms": 8.98
         },
         {
           "second": 14,
@@ -610,7 +610,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.67
+          "api_processing_ms": 9.23
         },
         {
           "second": 22,
@@ -626,7 +626,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.52
+          "api_processing_ms": 10.25
         },
         {
           "second": 35,
@@ -642,7 +642,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.89
+          "api_processing_ms": 12.05
         },
         {
           "second": 50,
@@ -658,7 +658,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.4
+          "api_processing_ms": 14.2
         },
         {
           "second": 64,
@@ -674,7 +674,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.9
+          "api_processing_ms": 16.02
         }
       ],
       "checks_returned": 6,
@@ -702,7 +702,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.83
+          "api_processing_ms": 9.03
         },
         {
           "second": 14,
@@ -718,7 +718,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.76
+          "api_processing_ms": 9.24
         },
         {
           "second": 22,
@@ -734,7 +734,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.55
+          "api_processing_ms": 10.39
         },
         {
           "second": 35,
@@ -750,7 +750,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.97
+          "api_processing_ms": 12.29
         },
         {
           "second": 50,
@@ -766,7 +766,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.77
+          "api_processing_ms": 14.43
         },
         {
           "second": 64,
@@ -782,7 +782,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 13.98
+          "api_processing_ms": 16.63
         }
       ],
       "checks_returned": 6,
@@ -810,7 +810,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.82
+          "api_processing_ms": 8.91
         },
         {
           "second": 14,
@@ -826,7 +826,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.76
+          "api_processing_ms": 9.19
         },
         {
           "second": 22,
@@ -842,7 +842,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.01
+          "api_processing_ms": 10.36
         },
         {
           "second": 35,
@@ -858,7 +858,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.63
+          "api_processing_ms": 12.07
         },
         {
           "second": 50,
@@ -874,7 +874,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 18.13
+          "api_processing_ms": 14.12
         },
         {
           "second": 64,
@@ -890,7 +890,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 13.11
+          "api_processing_ms": 16.04
         }
       ],
       "checks_returned": 6,
@@ -918,7 +918,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.71
+          "api_processing_ms": 9.07
         },
         {
           "second": 14,
@@ -934,7 +934,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.34
+          "api_processing_ms": 9.07
         },
         {
           "second": 22,
@@ -950,7 +950,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.26
+          "api_processing_ms": 10.21
         },
         {
           "second": 35,
@@ -966,7 +966,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.5
+          "api_processing_ms": 12.02
         },
         {
           "second": 50,
@@ -974,7 +974,7 @@
           "scripted_alert": false,
           "alarm_status": "CLEARED",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 1.2190956,
+          "cnn_17ch_reconstruction_error": 1.2190957,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -982,7 +982,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.18
+          "api_processing_ms": 14.07
         },
         {
           "second": 64,
@@ -998,7 +998,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 14.14
+          "api_processing_ms": 16.02
         }
       ],
       "checks_returned": 6,
@@ -1026,7 +1026,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.07
+          "api_processing_ms": 8.88
         },
         {
           "second": 14,
@@ -1042,7 +1042,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.19
+          "api_processing_ms": 9.12
         },
         {
           "second": 22,
@@ -1058,7 +1058,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.83
+          "api_processing_ms": 10.31
         },
         {
           "second": 35,
@@ -1074,7 +1074,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.14
+          "api_processing_ms": 12.2
         },
         {
           "second": 50,
@@ -1090,7 +1090,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.15
+          "api_processing_ms": 14.09
         },
         {
           "second": 64,
@@ -1106,7 +1106,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.36
+          "api_processing_ms": 15.81
         }
       ],
       "checks_returned": 6,
@@ -1134,7 +1134,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.02
+          "api_processing_ms": 8.85
         },
         {
           "second": 14,
@@ -1150,7 +1150,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.31
+          "api_processing_ms": 9.12
         },
         {
           "second": 22,
@@ -1166,7 +1166,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.16
+          "api_processing_ms": 10.65
         },
         {
           "second": 35,
@@ -1182,7 +1182,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.43
+          "api_processing_ms": 15.11
         },
         {
           "second": 50,
@@ -1198,7 +1198,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.0
+          "api_processing_ms": 14.17
         },
         {
           "second": 64,
@@ -1214,7 +1214,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.7
+          "api_processing_ms": 16.08
         }
       ],
       "checks_returned": 6,
@@ -1242,7 +1242,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.21
+          "api_processing_ms": 8.79
         },
         {
           "second": 14,
@@ -1258,7 +1258,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.37
+          "api_processing_ms": 9.12
         },
         {
           "second": 22,
@@ -1274,7 +1274,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.33
+          "api_processing_ms": 10.28
         },
         {
           "second": 35,
@@ -1290,7 +1290,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.56
+          "api_processing_ms": 12.11
         },
         {
           "second": 50,
@@ -1306,7 +1306,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.12
+          "api_processing_ms": 14.15
         },
         {
           "second": 64,
@@ -1322,7 +1322,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.44
+          "api_processing_ms": 15.95
         }
       ],
       "checks_returned": 6,
@@ -1350,7 +1350,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.37
+          "api_processing_ms": 8.85
         },
         {
           "second": 14,
@@ -1366,7 +1366,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.36
+          "api_processing_ms": 9.14
         },
         {
           "second": 22,
@@ -1382,7 +1382,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.09
+          "api_processing_ms": 10.21
         },
         {
           "second": 35,
@@ -1398,7 +1398,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.37
+          "api_processing_ms": 13.93
         },
         {
           "second": 50,
@@ -1414,7 +1414,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.95
+          "api_processing_ms": 19.26
         },
         {
           "second": 64,
@@ -1430,7 +1430,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.38
+          "api_processing_ms": 22.53
         }
       ],
       "checks_returned": 6,
@@ -1458,7 +1458,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.3
+          "api_processing_ms": 13.31
         },
         {
           "second": 14,
@@ -1474,7 +1474,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.39
+          "api_processing_ms": 12.42
         },
         {
           "second": 22,
@@ -1490,7 +1490,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.27
+          "api_processing_ms": 15.34
         },
         {
           "second": 35,
@@ -1506,7 +1506,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.72
+          "api_processing_ms": 17.24
         },
         {
           "second": 50,
@@ -1522,7 +1522,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.79
+          "api_processing_ms": 21.1
         },
         {
           "second": 64,
@@ -1538,7 +1538,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 12.97
+          "api_processing_ms": 26.9
         }
       ],
       "checks_returned": 6,
@@ -1566,7 +1566,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.95
+          "api_processing_ms": 12.42
         },
         {
           "second": 14,
@@ -1582,7 +1582,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.17
+          "api_processing_ms": 12.95
         },
         {
           "second": 22,
@@ -1598,7 +1598,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.59
+          "api_processing_ms": 15.41
         },
         {
           "second": 35,
@@ -1614,7 +1614,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.03
+          "api_processing_ms": 17.64
         },
         {
           "second": 50,
@@ -1622,7 +1622,7 @@
           "scripted_alert": true,
           "alarm_status": "ACTIVE",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 0.9399079,
+          "cnn_17ch_reconstruction_error": 0.9399078,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -1630,7 +1630,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.98
+          "api_processing_ms": 22.58
         },
         {
           "second": 64,
@@ -1646,7 +1646,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.39
+          "api_processing_ms": 24.82
         }
       ],
       "checks_returned": 6,
@@ -1674,7 +1674,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.26
+          "api_processing_ms": 14.43
         },
         {
           "second": 14,
@@ -1690,7 +1690,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.23
+          "api_processing_ms": 11.29
         },
         {
           "second": 22,
@@ -1706,7 +1706,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.16
+          "api_processing_ms": 15.32
         },
         {
           "second": 35,
@@ -1722,7 +1722,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.38
+          "api_processing_ms": 19.36
         },
         {
           "second": 50,
@@ -1738,7 +1738,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.0
+          "api_processing_ms": 20.92
         },
         {
           "second": 64,
@@ -1754,7 +1754,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 28.09
+          "api_processing_ms": 56.6
         }
       ],
       "checks_returned": 6,
@@ -1782,7 +1782,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.67
+          "api_processing_ms": 13.14
         },
         {
           "second": 14,
@@ -1798,7 +1798,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.35
+          "api_processing_ms": 14.82
         },
         {
           "second": 22,
@@ -1814,7 +1814,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.2
+          "api_processing_ms": 16.51
         },
         {
           "second": 35,
@@ -1830,7 +1830,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.66
+          "api_processing_ms": 17.47
         },
         {
           "second": 50,
@@ -1846,7 +1846,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.91
+          "api_processing_ms": 20.84
         },
         {
           "second": 64,
@@ -1862,7 +1862,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.37
+          "api_processing_ms": 23.76
         }
       ],
       "checks_returned": 6,
@@ -1890,7 +1890,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.1
+          "api_processing_ms": 13.29
         },
         {
           "second": 14,
@@ -1906,7 +1906,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.32
+          "api_processing_ms": 12.72
         },
         {
           "second": 22,
@@ -1922,7 +1922,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.18
+          "api_processing_ms": 14.52
         },
         {
           "second": 35,
@@ -1938,7 +1938,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.43
+          "api_processing_ms": 17.66
         },
         {
           "second": 50,
@@ -1954,7 +1954,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.9
+          "api_processing_ms": 21.26
         },
         {
           "second": 64,
@@ -1970,7 +1970,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.57
+          "api_processing_ms": 25.12
         }
       ],
       "checks_returned": 6,
@@ -1998,7 +1998,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.18
+          "api_processing_ms": 12.52
         },
         {
           "second": 14,
@@ -2014,7 +2014,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.27
+          "api_processing_ms": 12.54
         },
         {
           "second": 22,
@@ -2030,7 +2030,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.27
+          "api_processing_ms": 14.56
         },
         {
           "second": 35,
@@ -2046,7 +2046,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.45
+          "api_processing_ms": 16.84
         },
         {
           "second": 50,
@@ -2062,7 +2062,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.88
+          "api_processing_ms": 19.97
         },
         {
           "second": 64,
@@ -2078,7 +2078,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.4
+          "api_processing_ms": 26.14
         }
       ],
       "checks_returned": 6,
@@ -2106,7 +2106,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.23
+          "api_processing_ms": 13.18
         },
         {
           "second": 14,
@@ -2122,7 +2122,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.43
+          "api_processing_ms": 12.32
         },
         {
           "second": 22,
@@ -2138,7 +2138,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.46
+          "api_processing_ms": 14.48
         },
         {
           "second": 35,
@@ -2154,7 +2154,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.61
+          "api_processing_ms": 17.07
         },
         {
           "second": 50,
@@ -2170,7 +2170,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.23
+          "api_processing_ms": 25.58
         },
         {
           "second": 64,
@@ -2186,7 +2186,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.5
+          "api_processing_ms": 23.63
         }
       ],
       "checks_returned": 6,
@@ -2214,7 +2214,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.28
+          "api_processing_ms": 16.97
         },
         {
           "second": 14,
@@ -2230,7 +2230,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.39
+          "api_processing_ms": 12.44
         },
         {
           "second": 22,
@@ -2246,7 +2246,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.19
+          "api_processing_ms": 17.24
         },
         {
           "second": 35,
@@ -2262,7 +2262,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.61
+          "api_processing_ms": 20.57
         },
         {
           "second": 50,
@@ -2278,7 +2278,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.29
+          "api_processing_ms": 19.69
         },
         {
           "second": 64,
@@ -2294,7 +2294,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.75
+          "api_processing_ms": 24.33
         }
       ],
       "checks_returned": 6,
@@ -2322,7 +2322,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.18
+          "api_processing_ms": 13.67
         },
         {
           "second": 14,
@@ -2338,7 +2338,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.3
+          "api_processing_ms": 14.09
         },
         {
           "second": 22,
@@ -2354,7 +2354,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.13
+          "api_processing_ms": 13.87
         },
         {
           "second": 35,
@@ -2362,7 +2362,7 @@
           "scripted_alert": true,
           "alarm_status": "ACTIVE",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 0.502212,
+          "cnn_17ch_reconstruction_error": 0.5022121,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -2370,7 +2370,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.61
+          "api_processing_ms": 19.68
         },
         {
           "second": 50,
@@ -2386,7 +2386,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.97
+          "api_processing_ms": 21.1
         },
         {
           "second": 64,
@@ -2402,7 +2402,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.61
+          "api_processing_ms": 24.89
         }
       ],
       "checks_returned": 6,
@@ -2430,7 +2430,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.32
+          "api_processing_ms": 12.25
         },
         {
           "second": 14,
@@ -2446,7 +2446,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.32
+          "api_processing_ms": 15.28
         },
         {
           "second": 22,
@@ -2462,7 +2462,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.19
+          "api_processing_ms": 14.68
         },
         {
           "second": 35,
@@ -2470,7 +2470,7 @@
           "scripted_alert": true,
           "alarm_status": "ACTIVE",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 0.6735143,
+          "cnn_17ch_reconstruction_error": 0.6735144,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -2478,7 +2478,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.42
+          "api_processing_ms": 18.28
         },
         {
           "second": 50,
@@ -2486,7 +2486,7 @@
           "scripted_alert": true,
           "alarm_status": "ACTIVE",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 1.1974143,
+          "cnn_17ch_reconstruction_error": 1.1974144,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -2494,7 +2494,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.93
+          "api_processing_ms": 19.52
         },
         {
           "second": 64,
@@ -2502,7 +2502,7 @@
           "scripted_alert": false,
           "alarm_status": "CLEARED",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 1.2470136,
+          "cnn_17ch_reconstruction_error": 1.2470134,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -2510,7 +2510,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.44
+          "api_processing_ms": 23.24
         }
       ],
       "checks_returned": 6,
@@ -2538,7 +2538,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.2
+          "api_processing_ms": 13.57
         },
         {
           "second": 14,
@@ -2554,7 +2554,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.27
+          "api_processing_ms": 12.45
         },
         {
           "second": 22,
@@ -2570,7 +2570,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.22
+          "api_processing_ms": 14.12
         },
         {
           "second": 35,
@@ -2586,7 +2586,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.36
+          "api_processing_ms": 16.24
         },
         {
           "second": 50,
@@ -2602,7 +2602,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.94
+          "api_processing_ms": 19.35
         },
         {
           "second": 64,
@@ -2618,7 +2618,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.31
+          "api_processing_ms": 22.65
         }
       ],
       "checks_returned": 6,
@@ -2646,7 +2646,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.21
+          "api_processing_ms": 11.72
         },
         {
           "second": 14,
@@ -2662,7 +2662,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.26
+          "api_processing_ms": 12.36
         },
         {
           "second": 22,
@@ -2678,7 +2678,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.1
+          "api_processing_ms": 16.11
         },
         {
           "second": 35,
@@ -2694,7 +2694,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.47
+          "api_processing_ms": 16.91
         },
         {
           "second": 50,
@@ -2710,7 +2710,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 9.92
+          "api_processing_ms": 20.03
         },
         {
           "second": 64,
@@ -2726,7 +2726,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.3
+          "api_processing_ms": 22.36
         }
       ],
       "checks_returned": 6,
@@ -2754,7 +2754,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.16
+          "api_processing_ms": 11.69
         },
         {
           "second": 14,
@@ -2770,7 +2770,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.32
+          "api_processing_ms": 12.56
         },
         {
           "second": 22,
@@ -2786,7 +2786,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.09
+          "api_processing_ms": 13.76
         },
         {
           "second": 35,
@@ -2802,7 +2802,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.43
+          "api_processing_ms": 18.78
         },
         {
           "second": 50,
@@ -2818,7 +2818,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.05
+          "api_processing_ms": 20.06
         },
         {
           "second": 64,
@@ -2826,7 +2826,7 @@
           "scripted_alert": false,
           "alarm_status": "CLEARED",
           "cnn_17ch_flag": true,
-          "cnn_17ch_reconstruction_error": 2.5022299,
+          "cnn_17ch_reconstruction_error": 2.5022297,
           "cnn_17ch_threshold": 0.0264081,
           "cnn_5ch_flag": true,
           "statistical_flag": true,
@@ -2834,7 +2834,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.49
+          "api_processing_ms": 23.45
         }
       ],
       "checks_returned": 6,
@@ -2862,7 +2862,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.74
+          "api_processing_ms": 11.44
         },
         {
           "second": 14,
@@ -2878,7 +2878,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.49
+          "api_processing_ms": 10.22
         },
         {
           "second": 22,
@@ -2894,7 +2894,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.53
+          "api_processing_ms": 10.27
         },
         {
           "second": 35,
@@ -2910,7 +2910,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.73
+          "api_processing_ms": 12.0
         },
         {
           "second": 50,
@@ -2926,7 +2926,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.01
+          "api_processing_ms": 14.51
         },
         {
           "second": 64,
@@ -2942,7 +2942,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 11.51
+          "api_processing_ms": 15.88
         }
       ],
       "checks_returned": 6,
@@ -2970,7 +2970,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.44
+          "api_processing_ms": 9.16
         },
         {
           "second": 14,
@@ -2986,7 +2986,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 6.43
+          "api_processing_ms": 9.21
         },
         {
           "second": 22,
@@ -3002,7 +3002,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 7.24
+          "api_processing_ms": 10.32
         },
         {
           "second": 35,
@@ -3018,7 +3018,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 8.72
+          "api_processing_ms": 12.29
         },
         {
           "second": 50,
@@ -3034,7 +3034,7 @@
           "physioalert_basis": "SIMULATED_ENGINEERING_THRESHOLD",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 10.33
+          "api_processing_ms": 14.53
         },
         {
           "second": 64,
@@ -3050,7 +3050,7 @@
           "physioalert_basis": "EXPERIMENTAL_MODEL_AGREEMENT_OR_DATA_QUALITY",
           "model_explanation_present": true,
           "alarm_voice_present": true,
-          "api_processing_ms": 12.14
+          "api_processing_ms": 16.54
         }
       ],
       "checks_returned": 6,

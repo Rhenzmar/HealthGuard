@@ -11,7 +11,7 @@
 - **CNN flags persisting in the final rolling window:** 28/28.
 - **Unified PhysioAlert attention at peak:** {'WARNING': 12, 'CHECK': 4, 'CRITICAL': 12}.
 - **Model weights loaded:** 17ch=True, 5ch=True, covariance=True.
-- **API processing latency:** median 8.48 ms; sampled p95 12.15 ms (inprocess).
+- **API processing latency:** median 14.12 ms; sampled p95 24.33 ms (inprocess).
 - **Contract failures:** 0.
 
 | Crew | Scenario | Peak scripted alert | Final scripted recovery | Peak 17ch CNN novelty flag | Peak unified training level | CNN flag at completion |
