@@ -175,3 +175,30 @@ test('scenario remains active after entering Moon or Mars suit HUD',async ({page
   await expect(modal).toBeVisible();
   await expect(modal.locator('.hg-scenario-current')).toContainText('Oxygenation decline');
 });
+
+test('suit pressure fault updates simulated HUD and critical alert',async ({page,request})=>{
+  const backend='http://127.0.0.1:8000';
+  await page.route('**/api/simulation/scenarios/SIM_CREW_01/suit_leak?*',async route=>{
+    const url=new URL(route.request().url());
+    const tick=Number(url.searchParams.get('second'));
+    const chosen=tick===0?0:35;
+    const response=await request.get(backend+'/api/simulation/scenarios/SIM_CREW_01/suit_leak?second='+chosen+'&include_history=true');
+    const verified=await response.json();
+    await route.fulfill({status:response.status(),contentType:'application/json',
+      body:JSON.stringify({...verified,elapsed_seconds:tick,sequence:tick})});
+  });
+  await page.goto('/');
+  await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
+  const modal=page.getByRole('dialog',{name:'Choose a training scenario'});
+  await modal.getByRole('tab',{name:/SPACECRAFT/}).click();
+  await modal.getByRole('button',{name:/Suit pressure loss/i}).click();
+  await expect(modal.getByRole('button',{name:/Start scenario/i})).toBeEnabled({timeout:30000});
+  await modal.getByRole('button',{name:/Start scenario/i}).click();
+  await modal.getByRole('button',{name:/View in suit HUD/i}).click();
+  const pressure=page.locator('.hgv-panel-right .hgv-system-row').filter({hasText:'Suit pressure'});
+  await expect(pressure).toContainText('psi');
+  await expect(page.locator('.hgv-screen')).toHaveClass(/hgv-severity-critical/,{timeout:20000});
+  await expect(pressure).toContainText(/2\.\d+\s*psi/);
+  await expect(page.locator('.hgv-suit-alert-critical')).toBeVisible();
+  expect(await page.evaluate(()=>window.__healthguardAudioBeepCount)).toBe(0);
+});
