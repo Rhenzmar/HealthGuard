@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - healthguard/mission-dashboard-polish
+      - healthguard/render-frontend-20261115
       - main
   pull_request:
     branches:
