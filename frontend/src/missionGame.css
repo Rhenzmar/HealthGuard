@@ -149,3 +149,9 @@
 .mg-game-modes small{color:#9cbbca;font-size:10px;line-height:1.5}
 .mg-game-modes .mg-mode-label{font-size:9px;letter-spacing:.6px;font-weight:850;color:#93e9df;border:1px solid #467b86;border-radius:8px;padding:7px 9px;white-space:nowrap}
 @media(max-width:650px){.mg-game-modes{grid-template-columns:1fr}.mg-game-modes button{padding:14px}.mg-game-modes strong{font-size:13px}}
+
+/* Three selectable mission games, each with separate progression. */
+.mg-game-modes{grid-template-columns:repeat(3,minmax(0,1fr))}
+.mg-game-modes button{padding:15px 13px;gap:10px}
+.mg-game-modes .mg-mode-label{font-size:8px}
+@media(max-width:990px){.mg-game-modes{grid-template-columns:1fr}.mg-game-modes button{padding:15px 18px}}
