@@ -12,6 +12,10 @@ import HealthLibrary from './HealthLibrary.jsx';
 import {liveVoiceAnnouncement,scenarioVoiceAnnouncement} from './healthguardVoice.js';
 import {playScenarioAlarm} from './scenarioAlarm.js';
 import {verifiedScenarioFrame} from './scenarioAnatomy.js';
+import ScenarioPickerModal from './ScenarioPickerModal.jsx';
+import {SCENARIOS} from './scenarioSimulator.js';
+import {resolveScenarioNavigation} from './scenarioNavigation.js';
+import {unlockScenarioAlarm} from './scenarioAlarm.js';
 import SpaceBackgroundPicker from './SpaceBackgroundPicker.jsx';
 import {BACKGROUND_KEY,normalizeBackground,WORKSPACE_BACKGROUND_PAGES} from './spaceBackgroundThemes.js';
 import './spaceBackgroundThemes.css';
@@ -201,6 +205,7 @@ function Method({ readiness }) {
 
 export default function App() {
   const [page,setPage]=useState('dashboard');
+  const [scenarioOpen,setScenarioOpen]=useState(false);
   const [backgroundTheme,setBackgroundTheme]=useState(()=>{
     try{return normalizeBackground(window.localStorage.getItem(BACKGROUND_KEY));}
     catch{return 'glow';}
@@ -350,7 +355,29 @@ export default function App() {
     window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(speechText);utterance.lang='en-US';utterance.rate=.93;utterance.pitch=1;utterance.onend=()=>setSpeaking(false);utterance.onerror=()=>setSpeaking(false);window.speechSynthesis.speak(utterance);setSpeaking(true);
   },[speaking,voice,unified]);
   useEffect(()=>()=>{if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel()},[]);
-  const navTo=id=>{setPage(id);setSidebarOpen(false);window.scrollTo({top:0,behavior:'smooth'})};
+  const navTo=id=>{
+    const next=resolveScenarioNavigation(page,id);
+    if(next.scenarioOpen){
+      setScenarioOpen(true);
+    }else{
+      setScenarioOpen(false);
+      setPage(next.page);
+    }
+    setSidebarOpen(false);
+    if(next.scroll)window.scrollTo({top:0,behavior:'smooth'});
+  };
+  const closeScenario=()=>setScenarioOpen(false);
+  const selectScenarioDestination=destination=>{
+    setScenarioOpen(false);
+    if(destination!==page)navTo(destination);
+  };
+  const speakScenarioGuidance=()=>{
+    if(!scenario.id||typeof window==='undefined'||!window.speechSynthesis)return;
+    const utterance=new SpeechSynthesisUtterance(scenarioVoiceAnnouncement(scenario.id,scenario.latest?.severity||'CHECK','guidance'));
+    utterance.lang='en-US';utterance.rate=.95;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
   const selectedName=NAV.find(x=>x.id===page)?.name||'Overview';
   return <div className="app-shell">
     <aside className={`sidebar ${sidebarOpen?'sidebar-open':''}`}><div className="side-logo"><span className="brand-mark"><img src="/healthguard-logo-transparent.svg?v=official-20261115" alt="" /></span><div><strong>Health<span>Guard</span></strong><small>ASTRONAUT HEALTH MONITOR</small></div><button type="button" className="sidebar-close" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}><Icon name="x"/></button></div>
@@ -364,6 +391,28 @@ export default function App() {
         {DASHBOARD_VIEWS.has(page)?<MissionDashboard scenario={scenario} view={page} onDashboard={()=>navTo('dashboard')} onTelemetryPage={()=>navTo('telemetry')} onScenarioPage={()=>navTo('scenario')} loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={selectSubject} samples={samples.filter(x=>x.subject_id===selected)} review={review} cnn={cnn} comparison={comparison} unified={unified} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')} onBody={()=>navTo('body')} onRoutine={()=>navTo('routine')} onHUD={()=>navTo('hud')} onMission={()=>navTo('mission')} environment={environment} onEnvironment={setEnvironment}/>:page==='body'?<MedicalWorkstation scenario={scenario} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} onTelemetry={()=>navTo('telemetry')} onMission={()=>navTo('mission')}/>:page==='routine'?<MissionGame selected={selected} onNavigate={navTo} snapshot={snapshot}/>:page==='hud'?<MissionVisorHUD scenario={scenario} onOpenScenario={()=>navTo('scenario')} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} environment={environment} onEnvironment={setEnvironment} onExit={()=>navTo('dashboard')}/>:page==='research'?<HealthLibrary liveAPDRA={unified?.explanation?.apdra_live} liveCrew={selected} overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<MissionControl environment={environment} onEnvironment={setEnvironment} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} connection={connection} readiness={readiness} unified={unified} mission={mission} onTelemetry={()=>navTo('telemetry')} onScenario={()=>navTo('scenario')} onHUD={()=>navTo('hud')}/>:<Method readiness={readiness}/>}</main>
       
     </div>
+    {scenarioOpen&&<ScenarioPickerModal
+      open
+      onClose={closeScenario}
+      onBody={()=>selectScenarioDestination('body')}
+      onHUD={()=>selectScenarioDestination('hud')}
+      person={{subjectId:selected}}
+      scenarioId={scenario.id}
+      onSelectScenario={scenario.select}
+      onStart={()=>{if(scenario.soundEnabled)unlockScenarioAlarm();scenario.start();}}
+      onPause={scenario.pause}
+      onReset={scenario.reset}
+      onExit={scenario.stop}
+      running={scenario.running}
+      elapsed={scenario.elapsed}
+      sample={scenario.sample}
+      latestFrame={scenario.latest}
+      soundEnabled={scenario.soundEnabled}
+      onToggleSound={scenario.toggleSound}
+      onSpeak={speakScenarioGuidance}
+      scenarioPending={scenario.pending}
+      scenarioError={scenario.error}
+    />}
     {tour>=0 && <div className="tour-backdrop" role="dialog" aria-modal="true" aria-labelledby="tour-title"><div className="tour-modal"><div className="tour-step-mark">GUIDED TOUR <span>0{tour+1} / 0{tourSteps.length}</span></div><div className="tour-graphic"><div className="tour-core"><Icon name={['grid','pulse','flask','satellite'][tour]} size={42}/></div><span className="tour-ring tr1"/><span className="tour-ring tr2"/></div><h2 id="tour-title">{tourSteps[tour].title}</h2><p>{tourSteps[tour].body}</p><div className="tour-progress">{tourSteps.map((s,i)=><span key={i} className={i===tour?'active':''}/>)}</div><div className="tour-actions"><button className="text-btn" onClick={()=>setTour(-1)}>Skip tour</button><button className="primary-btn" onClick={()=>{if(tour===tourSteps.length-1){setTour(-1)}else{setTour(t=>t+1);navTo(tourSteps[tour+1].page)}}}>{tour===tourSteps.length-1?'Finish tour':'Continue'}<Icon name="arrow" size={17}/></button></div></div></div>}
   </div>;
 }
