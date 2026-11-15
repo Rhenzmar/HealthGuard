@@ -411,7 +411,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/>{AUXILIARY_VITALS.some(m=>m.key===metricKey)?
   <AuxiliaryEstimateDetail metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'} engineeringHistory={engineeringHistory}/>:
   <Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/>}</div>
-        <LiveSubsystemExplorer person={activeCrew} latest={selectedPacket} training={training} engineering={auxiliaryTelemetry} engineeringIssue={auxiliaryIssue}/>
+        <LiveSubsystemExplorer person={activeCrew} latest={selectedPacket} training={training} engineering={auxiliaryTelemetry?.subject_id===activeCrew.subjectId?auxiliaryTelemetry:null} engineeringIssue={auxiliaryIssue}/>
       </>:null}
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
