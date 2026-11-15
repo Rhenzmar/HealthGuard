@@ -18,6 +18,13 @@ const SCENES = [
   ['lunar_base', 'MOON / SURFACE BASE'],
   ['mars_base', 'MARS / SURFACE BASE'],
 ];
+const SCENE_PHOTOS = {
+  mars_base: {url:'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23727/PIA23727.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1500&w=2500', credit:'Mars: Perseverance Mastcam-Z / NASA-JPL-Caltech-ASU-MSSS', source:'https://science.nasa.gov/photojournal/perseverances-mastcam-z-first-high-resolution-panorama/'},
+  rover: {url:'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia21/pia21723/PIA21723.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1061&w=7000', credit:'Mars rover terrain: Opportunity / NASA-JPL-Caltech-Cornell-ASU', source:'https://science.nasa.gov/photojournal/panorama-above-perseverance-valley-on-mars/'},
+  lunar_base: {url:'https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2005/10/STScI-01EVVM9G0CWEZJSKM1YBTQDZ76.tif/jcr%3Acontent/renditions/4196x2085.jpg', credit:'Moon: Apollo 17 Taurus-Littrow / NASA', source:'https://science.nasa.gov/asset/hubble/apollo-17-astronauts-snapshot-of-taurus-littrow-valley/'},
+  spacecraft: {url:'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/mars/downloadable_items/3/8/38302_orion-spacecraft-earth-nasatv-camera.jpg?crop=faces%2Cfocalpoint&fit=clip&h=670&w=946', credit:'Orion Earth view / NASA Television', source:'https://science.nasa.gov/resource/view-of-earth-from-orion-spacecraft/'},
+  station: {url:'https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2012/03/windows_for_manned_spacecraft/10218393-2-eng-GB/Windows_for_manned_spacecraft.jpg', credit:'ISS Cupola: Windows for Manned Spacecraft / ESA', source:'https://www.esa.int/ESA_Multimedia/Images/2012/03/Windows_for_manned_spacecraft'},
+};
 const SUIT_METRICS = [
   { key: 'suit_o2_remaining_percent', label: 'O₂ RESERVE', unit: '%', digits: 1, icon: 'wind' },
   { key: 'cabin_o2_percent', label: 'CABIN O₂', unit: '%', digits: 2, icon: 'wind' },
@@ -38,6 +45,32 @@ function Habitat() {
   return <div className="hgv-habitat" aria-hidden="true"><div className="hgv-platform"/>{[0,1,2,3,4].map(n=><span key={n} className={`hgv-hab-unit hgv-hab-unit-${n}`}><i/><b/></span>)}</div>;
 }
 
+function RoverIllustration() {
+  return <svg className="hgv-rover-prop" viewBox="0 0 400 190" aria-hidden="true">
+    <defs><linearGradient id="hgv-rover-metal" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#b4a089"/><stop offset=".42" stopColor="#675f52"/><stop offset="1" stopColor="#211b19"/></linearGradient></defs>
+    <path d="M55 107 L98 48 H285 L334 106 L343 131 H45Z" fill="url(#hgv-rover-metal)" stroke="#c9b59a" strokeWidth="4"/>
+    <path d="M115 54 H271 L298 103 H80 Z" fill="#10191a" stroke="#95a6a4" strokeWidth="4"/>
+    <path d="M147 56 L132 102 M223 55 L236 102" stroke="#879c99" strokeWidth="7"/>
+    <path d="M40 128 H359 L353 152 H39 Z" fill="#302a27" stroke="#b0a092" strokeWidth="4"/>
+    {[80,183,306].map(x=><g key={x}><circle cx={x} cy="152" r="34" fill="#1b1d1b" stroke="#898276" strokeWidth="7"/><circle cx={x} cy="152" r="15" fill="#66665e" stroke="#aaa89b" strokeWidth="3"/></g>)}
+    <path d="M305 44 L305 13 L356 13" fill="none" stroke="#a9b2ab" strokeWidth="5"/><circle cx="361" cy="13" r="6" fill="#a2e5da"/>
+  </svg>;
+}
+function EvaFigure() {
+  return <svg className="hgv-eva-figure" viewBox="0 0 140 300" aria-hidden="true">
+    <g fill="#18384199" stroke="#86ecea" strokeWidth="2.3" strokeLinejoin="round">
+      <rect x="44" y="16" width="55" height="67" rx="23"/><rect x="47" y="27" width="49" height="40" rx="17" fill="#0c2027bb"/>
+      <path d="M47 78 Q27 81 31 115 L39 163 L45 180 L94 180 L104 130 Q113 84 94 78 Z"/>
+      <rect x="17" y="98" width="23" height="90" rx="11" transform="rotate(12 25 100)"/>
+      <rect x="101" y="101" width="21" height="88" rx="11" transform="rotate(-9 105 100)"/>
+      <path d="M45 175 L72 177 L64 257 L40 257Z"/><path d="M74 178 L95 175 L106 255 L82 259Z"/>
+      <rect x="34" y="249" width="34" height="19" rx="6"/><rect x="82" y="249" width="35" height="19" rx="6"/>
+      <rect x="94" y="87" width="25" height="59" rx="7"/>
+      <path d="M47 107 L94 107 M45 146 L98 146 M59 192 L87 192" stroke="#d3f8f1" fill="none"/>
+    </g>
+    <path d="M55 44 Q63 28 85 32" fill="none" stroke="#bafefe" strokeWidth="3" opacity=".6"/>
+  </svg>;
+}
 function Reticle() {
   return <div className="hgv-reticle" aria-hidden="true"><div className="hgv-reticle-circle"><i/><b/></div><span className="hgv-reticle-vertical"/><span className="hgv-reticle-horizontal"/></div>;
 }
@@ -56,6 +89,7 @@ export default function MissionVisorHUD({
   const latest = snapshot?.subjects?.[selected]?.latest || samples.at(-1) || null;
   const crewName = CREW.find(c => c[0] === selected)?.[1] || 'Selected crew';
   const sceneName = SCENES.find(s => s[0] === environment)?.[1] || 'MISSION ENVIRONMENT';
+  const scenePhoto = SCENE_PHOTOS[environment] || SCENE_PHOTOS.mars_base;
   const showMars = environment === 'mars_base' || environment === 'rover';
   const status = unified?.classification_domain === 'FICTIONAL_MISSION_TRAINING_ONLY'
     && (!unified.subject_id || unified.subject_id === selected) ? unified.status : null;
@@ -136,7 +170,10 @@ export default function MissionVisorHUD({
     <div className="hgv-visor-shell">
       <div className="hgv-visor-glass">
         <div className="hgv-landscape" aria-hidden="true">
-          {showMars && <Habitat/>}
+          <img className="hgv-photo-scene" key={environment} src={scenePhoto.url} alt="" loading="eager" referrerPolicy="no-referrer" onError={event=>{event.currentTarget.style.display='none';}}/>
+          {(environment === 'mars_base' || environment === 'lunar_base') && <Habitat/>}
+          {environment === 'rover' && <RoverIllustration/>}
+          {(environment === 'mars_base' || environment === 'lunar_base') && <EvaFigure/>}
           <span className="hgv-ground"/><span className="hgv-ground-near"/>
         </div>
         <div className="hgv-glass-tint" aria-hidden="true"/>
@@ -181,6 +218,6 @@ export default function MissionVisorHUD({
         </div>
       </div>
     </div>
-    <div className="hgv-footer"><span>Research prototype · fictional crew and engineering simulations · not a medical or EVA safety instrument</span><span>Landscape, habitat and overlays are illustrative concept graphics, not NASA photographs</span></div>
+    <div className="hgv-footer"><span>Research prototype · fictional crew and engineering simulations · not a medical or EVA safety instrument</span><span><a href={scenePhoto.source} target="_blank" rel="noreferrer">{scenePhoto.credit}</a> · Habitat, rover, astronaut and HUD are illustrative overlays</span></div>
   </section>;
 }
