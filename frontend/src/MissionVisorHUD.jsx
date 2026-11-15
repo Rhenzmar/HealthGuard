@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { METRICS, formatValue, readApi } from './api.js';
 import { Icon } from './viz.jsx';
-import MissionEnvironment3D from './MissionEnvironment3D.jsx';
 import './missionVisorHUD.css';
 
 // A first-person concept of HealthGuard inside an EVA suit.
@@ -18,17 +17,17 @@ const LOCATIONS = {
     tab: 'Mars suit',
     title: 'MARS / SURFACE EVA',
     caption: 'Mars habitat approach',
-    background: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23727/PIA23727.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1500&w=2500',
-    credit: 'NASA/JPL-Caltech/ASU/MSSS',
-    source: 'https://science.nasa.gov/photojournal/perseverances-mastcam-z-first-high-resolution-panorama/'
+    background: 'https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia23/pia23302/PIA23302.jpg?crop=faces%2Cfocalpoint&fit=clip&h=1600&w=3200',
+    credit: 'NASA / Artist’s concept',
+    source: 'https://science.nasa.gov/photojournal/first-humans-on-mars-artists-concept/'
   },
   lunar_base: {
     tab: 'Moon suit',
     title: 'MOON / SURFACE EVA',
     caption: 'Lunar habitat approach',
-    background: 'https://assets.science.nasa.gov/content/dam/science/missions/hubble/releases/2005/10/STScI-01EVVM9G0CWEZJSKM1YBTQDZ76.tif/jcr%3Acontent/renditions/4196x2085.jpg',
-    credit: 'NASA / Apollo 17 lunar reference',
-    source: 'https://science.nasa.gov/asset/hubble/apollo-17-astronauts-snapshot-of-taurus-littrow-valley/'
+    background: 'https://www.nasa.gov/wp-content/uploads/2026/05/stmd-exteriorlunarbase-hdlandscapeversion-2026-0521.png',
+    credit: 'NASA / Moon Base concept',
+    source: 'https://www.nasa.gov/image-detail/stmd-exteriorlunarbase-hdlandscapeversion-2026-0521/'
   }
 };
 
@@ -61,6 +60,33 @@ function SignalRow({metric,value,samples,selected,onSelect}) {
   </button>;
 }
 
+function BodyOverview({frame,active}) {
+  const checks=[
+    ['Circulation','heart_rate_bpm'],['Breathing','spo2_percent'],['Temperature','core_temp_c']
+  ];
+  return <aside className="hgv-panel hgv-body-overview" aria-label="Simulated body overview, not a medical body scan">
+    <div className="hgv-panel-heading"><Icon name="user" size={16}/><strong>BODY OVERVIEW</strong><span>SIMULATED</span></div>
+    <div className="hgv-body-content">
+      <svg viewBox="0 0 70 122" className="hgv-body-silhouette" role="img" aria-label="Diagram of human body, illustrative only">
+        <circle cx="35" cy="13" r="10" fill="none" stroke="currentColor" strokeWidth="2.2"/>
+        <path d="M26 26 Q35 23 44 26 L49 64 L43 74 L43 110 L38 119 L34 119 L32 82 L28 119 L23 119 L20 108 L23 74 L19 64 Z M26 30 L14 34 L9 76 L12 85 M44 30 L56 34 L61 76 L58 85" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"/>
+        <path d="M35 31 L35 67 M24 50 L46 50 M26 73 L44 73" fill="none" stroke="currentColor" strokeWidth=".8" opacity=".55"/>
+      </svg>
+      <div className="hgv-body-zones">
+        {checks.map(([name,key])=>{
+          const level=active?frame?.metric_levels?.[key]:null;
+          const display=level&&level!=='OPTIMAL'?level:'TRACKING';
+          return <div className="hgv-body-zone" key={key}>
+            <span>{name}</span>
+            <strong className={level&&level!=='OPTIMAL'?'hgv-body-zone-flag':''}>{display}</strong>
+          </div>;
+        })}
+        <small>Pattern display, not a diagnosis</small>
+      </div>
+    </div>
+  </aside>;
+}
+
 function SystemRow({system,value}) {
   const available=system.kind!=='unconnected'&&typeof value==='number'&&Number.isFinite(value);
   return <div className="hgv-system-row">
@@ -81,6 +107,7 @@ export default function MissionVisorHUD({
   const [voiceEnabled,setVoiceEnabled]=useState(false);
   const [fullscreen,setFullscreen]=useState(false);
   const [sceneFailed,setSceneFailed]=useState(false);
+  const [clearView,setClearView]=useState(true);
   const current=environment==='mars_base'||environment==='rover'?'mars_base':'lunar_base';
   const location=LOCATIONS[current];
   const scenarioFrame=scenario?.active?scenario.latest:null;
@@ -161,7 +188,10 @@ export default function MissionVisorHUD({
     try{if(document.fullscreenElement)await document.exitFullscreen();else await root.current?.requestFullscreen()}catch{}
   }
 
-  return <section ref={root} className={'hgv-screen hgv-env-'+current+' hgv-severity-'+severity.toLowerCase()} aria-label="HealthGuard first-person suit HUD demonstration">
+  return <section ref={root}
+    style={{'--hgv-panel-alpha':clearView?'.17':'.58','--hgv-panel-blur':clearView?'2px':'8px'}}
+    className={'hgv-screen hgv-env-'+current+' hgv-severity-'+severity.toLowerCase()+(clearView?' hgv-clear-view':' hgv-high-contrast')}
+    aria-label="HealthGuard first-person suit HUD demonstration">
     <div className="hgv-control-bar">
       <div className="hgv-control-title"><Icon name="shield" size={17}/><strong>HealthGuard</strong><span>Mission HUD / EVA suit simulation</span></div>
       <div className="hgv-control-actions">
@@ -169,6 +199,9 @@ export default function MissionVisorHUD({
           {Object.entries(LOCATIONS).map(([id,config])=><button type="button" key={id} onClick={()=>onEnvironment(id)} aria-pressed={current===id} className={current===id?'active':''}>{config.tab}</button>)}
         </div>
         <label className="hgv-crew-picker"><span className="sr-only">Selected astronaut</span><select value={selected} onChange={e=>onSelectCrew(e.target.value)}>{CREW.map(([id,name])=><option key={id} value={id}>{name}</option>)}</select></label>
+        <button className={'hgv-tool-button'+(clearView?' active':'')} type="button" onClick={()=>setClearView(v=>!v)} aria-pressed={clearView} title="Toggle transparent panels or higher-contrast panels">
+          <Icon name="eye" size={16}/><span>{clearView?'Clear view':'High contrast'}</span>
+        </button>
         <button className="hgv-tool-button" type="button" onClick={onOpenScenario}><Icon name="activity" size={15}/>{scenarioDisplay?'Scenario Lab · '+scenario.elapsed+'s':'Scenario Lab'}</button>
         <button className={'hgv-tool-button'+(voiceEnabled?' active':'')} type="button" onClick={()=>setVoiceEnabled(v=>!v)} aria-pressed={voiceEnabled} title="Toggle critical training voice alerts"><Icon name={voiceEnabled?'volume':'mute'} size={16}/><span>Voice {voiceEnabled?'on':'off'}</span></button>
         <button className="hgv-tool-button" type="button" onClick={toggleFullscreen}>{fullscreen?'Exit full view':'Full screen'}</button>
@@ -181,7 +214,7 @@ export default function MissionVisorHUD({
         <div className="hgv-world" aria-hidden="true">
           {!sceneFailed&&<img className="hgv-landscape" key={current} src={location.background} alt="" onError={()=>setSceneFailed(true)} loading="eager"/>}
           <div className="hgv-world-shade"/>
-          <MissionEnvironment3D environment={current} interactive={false}/>
+
         </div>
         <div className="hgv-visor-reflection" aria-hidden="true"/>
         <div className="hgv-overlay">
@@ -200,16 +233,19 @@ export default function MissionVisorHUD({
             <div className="hgv-telemetry"><span>{scenarioDisplay?'SERVER SCENARIO':isConnected?'SIMULATOR CONNECTED':'AWAITING TELEMETRY'}</span><strong>{latest?.sequence!=null?(scenarioDisplay?'FRAME #':'SAMPLE #')+latest.sequence:scenarioDisplay?'AWAITING SCENARIO':'NO LIVE PACKET'}</strong><small>{scenarioDisplay?'SYNTHETIC PLAYBACK · NOT SUIT SENSORS':'NOT A REAL SPACESUIT FEED'}</small></div>
           </div>
           <div className="hgv-sides">
-            <aside className="hgv-panel hgv-panel-left" aria-label="Fictional physiological signals">
-              <div className="hgv-panel-heading"><Icon name="activity" size={16}/><strong>BIOMETRICS</strong><span>{scenarioDisplay?'TRAINING':'LIVE SIM'}</span></div>
-              {METRICS.map(m=><SignalRow key={m.key} metric={m} value={latest?.values?.[m.key]} samples={hudSamples} selected={selectedMetric===m.key} onSelect={()=>setSelectedMetric(m.key)}/>)}
-            </aside>
+            <div className="hgv-left-stack">
+              <aside className="hgv-panel hgv-panel-left" aria-label="Fictional physiological signals">
+                <div className="hgv-panel-heading"><Icon name="activity" size={16}/><strong>BIOMETRICS</strong><span>{scenarioDisplay?'TRAINING':'LIVE SIM'}</span></div>
+                {METRICS.map(m=><SignalRow key={m.key} metric={m} value={latest?.values?.[m.key]} samples={hudSamples} selected={selectedMetric===m.key} onSelect={()=>setSelectedMetric(m.key)}/>)}
+              </aside>
+              <BodyOverview frame={scenarioFrame} active={scenarioDisplay}/>
+            </div>
             <div className="hgv-focus" aria-hidden="true">
               <div className="hgv-focus-marker"><span/><span/><span/><span/></div>
-              <div className="hgv-focus-annotation"><strong>{location.caption}</strong><small>ILLUSTRATIVE ENVIRONMENT · NO NAVIGATION FIX</small></div>
+              <div className="hgv-focus-annotation"><strong>{location.caption}</strong><small>CONCEPT SCENE · NO NAVIGATION FIX</small></div>
             </div>
             <aside className="hgv-panel hgv-panel-right" aria-label="Fictional suit and environment telemetry">
-              <div className="hgv-panel-heading"><Icon name="shield" size={16}/><strong>SUIT & LIFE SUPPORT</strong><span>DEMO</span></div>
+              <div className="hgv-panel-heading"><Icon name="shield" size={16}/><strong>SUIT & LIFE SUPPORT</strong><span>SIMULATED</span></div>
               {SUIT_SYSTEMS.map(m=><SystemRow key={m.key} system={m} value={systems[m.key]}/>)}
               <small className="hgv-system-warning">{scenarioDisplay?'BACKEND-SCRIPTED HABITAT VALUES · SUIT PRESSURE / BATTERY UNCONNECTED':engineeringError?'ENGINEERING FEED UNAVAILABLE':'SUIT METRICS ARE SCRIPTED OR UNCONNECTED'}</small>
             </aside>
@@ -223,6 +259,6 @@ export default function MissionVisorHUD({
       </div>
       <div className="hgv-helmet-lower" aria-hidden="true"><div className="hgv-helmet-badge"><Icon name="shield" size={16}/></div></div>
     </div>
-    <footer className="hgv-disclaimer"><span>First-person concept only. Fictional crew, synthetic physiology and separately scripted engineering estimates. Not an operational suit HUD, medical device or navigation display.</span><a href={location.source} target="_blank" rel="noreferrer">Landscape reference: {location.credit}</a></footer>
+    <footer className="hgv-disclaimer"><span>Illustrative EVA interface, not live camera footage. Synthetic physiology and engineering readings, with unconnected suit values left blank. Not a medical or operational suit system.</span><a href={location.source} target="_blank" rel="noreferrer">Landscape reference: {location.credit}</a></footer>
   </section>;
 }
