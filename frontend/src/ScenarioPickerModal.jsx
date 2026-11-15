@@ -3,6 +3,7 @@ import {Icon} from './viz.jsx';
 import {METRICS,formatValue} from './api.js';
 import {SCENARIOS,SCENARIO_LENGTH} from './scenarioSimulator.js';
 import {scenarioVoiceAnnouncement} from './healthguardVoice.js';
+import {unlockScenarioAlarm} from './scenarioAlarm.js';
 import './scenarioPickerModal.css';
 
 const CREW=new Set(['oxygenation','exertion','thermal','sensor']);
@@ -10,7 +11,7 @@ const CATS=[{id:'crew',label:'Crew health',icon:'heart'},{id:'ship',label:'Space
 const levels=['OPTIMAL','CHECK','WARNING','CRITICAL'];
 export default function ScenarioPickerModal({
   open,onClose,onBody,onHUD,person,scenarioId,onSelectScenario,onStart,onPause,onReset,onExit,
-  running,elapsed,sample,soundEnabled,onToggleSound,onSpeak,scenarioPending=false,scenarioError=''
+  running,elapsed,sample,latestFrame,soundEnabled,onToggleSound,onSpeak,scenarioPending=false,scenarioError=''
 }){
   const [category,setCategory]=useState('crew');
   const modalRef=useRef(null),closeRef=useRef(null),onCloseRef=useRef(onClose);
@@ -35,7 +36,8 @@ export default function ScenarioPickerModal({
   if(!open)return null;
   const selected=SCENARIOS.find(s=>s.id===scenarioId);
   const visible=SCENARIOS.filter(s=>category==='crew'?CREW.has(s.id):!CREW.has(s.id));
-  const frame=sample?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'&&sample.scenario_id===scenarioId&&sample.subject_id===person?.subjectId?sample:null;
+  const verified=sample||latestFrame;
+  const frame=verified?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'&&verified.scenario_id===scenarioId&&verified.subject_id===person?.subjectId?verified:null;
   const level=levels.includes(frame?.severity)?frame.severity:'UNASSESSED';
   const elapsedSec=Math.max(0,Math.min(elapsed,SCENARIO_LENGTH));
   const status=scenarioError?'Unavailable':scenarioPending?'Updating':running?'Playing':elapsedSec===SCENARIO_LENGTH?'Complete':selected?'Ready':'Choose a scenario';
@@ -88,7 +90,7 @@ export default function ScenarioPickerModal({
         <div className="hg-scenario-playback-summary"><div><strong>{selected?.name||'No scenario selected'}</strong><span>{time}</span></div>
           <div className="hg-scenario-progress" role="progressbar" aria-label="Scenario playback" aria-valuenow={elapsedSec} aria-valuemin={0} aria-valuemax={SCENARIO_LENGTH}><i style={{width:(elapsedSec/SCENARIO_LENGTH*100)+'%'}}/></div></div>
         <div className="hg-scenario-playback-buttons">
-          <button type="button" className="hg-scenario-start" disabled={!running&&!canStart} onClick={running?onPause:onStart}><Icon name={running?'check':'activity'} size={15}/>{running?'Pause':elapsedSec>0?'Resume':'Start'}</button>
+          <button type="button" className="hg-scenario-start" disabled={!running&&!canStart} onClick={running?onPause:()=>{if(soundEnabled)unlockScenarioAlarm();onStart();}}><Icon name={running?'check':'activity'} size={15}/>{running?'Pause':elapsedSec>0?'Resume':'Start'}</button>
           <button type="button" className="hg-scenario-secondary" disabled={!selected} onClick={onReset}>Restart</button>
           <button type="button" className="hg-scenario-secondary" aria-pressed={soundEnabled} onClick={onToggleSound}><Icon name={soundEnabled?'volume':'mute'} size={15}/>{soundEnabled?'Voice & alarm on':'Voice & alarm off'}</button>
           {selected&&<button type="button" className="hg-scenario-secondary" onClick={onBody}>Body Explorer</button>}
