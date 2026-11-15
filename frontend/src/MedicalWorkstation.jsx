@@ -239,6 +239,6 @@ export default function MedicalWorkstation({selected,onSelectCrew,snapshot,sampl
        {issue&&<p className="hgm-warning">{issue}. Missing values are not replaced.</p>}
      </section>
    </div>}
-   <p className="hgm-footer">This is a simulated educational interface, not clinical monitoring or diagnosis. Section highlights indicate anatomy rather than health or risk. Anatomical assets: BodyParts3D © DBCLS (CC BY 4.0); HuBMAP (CC BY 4.0); MakeHuman (CC0); adapted by <a href="https://github.com/MervinR07/open-anatomy-3d" target="_blank" rel="noreferrer">open-anatomy-3d</a> (CC BY 4.0).</p>
+
  </div>;
 }
