@@ -5,6 +5,11 @@ on:
     paths:
       - 'frontend/e2e/**'
       - 'frontend/playwright.config.mjs'
+      - 'frontend/src/WellnessGame.jsx'
+      - 'frontend/src/wellnessGameLogic.js'
+      - 'frontend/src/wellnessGame.css'
+      - 'frontend/src/MissionGame.jsx'
+      - 'frontend/src/missionGame.css'
       - 'frontend/src/App.jsx'
       - 'frontend/src/MissionDashboardV2.jsx'
       - 'frontend/src/ScenarioPickerModal.jsx'
