@@ -44,7 +44,12 @@ export default function LiveSubsystemExplorer({person,latest,engineering,trainin
           <div className="hg-subsystem-card-head"><Icon name={group.icon} size={19}/><strong>{group.title}</strong>
             <span>{group.branch==='physiological'?'PHYSIOLOGICAL':'ENGINEERING'}</span></div>
           <p>{group.description}</p>
-          <div className="hg-subsystem-card-count"><b>{count}/{group.keys.length}</b> current values <Icon name="arrow" size={15}/></div>
+          <div className="hg-subsystem-card-readings">
+            {rows.map(row=><div key={row.key}><span>{row.label}{row.origin==='estimate'?' · est.':''}</span>
+              <strong>{formatValue(row.value,row.digits)} <small>{row.unit}</small></strong>
+            </div>)}
+          </div>
+          <div className="hg-subsystem-card-count"><b>{count}/{group.keys.length}</b> available <span>{isOpen?'Hide details':'View details'}</span><Icon name="arrow" size={15}/></div>
         </button>;
       })}
     </div>
