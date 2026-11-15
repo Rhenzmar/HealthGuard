@@ -30,7 +30,7 @@ export default function ScenarioPickerModal({
     if(!open)return;
     returnFocusRef.current=document.activeElement;
     setCategory(CREW_SCENARIOS.has(scenarioId)||!scenarioId?'crew':'environment');
-    setShowDetails(false);
+    setShowDetails(Boolean(running));
     const previousOverflow=document.body.style.overflow;
     document.body.style.overflow='hidden';
     closeRef.current?.focus();
