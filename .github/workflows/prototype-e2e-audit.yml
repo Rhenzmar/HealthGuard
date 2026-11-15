@@ -1,0 +1,75 @@
+name: HealthGuard complete 28-case end-to-end audit
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'physiograph/scenario_engine.py'
+      - 'physiograph/physioalert_unified.py'
+      - 'physiograph/candidate_17ch_numpy.py'
+      - 'physiograph/live_api.py'
+      - 'tools/e2e_prototype_audit.py'
+      - 'tests/test_e2e_prototype_audit.py'
+      - '.github/workflows/prototype-e2e-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: healthguard-complete-audit-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  end-to-end-api:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install FastAPI, model and audit dependencies
+        run: |
+          python -m pip install -r requirements-live-lite.txt pytest httpx pandas
+      - name: Test audit assertions against actual FastAPI
+        env:
+          PHYSIOGRAPH_INFERENCE_BACKEND: numpy
+          PHYSIOGRAPH_AUTO_DEMO: "0"
+        run: python -m pytest -q tests/test_e2e_prototype_audit.py
+      - name: Execute complete 168-response pretrained model audit
+        env:
+          PHYSIOGRAPH_INFERENCE_BACKEND: numpy
+          PHYSIOGRAPH_AUTO_DEMO: "0"
+        run: python -m tools.e2e_prototype_audit --mode inprocess
+      - name: Archive raw 28-case results
+        uses: actions/upload-artifact@v4
+        with:
+          name: healthguard-28-case-model-e2e-report
+          path: research/prototype_end_to_end/
+          retention-days: 45
+      - name: Commit reproducible integration evidence
+        run: |
+          set -eu
+          mkdir -p /tmp/healthguard-e2e-report
+          cp research/prototype_end_to_end/api_e2e_results.json /tmp/healthguard-e2e-report/
+          cp research/prototype_end_to_end/API_RESULTS.md /tmp/healthguard-e2e-report/
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for attempt in 1 2 3 4 5; do
+            git fetch origin main
+            for source in tools/e2e_prototype_audit.py physiograph/scenario_engine.py physiograph/live_api.py; do
+              if [ "$(git rev-parse "$GITHUB_SHA:$source")" != "$(git rev-parse "origin/main:$source")" ]; then
+                echo "A newer model or scenario revision exists; skip stale report"
+                exit 0
+              fi
+            done
+            git reset --hard origin/main
+            mkdir -p research/prototype_end_to_end
+            cp /tmp/healthguard-e2e-report/* research/prototype_end_to_end/
+            git add research/prototype_end_to_end/api_e2e_results.json research/prototype_end_to_end/API_RESULTS.md
+            if git diff --staged --quiet; then
+              echo "Report already up to date"
+              exit 0
+            fi
+            git commit -m "Save 28-case trained-model scenario and recovery test evidence"
+            if git push origin HEAD:main; then exit 0; fi
+          done
+          echo "Could not publish E2E results after concurrent updates" >&2
+          exit 1
