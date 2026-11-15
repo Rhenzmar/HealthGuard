@@ -249,3 +249,13 @@
  .hg6-vital-lines button,.hg6-vital-estimate{gap:5px;grid-template-columns:17px minmax(0,1fr) auto}
  .hg6-vital-lines button>span:nth-child(2),.hg6-vital-estimate>span:nth-child(2){font-size:9px}
 }
+
+/* Nine vital values as one uninterrupted list. Four non-sensor estimates retain discreet labels. */
+.hg6-nine-vitals{padding:3px 12px 13px}
+.hg6-nine-vitals>button,.hg6-nine-vitals>.hg6-vital-estimate{min-height:39px;border-bottom:1px solid #2d4b61;margin:0;padding:8px 3px;display:grid;grid-template-columns:19px minmax(0,1fr) auto;align-items:center;gap:8px}
+.hg6-nine-vitals>:last-child{border-bottom:0}
+.hg6-nine-vitals .hg6-vital-estimate{background:transparent}
+.hg6-estimate-mark{font-size:8px;color:#83afbe;border:1px solid #456574;border-radius:4px;padding:1px 3px;margin-left:3px;white-space:nowrap;font-weight:600}
+.hg6-nine-vitals .hg6-vital-estimate>span:nth-child(2){font-size:10px;line-height:1.3}
+.hg6-nine-vitals .hg6-vital-estimate strong{font-size:14px}
+@media(max-width:1280px){.hg6-nine-vitals .hg6-vital-estimate strong{font-size:12px}.hg6-nine-vitals .hg6-vital-estimate>span:nth-child(2){font-size:9px}}
