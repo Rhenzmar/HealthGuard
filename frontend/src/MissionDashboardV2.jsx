@@ -119,17 +119,22 @@ const AUXILIARY_VITALS=[
 // These four quantities come from the separate engineering simulator.
 // They are not part of the real-time physiological sensor stream or frozen five-channel detector.
 function LiveVitals({hasTelemetry,latest,connection,onMetric,metricKey,training,engineeringValues,engineeringStatus}){
-  return <section className="hg6-card hg6-vitals" aria-label="Nine simulated physiological and estimated quantities">
+  return <section className="hg6-card hg6-vitals" aria-label="Nine fictional physiological measurements and estimates">
     <div className="hg6-card-heading"><h2><Icon name="activity" size={19}/>{training?'Scenario vitals':'Live vitals'}</h2><span className={'hg6-connection '+(connection==='connected'?'connected':'')}><i/>{training?'Scripted playback':connection==='connected'?'Simulated stream':'Reconnecting'}</span></div>
-    <div className="hg6-vital-section-label"><strong>PHYSIOLOGICAL STREAM</strong><span>5 simulated signals</span></div>
-    <div className="hg6-vital-lines">{METRICS.map(m=><button type="button" key={m.key} disabled={!hasTelemetry} className={(training?.metric_levels?.[m.key]==="CRITICAL"?"hg6-vital-critical ":"")+(metricKey===m.key?"hg6-vital-selected":"")} aria-pressed={metricKey===m.key} onClick={()=>onMetric(m.key)} title={"View "+m.label+" trend in Crew Telemetry"}>
-      <span style={{color:m.color}}><Icon name={m.glyph} size={17}/></span><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong>
-    </button>)}</div>
-    <div className="hg6-vital-section-label hg6-vital-estimate-label"><strong>ADDITIONAL ESTIMATES</strong><span>4 scripted · not measured</span></div>
-    <div className="hg6-vital-lines hg6-vital-estimates">{AUXILIARY_VITALS.map(m=><div key={m.key} className="hg6-vital-estimate" title="Derived from a separate fictional engineering simulator; not a medical sensor reading or CNN input">
-      <span style={{color:m.color}}><Icon name={m.glyph} size={17}/></span><span>{m.label}</span><strong>{formatValue(engineeringValues?.[m.key],m.digits)} <small>{m.unit}</small></strong>
-    </div>)}</div>
-    <p className="hg6-vital-source-note">{engineeringStatus==='error'?'Engineering estimates unavailable; no replacement values are invented.':'Five simulated stream signals; four independent scripted estimates. None are real astronaut measurements.'}</p>
+    <div className="hg6-vital-lines hg6-nine-vitals">
+      {METRICS.map(m=><button type="button" key={m.key} disabled={!hasTelemetry}
+        className={(training?.metric_levels?.[m.key]==="CRITICAL"?"hg6-vital-critical ":"")+(metricKey===m.key?"hg6-vital-selected":"")}
+        aria-pressed={metricKey===m.key} onClick={()=>onMetric(m.key)} title={"View "+m.label+" trend in Crew Telemetry"}>
+        <span style={{color:m.color}}><Icon name={m.glyph} size={17}/></span><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong>
+      </button>)}
+      {AUXILIARY_VITALS.map(m=><div key={m.key} className="hg6-vital-estimate"
+        title="Scripted estimate from a separate engineering simulator; not a measured vital sign or model input"
+        aria-label={m.label+"; scripted estimate, not measured"}>
+        <span style={{color:m.color}}><Icon name={m.glyph} size={17}/></span>
+        <span>{m.label} <small className="hg6-estimate-mark">est.</small></span>
+        <strong>{formatValue(engineeringValues?.[m.key],m.digits)} <small>{m.unit}</small></strong>
+      </div>)}
+    </div>
   </section>;
 }
 function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,onTrainingSpeak,liveAlertsEnabled,onToggleLiveAlerts}){
