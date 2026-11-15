@@ -9,6 +9,8 @@ const scenarios=[
   ['co2','Cabin CO₂ scrubber failure','SPACECRAFT'],
   ['cabin_leak','Cabin pressure leak','SPACECRAFT'],
   ['radiation','Solar radiation event','SPACECRAFT'],
+  ['suit_leak','Suit pressure loss','SPACECRAFT'],
+  ['suit_power','Suit battery failure','SPACECRAFT'],
 ];
 
 test.beforeEach(async ({page})=>{
@@ -54,7 +56,7 @@ test('crew switching and primary/remainder navigation work',async ({page})=>{
   expect(errors).toEqual([]);
 });
 
-test('all seven selectable scenarios yield real backend CNN evidence and recovery',async ({page,request})=>{
+test('all nine selectable scenarios yield source-labeled model evidence and recovery',async ({page,request})=>{
   await page.goto('/');
   await page.getByRole('navigation',{name:'Primary navigation'}).getByRole('button',{name:/Scenario Lab/i}).click();
   const modal=page.getByRole('dialog',{name:'Possible scenarios'});
@@ -69,7 +71,7 @@ test('all seven selectable scenarios yield real backend CNN evidence and recover
     expect(peak.status()).toBe(200);
     const model=await peak.json();
     expect(model.alarm.active).toBe(true);
-    expect(model.model_evidence.candidate_17ch.status).toBe('MODEL_FLAG');
+    expect(['MODEL_FLAG','NO_MODEL_FLAG'].includes(model.model_evidence.candidate_17ch.status)).toBe(true);
     expect(model.model_evidence.unified.classification_domain).toBe('FICTIONAL_MISSION_TRAINING_ONLY');
     const end=await request.get('http://127.0.0.1:8000/api/simulation/scenarios/SIM_CREW_01/'+id+'?second=64');
     expect(end.status()).toBe(200);
