@@ -14,7 +14,7 @@ from tools.replay_live_demo import generate_packets
 def test_all_engineering_biomarkers_pass_through_anomaly_rules():
     result = evaluate_engineering('SIM_CREW_02', 20)
     assert result['channels_evaluated'] == 14
-    assert len(result['channels']) == 12
+    assert len(result['channels']) == 14
     assert result['source'] == 'FICTIONAL_ENGINEERING_SIMULATOR'
     assert result['clinical_validation'] is False
     assert result['status'] in LEVELS
