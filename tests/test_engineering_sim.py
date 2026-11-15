@@ -29,3 +29,19 @@ def test_engineering_catalog_readonly_and_empty_without_simulator(monkeypatch):
         assert c.get("/api/simulation/engineering/SIM_CREW_01").status_code==404
         assert c.get("/api/simulation/engineering/C001").status_code==404
         assert c.post("/api/simulation/engineering/SIM_CREW_01",json={}).status_code==405
+
+
+def test_suit_pressure_and_battery_are_fictional_and_crew_specific():
+    from physiograph.engineering_sim import FROZEN_17CH_ENGINEERING_KEYS
+    first = engineering_snapshot("SIM_CREW_01",0)
+    later = engineering_snapshot("SIM_CREW_01",60)
+    other = engineering_snapshot("SIM_CREW_04",60)
+    assert 4.2 <= first["values"]["suit_pressure_psi"] <= 4.4
+    assert later["values"]["suit_battery_percent"] < first["values"]["suit_battery_percent"]
+    assert later["values"]["suit_battery_percent"] != other["values"]["suit_battery_percent"]
+    assert first["channels"]["suit_pressure_psi"]["unit"] == "psi"
+    assert first["channels"]["suit_battery_percent"]["unit"] == "%"
+    assert "NOT_PRESSURE_SENSOR" in first["channels"]["suit_pressure_psi"]["origin"]
+    assert len(FROZEN_17CH_ENGINEERING_KEYS) == 12
+    assert "suit_pressure_psi" not in FROZEN_17CH_ENGINEERING_KEYS
+    assert "suit_battery_percent" not in FROZEN_17CH_ENGINEERING_KEYS
