@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { METRICS, formatValue, friendlyStatus, readApi } from './api.js';
 import { Icon } from './viz.jsx';
+import MissionEnvironment3D from './MissionEnvironment3D.jsx';
 import './missionVisorHUD.css';
 
 // All live physiological readings and engineering estimates come from the existing
@@ -171,11 +172,12 @@ export default function MissionVisorHUD({
       <div className="hgv-visor-glass">
         <div className="hgv-landscape" aria-hidden="true">
           <img className="hgv-photo-scene" key={environment} src={scenePhoto.url} alt="" loading="eager" referrerPolicy="no-referrer" onError={event=>{event.currentTarget.style.display='none';}}/>
-          {(environment === 'mars_base' || environment === 'lunar_base') && <Habitat/>}
-          {environment === 'rover' && <RoverIllustration/>}
-          {(environment === 'mars_base' || environment === 'lunar_base') && <EvaFigure/>}
+          
+          
+          
           <span className="hgv-ground"/><span className="hgv-ground-near"/>
         </div>
+        <MissionEnvironment3D environment={environment}/>
         <div className="hgv-glass-tint" aria-hidden="true"/>
         <div className="hgv-dial hgv-dial-left" aria-hidden="true"/>
         <div className="hgv-dial hgv-dial-right" aria-hidden="true"/>
@@ -218,6 +220,6 @@ export default function MissionVisorHUD({
         </div>
       </div>
     </div>
-    <div className="hgv-footer"><span>Research prototype · fictional crew and engineering simulations · not a medical or EVA safety instrument</span><span><a href={scenePhoto.source} target="_blank" rel="noreferrer">{scenePhoto.credit}</a> · Habitat, rover, astronaut and HUD are illustrative overlays</span></div>
+    <div className="hgv-footer"><span>Research prototype · fictional crew and engineering simulations · not a medical or EVA safety instrument</span><span><a href={scenePhoto.source} target="_blank" rel="noreferrer">{scenePhoto.credit}</a> · 3D habitat and rover models are original illustrations; HUD and backgrounds are illustrative</span></div>
   </section>;
 }
