@@ -1,24 +1,54 @@
-# PHYSIOGRAPH v1.5: Free Render backend deployment
+# HealthGuard | Current Render deployment guide
 
-## What this does
+**Product name:** HealthGuard. **Legacy backend names:** `physiograph/` Python module, `PHYSIOGRAPH_*` environment settings, existing Render URLs. Changing these operational names without a coordinated migration will break API connections.
 
-The backend is an explicitly simulated, read-only demonstration. NASA OSD-575 laboratory measurements are historical and separately labeled. The CNN and statistical detector are research prototypes, not certified medical anomaly detectors or disease diagnostic tools.
+This is a fictional, read-only demonstration. The backend does not ingest real astronaut health or suit telemetry. Historical NASA laboratory assays are a separate research input.
 
-## Deploy
+## Current architecture (November 15, 2026)
 
-1. Create a new GitHub repository named `physiograph` under your account. Upload the **contents** of this `PHYSIOGRAPH` directory to the repository root. The root should contain `Dockerfile`, `render.yaml`, `requirements-live-lite.txt`, `physiograph/` and `models/`.
-2. Connect the GitHub repository to Render. In Render, select **New > Blueprint** and choose the repository and its `render.yaml`. Review the configuration before confirming. Select the **free** plan only; never accept an unexpected paid service.
-3. The Blueprint creates one Docker web service in the Singapore region. It runs Uvicorn on the host-provided `$PORT` and enables a 10x accelerated, **fictional** telemetry demonstration. The CNN uses frozen NumPy weights, not PyTorch.
-4. Wait for the deploy to report success. Open `https://YOUR-SERVICE.onrender.com/api/system/readiness`, `/api/research/overview`, and `/live` to verify the endpoints.
-5. Run `python tools/render_smoke_test.py https://YOUR-SERVICE.onrender.com` from the project root. This checks model readiness, research endpoints, missing sensor disclosures, self-running simulated telemetry and anonymous-write blocking.
-6. In a browser, ensure `/live` updates and WebSocket reconnect works after reload, and confirm data is clearly marked **SIMULATED LIVE**.
+All three currently connected Render services watch the **private** GitHub repository `Rhenzmar/PhysioGraph` on branch `main`, with automatic deploys:
 
-## Important
+| Render service | Type | URL | Build/runtime |
+| --- | --- | --- | --- |
+| `healthguard` | Static React/Vite | https://physiograph-dashboard.onrender.com/ | `cd frontend && npm install --no-audit --no-fund && npm run build`, publish `frontend/dist` |
+| `physiograph-api-lurx` | FastAPI Docker backend | https://physiograph-api-lurx.onrender.com/ | Root `Dockerfile` |
+| `physiograph-api` | Additional FastAPI Docker backend | https://physiograph-api.onrender.com/ | Root `Dockerfile` |
 
-- Free instances have **512 MB RAM**, a limited amount of monthly instance time and a **15-minute inactivity spin-down**. A sleeping instance can take around a minute to wake up. Your results may vary. No uptime guarantee.
-- All in-memory simulated telemetry resets after a free instance restarts. There is no persistent storage.
-- The live endpoints have no authenticated user accounts and are strictly demonstration-only. Do not enter real identifiable health data or expose a writable ingestion key in a browser.
-- `PHYSIOGRAPH_CORS_ORIGINS` should be set later to the exact Render frontend origin once known, e.g. `https://physiograph-ui.onrender.com`. Never set wildcard `*`.
-- Never invent radiation, oxygen reserve, navigation or clinical-risk values when their feeds are unavailable.
-- Don't push `.env` credentials. `.env.example` contains no secrets.
-- If Render reports a plan upgrade or payment step, stop and review it; the free deployment must not incur charges.
+These are **currently observed deployment settings**, not a guarantee that the URLs remain unchanged.
+
+## Frontend configuration
+
+Set the **public-only** build variable `VITE_PHYSIOGRAPH_API_BASE` to the deployed API origin you intend to use. The example `frontend/.env.example` currently points to `https://physiograph-api-lurx.onrender.com`. Do not put passwords, tokens, ingest keys or any other private credentials in a `VITE_*` variable.
+
+Configure `PHYSIOGRAPH_CORS_ORIGINS` on the backend to permit the **exact** static site origin, `https://physiograph-dashboard.onrender.com`. Do not use `*`.
+
+## Backend configuration
+
+`Dockerfile` and `render.yaml` retain these compatibility settings:
+
+```dotenv
+PHYSIOGRAPH_INFERENCE_BACKEND=numpy
+PHYSIOGRAPH_PUBLIC_MODE=1
+PHYSIOGRAPH_AUTO_DEMO=1
+PHYSIOGRAPH_AUTO_DEMO_SPEED=10
+```
+
+The demo streams four source-separated fictional crews internally. Anonymous live ingestion is disabled in public mode by design. The default API is deliberately not a production medical data service.
+
+## Verification
+
+1. Confirm the static site is live and can show simulated crew packets.
+2. Visit `https://physiograph-api-lurx.onrender.com/api/live/health` and `/api/system/readiness` to check availability and inference status.
+3. Switch all four fictional crew members. Confirm the UI never displays a NASA historical laboratory result as a current physiological reading.
+4. Try normal monitoring over time and a scripted scenario; normal simulator uptime must not itself drain suit oxygen into a false CRITICAL.
+5. Check that a scripted failure still changes its affected readings, with proper source and severity labels.
+6. Check browser audio manually, because browser tests cannot guarantee sound at the speaker.
+7. Inspect GitHub Actions for both frontend and backend verification; do not confuse a green frontend build with full backend or browser testing.
+
+Render cold starts and redeploys can reset in-memory simulated stream state. No medical operational uptime or reliability is promised.
+
+## Repository and service renaming
+
+**Do not rename active API environment variables or the `physiograph/` Python import directory casually.** Rename the GitHub repository only after checking its connection in Render; GitHub redirects are not a sufficient deployment test. Keep the current working static URL until a new custom hostname has actually been verified.
+
+See [repository naming and separate public reader-repo plan](docs/REPOSITORY_RENAME_AND_PUBLICATION.md).
