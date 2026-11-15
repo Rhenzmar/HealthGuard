@@ -382,6 +382,20 @@ def nasa_original_assay_evaluation(assay: str):
     }
 
 
+@router.get('/evaluation/nasa-rr1-environment')
+def nasa_rr1_environment_evaluation():
+    """Real NASA EDA environmental measurements, not a 17-channel CNN validation."""
+    import json
+    path=ROOT/'research/nasa_rr1_eda_evaluation/evaluation.json'
+    if not path.is_file():
+        raise HTTPException(503,'Real NASA EDA evaluation has not been published')
+    data=json.loads(path.read_text(encoding='utf-8'))
+    if (data.get('evaluation_domain')!='REAL_NASA_ISS_ENVIRONMENTAL_TELEMETRY'
+        or data.get('model_17ch_scored_on_this_dataset') is not False):
+        raise HTTPException(503,'Real NASA EDA provenance validation failed')
+    return data
+
+
 @router.get('/method')
 def method():
     return {'algorithm':'APDRA','version':'0.7 FROZEN',
