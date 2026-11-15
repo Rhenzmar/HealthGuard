@@ -33,6 +33,8 @@ DELTA_LIMITS: dict[str, tuple[float, float, float]] = {
     "radiation_rate_usv_h": (5, 50, 500),
     "cumulative_dose_usv": (50, 500, 5000),
     "suit_o2_remaining_percent": (14, 35, 60),
+    "suit_pressure_psi": (0.3, 0.8, 1.5),
+    "suit_battery_percent": (12, 30, 55),
 }
 
 
@@ -48,7 +50,7 @@ def _level(delta: float, thresholds: tuple[float, float, float]) -> str:
 
 def evaluate_engineering(subject_id: str, sequence: int,
                          values: dict[str, float] | None = None) -> dict[str, Any]:
-    """Evaluate 12 synthetic metrics against their per-crew nominal profile.
+    """Evaluate synthetic engineering metrics against per-crew nominal profiles.
 
     Caller-provided values are allowed ONLY for a server-generated scripted
     scenario, not arbitrary user uploads. No missing-value imputation.
@@ -57,7 +59,7 @@ def evaluate_engineering(subject_id: str, sequence: int,
     current = engineering_snapshot(subject_id, sequence)
     observed = current["values"] if values is None else values
     if not isinstance(observed, dict) or set(observed) != set(SIGNALS):
-        raise ValueError("Complete 12-channel engineering scenario required")
+        raise ValueError("Complete synthetic engineering scenario required")
     results = {}
     for key, meta in SIGNALS.items():
         value = observed[key]
