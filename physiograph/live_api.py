@@ -30,6 +30,7 @@ from physiograph.candidate_17ch_numpy import load_candidate_monitor
 from physiograph.physioalert_unified import UnifiedReviewMonitor
 from physiograph.scenario_engine import scenario_catalog, scenario_history, evaluate_scenario_frame
 from physiograph.context_monitor import LiveQualityMonitor, ContextReviewMonitor, CHECK_INTERVAL_S
+from physiograph.live_apdra import LiveAPDRAMonitor
 from physiograph.live_telemetry import (
     LiveStore, METRICS, SOURCE, TelemetryError, ConflictError, validate_sample,
 )
@@ -106,6 +107,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
     api.state.unified = UnifiedReviewMonitor()
     api.state.quality = LiveQualityMonitor()
     api.state.context = ContextReviewMonitor()
+    api.state.live_apdra = LiveAPDRAMonitor()
     public_mode = os.getenv('PHYSIOGRAPH_PUBLIC_MODE','0').strip() == '1'
     ingest_key = os.getenv('PHYSIOGRAPH_INGEST_API_KEY','')
     api.state.public_mode = public_mode
@@ -145,6 +147,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
             "cnn": cnn, "statistical_detector": stat,
             "live_review": "DETERMINISTIC_CONTEXT_AWARE_REVIEW",
             "historical_apdra": "SEPARATE_UNMODIFIED_RESEARCH_PIPELINE",
+            "live_apdra": "EXPERIMENTAL_SIMULATED_BASELINE_STABILITY",
             "external_deployed_model_validation": "NOT_PERFORMED",
             "clinical_validation": False,
             "security": "READ_ONLY_INGEST" if public_mode and not ingest_key else
@@ -324,6 +327,18 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         return {'source':SOURCE, 'subject_id':subject_id,
                 'results':api.state.context.history(subject_id,limit=limit)}
 
+    @api.get("/api/live/apdra/{subject_id}")
+    def live_apdra_latest(subject_id: str):
+        result = api.state.live_apdra.latest(subject_id)
+        if result is None:
+            raise HTTPException(404, "No simulated APDRA result for this subject")
+        return result
+
+    @api.get("/api/live/apdra/history/{subject_id}")
+    def live_apdra_history(subject_id: str, limit: int = Query(120, ge=1, le=300)):
+        return {"subject_id": subject_id, "source": SOURCE,
+                "results": api.state.live_apdra.history(subject_id,limit)}
+
     @api.get("/api/live/review/{subject_id}")
     def live_review(subject_id: str):
         result=api.state.latest_review.get(subject_id)
@@ -377,6 +392,18 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         review = build_live_review(sample, analysis, comparison)
         quality = api.state.quality.process(sample)
         context_review = api.state.context.process(sample,analysis,comparison,review,quality)
+        try:
+            apdra_live = api.state.live_apdra.process(sample, quality)
+        except Exception as exc:
+            apdra_live = {
+                "subject_id": sample.subject_id, "sequence": sample.sequence,
+                "source": SOURCE, "status": "MODEL_ERROR",
+                "algorithm": "APDRA_LIVE_BASELINE_STABILITY_EXPERIMENTAL",
+                "nasa_laboratory_data_used": False, "clinical_validation": False,
+                "reason": f"Experimental live APDRA unavailable: {type(exc).__name__}"
+            }
+        review["apdra_live"] = apdra_live
+        context_review["apdra_live"] = apdra_live
         review['contextual_decision'] = context_review['status']
         api.state.latest_review[sample.subject_id]=review
         if sample.subject_id in ENGINEERING_CREW_IDS:
@@ -399,7 +426,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
                 unified=api.state.unified.process(
                     sample.subject_id, sample.sequence, result["packet"],
                     analysis, comparison, context_review, candidate17,
-                    engineering
+                    engineering, apdra_live
                 )
             except Exception as exc:
                 unified={
@@ -414,6 +441,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         result["candidate_17ch"]=candidate17
         if result.get("multisystem") is not None:
             result["multisystem"]["candidate_17ch"]=candidate17
+        result["apdra_live"]=apdra_live
         result["deep_learning"]=analysis
         result["comparison"]=comparison
         result["live_review"]=review
@@ -421,6 +449,7 @@ def build_app(*, max_per_subject: int = 600, checkpoint_path=None, baseline_path
         await api.state.hub.publish({"type":"telemetry", "packet":result["packet"],
                                      "deep_learning":analysis,
                                      "comparison":comparison,"live_review":review,
+                                     "apdra_live":apdra_live,
                                      'context_review':context_review,
                                       'multisystem':result.get('multisystem'),
                                       'candidate_17ch':result.get('candidate_17ch'),
