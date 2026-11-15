@@ -123,15 +123,11 @@ export default function MissionControl({
       </div>
     </section>
 
-    <section className="hgc-bottom-grid">
-      <div className="hgc-boundary-panel"><div className="hgc-panel-heading"><div><small>03 / CONNECTION BOUNDARIES</small><h2>Not connected to flight hardware</h2></div><Icon name="shield" size={19}/></div>
-        <p>No real suit-pressure, suit-battery, navigation, communications-delay, or mission dosimeter feed is connected. Illustrative engineering values must not be treated as measured flight conditions.</p>
-        <div className="hgc-unconnected">{['Suit pressure sensor','Suit battery telemetry','Navigation and position','Communications delay','Real spacecraft data'].map(s=><span key={s}><i/>{s}<b>UNCONNECTED</b></span>)}</div>
+    <section className="hgc-workflow-row" aria-label="Mission scenario tools">
+      <div><small>03 / TRAINING OPERATIONS</small><h2>Test a mission scenario</h2>
+        <p>Run one of seven fictional training events and inspect the CNN, covariance, and PhysioAlert responses without changing the live crew stream.</p>
       </div>
-      <div className="hgc-next-panel"><small>MISSION WORKFLOW</small><h2>Ready to test a scenario?</h2><p>Choose one of seven scripted training events in Scenario Lab, then examine the backend's CNN, covariance, and PhysioAlert evidence for the selected fictional astronaut.</p>
-        <button type="button" onClick={onScenario}>Open Scenario Lab <Icon name="arrow" size={17}/></button>
-        <span>Scenario playback is isolated from the live crew telemetry stream.</span>
-      </div>
+      <button type="button" onClick={onScenario}>Open Scenario Lab <Icon name="arrow" size={17}/></button>
     </section>
     <p className="hgc-disclaimer">Research prototype. All live physiological and engineering values here are fictional. NASA historical research data is accessed separately in the Health Library.</p>
   </div>;
