@@ -10,7 +10,10 @@ test('Mission Control environment, crew, telemetry filters and navigation', asyn
   await expect(page.getByText('Select an environment')).toHaveCount(0);
   await expect(page.locator('.hgc-scene')).toHaveCount(0);
   await expect(page.locator('.hgc-crew-panel')).toBeVisible();
-  await expect(page.getByRole('button', {name:'Open Scenario Lab'})).toBeVisible();
+  const scenarioEntry=page.getByRole('region',{name:'Scenario training'});
+  await expect(scenarioEntry).toBeVisible();
+  await expect(scenarioEntry).toHaveCSS('display','grid');
+  await expect(scenarioEntry.getByRole('button',{name:'Open Scenario Lab'})).toHaveCSS('background-color','rgb(101, 212, 202)');
   const crew = page.getByRole('button', {name:/Dr. Marcus Reed Medical officer/i});
   await crew.click();
   await expect(crew).toHaveAttribute('aria-pressed','true');

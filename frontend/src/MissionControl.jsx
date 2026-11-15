@@ -77,7 +77,6 @@ export default function MissionControl({
         <p>Monitor the fictional crew and inspect simulated engineering systems. Mission environments and EVA visuals are available in Mission HUD.</p>
       </div>
       <div className="hgc-header-actions" aria-label="Mission Control tools">
-        <button type="button" onClick={onScenario}><Icon name="activity" size={16}/> Open Scenario Lab</button>
         <button type="button" onClick={onTelemetry}><Icon name="pulse" size={16}/> Crew telemetry</button>
       </div>
     </header>
@@ -123,19 +122,17 @@ export default function MissionControl({
       </div>
     </section>
 
-    <section className="hgc-training-panel" aria-label="Mission scenario tools">
-      <div className="hgc-training-identity">
-        <span className="hgc-training-glyph"><Icon name="activity" size={23}/></span>
-        <div className="hgc-training-copy">
-          <span className="hgc-training-eyebrow">03 / TRAINING OPERATIONS</span>
-          <h2>Scenario training</h2>
-          <p>Rehearse simulated mission events and review CNN, covariance, and PhysioAlert responses. The live crew stream stays unchanged.</p>
+    <section className="hgc-scenario-entry" aria-label="Scenario training">
+      <div className="hgc-scenario-entry-main">
+        <span className="hgc-scenario-entry-icon"><Icon name="activity" size={20}/></span>
+        <div className="hgc-scenario-entry-copy">
+          <h2>Scenario Lab</h2>
+          <p>Practice seven mission events and review simulated alerts without affecting crew telemetry.</p>
         </div>
       </div>
-      <div className="hgc-training-actions">
-        <span className="hgc-training-count"><strong>07</strong> TRAINING SCENARIOS</span>
-        <button type="button" onClick={onScenario}>Open Scenario Lab <Icon name="arrow" size={17}/></button>
-      </div>
+      <button className="hgc-scenario-entry-button" type="button" onClick={onScenario}>
+        Open Scenario Lab <Icon name="arrow" size={16}/>
+      </button>
     </section>
     <p className="hgc-disclaimer">Research prototype. All live physiological and engineering values here are fictional. NASA historical research data is accessed separately in the Health Library.</p>
   </div>;
