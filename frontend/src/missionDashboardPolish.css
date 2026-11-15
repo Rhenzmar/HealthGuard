@@ -216,3 +216,14 @@
 .hg6-scenario-alarm{box-shadow:none!important}
 .hg6-scenario-alarm .hg6-scenario-mode{box-shadow:none!important}
 .hg6-shell .hg6-vital-lines button.hg6-vital-selected:not(.hg6-vital-critical){background:#17384b}
+
+/* Model details remain available without a separate primary destination. */
+.hg6-model-disclosure{position:relative;z-index:1;border:1px solid #2f5b73;background:#0c2235;border-radius:13px;margin:14px 0 0;padding:0 14px 12px}
+.hg6-model-disclosure>summary{display:flex;align-items:center;gap:10px;padding:17px 4px;cursor:pointer;color:#d8f5f7;font-weight:750;font-size:12px;list-style:none}
+.hg6-model-disclosure>summary::-webkit-details-marker{display:none}
+.hg6-model-disclosure>summary svg:first-child{color:#68d5d1}
+.hg6-model-disclosure>summary svg:last-child{margin-left:auto;color:#8bbed0}
+.hg6-model-disclosure[open]>summary{border-bottom:1px solid #2e5167;margin-bottom:14px}
+.hg6-model-disclosure>summary:focus-visible{outline:2px solid #86efe4;outline-offset:2px}
+.hg6-model-disclosure .hg6-analysis-grid{margin-top:0}
+.hg6-model-disclosure .hg6-analysis-history{margin-bottom:0}
