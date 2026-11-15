@@ -113,7 +113,7 @@ function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTe
 function LiveVitals({hasTelemetry,latest,connection,onMetric,metricKey,training}){
   if(!hasTelemetry)return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/> Live vitals</h2><span className="hg6-connection"><i/>Not connected</span></div><div className="hg6-empty-panel"><Icon name="radio" size={24}/><strong>No vital signs available</strong><p>Waiting for the selected crew member’s simulator data.</p></div></section>;
   return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/>{training?'Scenario vitals':'Live vitals'}</h2><span className={'hg6-connection '+(connection==='connected'?'connected':'')}><i/>{training?'Scripted playback':connection==='connected'?'Simulated stream':'Reconnecting'}</span></div>
-    <div className="hg6-vital-lines">{METRICS.map(m=><button type="button" key={m.key} className={(training?.flags?.[m.key]?"hg6-vital-flagged ":"")+(metricKey===m.key?"hg6-vital-selected":"")} aria-pressed={metricKey===m.key} onClick={()=>onMetric(m.key)} title={"View "+m.label+" trend"}>
+    <div className="hg6-vital-lines">{METRICS.map(m=><button type="button" key={m.key} className={(training?.metric_levels?.[m.key]==="CRITICAL"?"hg6-vital-critical ":"")+(metricKey===m.key?"hg6-vital-selected":"")} aria-pressed={metricKey===m.key} onClick={()=>onMetric(m.key)} title={"View "+m.label+" trend"}>
       <span style={{color:m.color}}><Icon name={m.glyph} size={18}/></span><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong>
     </button>)}</div>
   </section>;
@@ -127,7 +127,7 @@ function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,
   return <section className="hg6-card hg6-alert"><div className="hg6-card-heading"><h2><Icon name="shield" size={19}/>{training?"Scenario response":"PhysioAlert"}</h2><span className="hg6-quiet-badge">{training?"SCRIPTED TRAINING":isUnified?"17-CHANNEL TRAINING REVIEW":"CONTEXTUAL REVIEW"}</span></div>
     <div className={"hg6-alert-state hg6-alert-"+tone+(training?.alert?" hg6-alert-training":"")}><span className="hg6-alert-symbol"><Icon name={tone==='mint'?'check':'activity'} size={23}/></span><div><strong>{training?(attention+" · Training"):isUnified?(attention+" · Training"):friendlyStatus(status)}</strong><p>{training?training.reason:isUnified?unified.reason:review?.reason||"Collecting valid measurements to review simulated physiological patterns."}</p></div></div>
     {!training&&isUnified&&<div className="hg6-unified-summary"><span>{unified.models_ready?'17-channel and original model evidence available':'Collecting complete model evidence'}</span>{unified.explanation?.candidate_17ch?.top_reconstruction_residuals?.length>0&&<small>Largest numerical residual: {unified.explanation.candidate_17ch.top_reconstruction_residuals[0].channel.replaceAll('_',' ')}</small>}<small>Training attention, not medical severity</small></div>}
-    {!training&&isUnified&&<div className="hg6-live-alert-preference"><button type="button" aria-pressed={liveAlertsEnabled} onClick={onToggleLiveAlerts}><Icon name={liveAlertsEnabled?'volume':'mute'} size={13}/>{liveAlertsEnabled?'Live training sound enabled':'Enable training sound + voice'}</button><small>Opt-in · only Warning/Critical</small></div>}
+    {!training&&isUnified&&<div className="hg6-live-alert-preference"><button type="button" aria-pressed={liveAlertsEnabled} onClick={onToggleLiveAlerts}><Icon name={liveAlertsEnabled?'volume':'mute'} size={13}/>{liveAlertsEnabled?'Critical voice enabled':'Enable critical voice'}</button><small>Opt-in · Critical only, every 5 seconds</small></div>}
     <div className="hg6-alert-bottom">{training?<button type="button" onClick={onTrainingSpeak}><Icon name="volume" size={15}/> Speak training guidance <Icon name="arrow" size={14}/></button>:voice?.text?<button type="button" onClick={speak}><Icon name={speaking?'mute':'volume'} size={15}/>{speaking?'Stop explanation':'Explain result'} <Icon name="arrow" size={14}/></button>:<span>Waiting for a review explanation</span>}<small>Not a diagnosis</small></div>
   </section>;
 }
@@ -196,42 +196,24 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
   const [scenarioFetchError,setScenarioFetchError]=useState('');
   const [scenarioPending,setScenarioPending]=useState(false);
   const [scenarioSound,setScenarioSound]=useState(true);
+  const [scenarioCritical,setScenarioCritical]=useState(false);
   const [liveAlertsEnabled,setLiveAlertsEnabled]=useState(false);
-  const lastLiveAttentionRef=useRef({subject_id:null,status:null});
-  const alarmRef=useRef(false);
-  const audioRef=useRef(null);
-  const toggleLiveAlerts=()=>{
-    if(!liveAlertsEnabled&&typeof window!=='undefined'){
-      const Audio=window.AudioContext||window.webkitAudioContext;
-      if(Audio){
-        if(!audioRef.current)audioRef.current=new Audio();
-        audioRef.current.resume().catch(()=>{});
-      }
-    }
-    setLiveAlertsEnabled(v=>!v);
-  };
+  const alertVoiceRef=useRef('');
+  const toggleLiveAlerts=()=>setLiveAlertsEnabled(v=>!v);
   const stopScenario=()=>{
     setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
     setScenarioRunning(false);setScenarioId('');setScenarioSecond(0);
-    alarmRef.current=false;
+    setScenarioCritical(false);
     if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
   };
   const selectScenario=id=>{
     setScenarioFrame(null);setScenarioFetchError('');setScenarioPending(false);
     setScenarioRunning(false);setScenarioId(id);setScenarioSecond(0);
-    alarmRef.current=false;
+    setScenarioCritical(false);
     if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();
   };
   const startScenario=()=>{
     if(!scenarioId||!training||scenarioPending)return;
-    // Unlock browser audio during the user's explicit Start action.
-    if(scenarioSound&&typeof window!=='undefined'){
-      const Context=window.AudioContext||window.webkitAudioContext;
-      if(Context){
-        if(!audioRef.current)audioRef.current=new Context();
-        audioRef.current.resume().catch(()=>{});
-      }
-    }
     setScenarioRunning(true);
   };
   const speakScenario=()=>{
@@ -280,61 +262,44 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
                   &&scenarioFrame?.subject_id===activeCrew.subjectId
                   &&scenarioFrame?.elapsed_seconds===scenarioSecond)?scenarioFrame:null;
   const trainingHistory=training?.history||[];
+  // Keep the last VERIFIED scenario severity while its next backend frame loads.
+  // A missing frame is not evidence of recovery.
   useEffect(()=>{
-    // A pending backend request is not a recovery event. Never reset the
-    // alarm transition latch while waiting for the next valid frame.
-    if(!training||training.source!=='SERVER_SCRIPTED_TRAINING_SCENARIO')return;
-    const prior=alarmRef.current;
-    const newlyAlert=Boolean(training.alert)&&!prior;
-    alarmRef.current=Boolean(training.alert);
-    if(prior&&!training.alert&&typeof window!=='undefined'&&window.speechSynthesis){
-      window.speechSynthesis.cancel();
+    if(training?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'){
+      setScenarioCritical(training.severity==='CRITICAL');
     }
-    if(!newlyAlert||!scenarioSound)return;
-    if(audioRef.current){
-      try{
-        const ctx=audioRef.current;
-        const osc=ctx.createOscillator(),gain=ctx.createGain();
-        osc.type='sine';osc.frequency.setValueAtTime(780,ctx.currentTime);
-        osc.frequency.setValueAtTime(590,ctx.currentTime+.18);
-        gain.gain.setValueAtTime(0.0001,ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.085,ctx.currentTime+.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+.38);
-        osc.connect(gain);gain.connect(ctx.destination);
-        osc.start();osc.stop(ctx.currentTime+.4);
-      }catch{/* Audio is optional if browser permissions block it. */}
-    }
-    // Browser speech permission can vary; manual Speak guidance stays available.
-    speakScenario();
-  },[training?.alert,scenarioSound,scenarioId,activeCrew.subjectId]);
+  },[training?.sequence,training?.elapsed_seconds,training?.severity,training?.source]);
+  const liveCritical=Boolean(
+    !scenarioId && unified?.subject_id===selected &&
+    unified?.classification_domain==='FICTIONAL_MISSION_TRAINING_ONLY' &&
+    unified?.status==='CRITICAL'
+  );
+  const scenarioCriticalActive=Boolean(scenarioId&&scenarioRunning&&scenarioCritical);
+  const voiceActive=scenarioId?scenarioCriticalActive&&scenarioSound:liveCritical&&liveAlertsEnabled;
+  const liveVoice=unified?.voice_ready_script||'HealthGuard training alert. A critical numerical pattern requires review. Confirm context and readings.';
+  const scenarioVoice=training?.alarm?.voice_ready_script||
+    ('HealthGuard critical scripted scenario for '+activeCrew.name+'. Check the readings and follow the mission training checklist.');
+  alertVoiceRef.current=scenarioId?scenarioVoice:liveVoice;
+  // A single opt-in speech channel, never an electronic beep. Five seconds
+  // between attempts; skip any attempt while an announcement is still speaking.
   useEffect(()=>{
-    if(!unified||!unified.subject_id||unified.subject_id!==selected||scenarioId)return;
-    const last=lastLiveAttentionRef.current;
-    const current={subject_id:unified.subject_id,status:unified.status};
-    lastLiveAttentionRef.current=current;
-    if(!liveAlertsEnabled||!unified.audible_alert_suggested)return;
-    if(last.subject_id===current.subject_id&&last.status===current.status)return;
-    if(!['WARNING','CRITICAL'].includes(unified.status))return;
-    const ctx=audioRef.current;
-    if(ctx&&ctx.state==='running'){
-      try{
-        const osc=ctx.createOscillator(),gain=ctx.createGain();
-        osc.type='triangle';osc.frequency.setValueAtTime(680,ctx.currentTime);
-        osc.frequency.setValueAtTime(930,ctx.currentTime+.16);
-        gain.gain.setValueAtTime(.0001,ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(.07,ctx.currentTime+.03);
-        gain.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+.35);
-        osc.connect(gain);gain.connect(ctx.destination);osc.start();osc.stop(ctx.currentTime+.38);
-      }catch{/* Browser may deny audio playback. */}
-    }
-    if(typeof window!=='undefined'&&window.speechSynthesis&&unified.voice_ready_script){
-      window.speechSynthesis.cancel();
-      const utterance=new SpeechSynthesisUtterance(unified.voice_ready_script);
-      utterance.lang='en-US';utterance.rate=.95;
-      window.speechSynthesis.speak(utterance);
-    }
-  },[unified?.subject_id,unified?.status,unified?.sequence,unified?.audible_alert_suggested,liveAlertsEnabled,scenarioId,selected]);
-  useEffect(()=>()=>{if(audioRef.current)audioRef.current.close().catch(()=>{});},[]);
+    if(!voiceActive||typeof window==='undefined'||!window.speechSynthesis)return;
+    const speech=window.speechSynthesis;
+    const announce=()=>{
+      if(!speech.speaking&&!speech.pending&&alertVoiceRef.current){
+        const utterance=new SpeechSynthesisUtterance(alertVoiceRef.current);
+        utterance.lang='en-US';utterance.rate=.95;
+        speech.speak(utterance);
+      }
+    };
+    announce();
+    const timer=window.setInterval(announce,5000);
+    return()=>{
+      window.clearInterval(timer);
+      speech.cancel();
+    };
+  },[voiceActive,scenarioId,selected]);
+  useEffect(()=>()=>{if(typeof window!=='undefined'&&window.speechSynthesis)window.speechSynthesis.cancel();},[]);
   const subjects=Object.keys(snapshot?.subjects||{});
   const latest=scenarioId?training:selectedPacket;
   const displaySamples=training?trainingHistory:samplesForSubject(samples,activeCrew.subjectId,selectedPacket);
@@ -362,10 +327,6 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
           <SelectedCrew person={activeCrew} hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} review={displayReview} training={training} connection={connection} onTelemetry={onTelemetryPage} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)} unified={training?null:unified}/>
           <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={key=>{setMetricKey(key);onTelemetryPage();}} metricKey={metricKey}/>
           <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking} liveAlertsEnabled={liveAlertsEnabled} onToggleLiveAlerts={toggleLiveAlerts}/>
-        </div>
-        <div className="hg6-dashboard-foot">
-          <div><span className="hg6-scope-eyebrow">SIMULATED MISSION HEALTH</span><p>{scenarioId?'Scripted training active: '+(SCENARIOS.find(item=>item.id===scenarioId)?.name||scenarioId)+'. These are not backend model predictions.':'17 simulated physiological channels are available for the experimental training analysis; these flags are not clinical predictions.'}</p></div>
-          <div className="hg6-dashboard-links"><button type="button" onClick={onTelemetryPage}>Crew telemetry <Icon name="arrow" size={15}/></button><button type="button" onClick={onAnalysisPage}>Anomaly details <Icon name="arrow" size={15}/></button><button type="button" onClick={onScenarioPage}>{scenarioId?'Manage scenario':'Scenario Lab'} <Icon name="arrow" size={15}/></button>{scenarioId&&<button type="button" onClick={stopScenario}>Return to live <Icon name="radio" size={15}/></button>}</div>
         </div>
       </>:null}
       {view==='telemetry'?<>
@@ -397,7 +358,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} person={activeCrew}
         scenarioId={scenarioId} onSelectScenario={selectScenario} onStart={startScenario} scenarioPending={scenarioPending} scenarioError={scenarioFetchError}
         onPause={()=>setScenarioRunning(false)}
-        onReset={()=>{setScenarioFrame(null);setScenarioFetchError('');setScenarioSecond(0);setScenarioRunning(false);alarmRef.current=false;}}
+        onReset={()=>{setScenarioFrame(null);setScenarioFetchError('');setScenarioSecond(0);setScenarioRunning(false);setScenarioCritical(false);}}
         onExit={stopScenario} running={scenarioRunning} elapsed={scenarioSecond} sample={training}
         soundEnabled={scenarioSound} onToggleSound={()=>setScenarioSound(v=>!v)}
         onSpeak={speakScenario}/>}
