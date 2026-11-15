@@ -13,7 +13,7 @@ from tools.replay_live_demo import generate_packets
 
 def test_all_engineering_biomarkers_pass_through_anomaly_rules():
     result = evaluate_engineering('SIM_CREW_02', 20)
-    assert result['channels_evaluated'] == 12
+    assert result['channels_evaluated'] == 14
     assert len(result['channels']) == 12
     assert result['source'] == 'FICTIONAL_ENGINEERING_SIMULATOR'
     assert result['clinical_validation'] is False
@@ -71,9 +71,9 @@ def test_live_multisystem_exposes_17_channels_but_keeps_cnn_5_channel(monkeypatc
         posted=c.post('/api/live/ingest',json=sample)
         assert posted.status_code==201
         payload=posted.json()['multisystem']
-        assert payload['live_channels_evaluated']==17
+        assert payload['live_channels_evaluated']==19
         assert payload['physiological']['channels_evaluated']==5
-        assert payload['engineering']['channels_evaluated']==12
+        assert payload['engineering']['channels_evaluated']==14
         assert payload['historical_nasa_biomarkers_in_live_inference'] is False
         assert payload['physiological']['cnn_status']=='BASELINE_CALIBRATING'
         assert payload['subject_id']=='SIM_CREW_01'
