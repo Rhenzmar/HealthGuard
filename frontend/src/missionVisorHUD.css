@@ -65,3 +65,23 @@
 @media(max-width:1100px){.hgv-visor-shell{min-height:610px;aspect-ratio:auto}.hgv-visor-content{left:9%;right:9%;grid-template-columns:31% 1fr 31%}.hgv-glass-head{left:10%;right:10%}.hgv-vital-reading small,.hgv-system-reading small{font-size:9px}.hgv-dial{width:5%}}
 @media(max-width:700px){.hgv-screen{padding:10px 6px}.hgv-command{flex-direction:column;align-items:stretch;padding:0 9px}.hgv-command-left,.hgv-command-right{justify-content:center}.hgv-brand{flex-basis:100%;justify-content:center}.hgv-visor-shell{min-height:890px;padding:9px 8px 15px;border-radius:22% 22% 15% 15% / 5% 5% 4% 4%}.hgv-visor-glass{inset:9px 11px 16px;border-radius:22% 22% 15% 15% / 5% 5% 4% 4%}.hgv-glass-head{top:5%;left:9%;right:9%;grid-template-columns:1fr 1fr;gap:7px}.hgv-alert{grid-column:1/-1;grid-row:2}.hgv-sim-badge{grid-column:2;grid-row:1}.hgv-mission-clock strong{font-size:11px}.hgv-visor-content{top:23%;bottom:19%;left:8%;right:8%;grid-template-columns:1fr 1fr;gap:15px}.hgv-readings,.hgv-systems{gap:2px}.hgv-scene-focus{grid-column:1/-1;grid-row:1;min-height:175px}.hgv-readings{grid-row:2}.hgv-systems{grid-row:2}.hgv-habitat{top:28%;left:25%;height:18%}.hgv-landscape:after{top:39%}.hgv-ground{inset:48% -10% 0}.hgv-dial{opacity:.36}.hgv-vital{min-height:52px;padding:6px 0;gap:5px}.hgv-vital-icon,.hgv-system-icon{flex-basis:17px}.hgv-vital-icon svg,.hgv-system-icon svg{width:17px}.hgv-vital-reading small,.hgv-system-reading small{font-size:8px;white-space:normal}.hgv-vital-reading strong,.hgv-system-reading strong{font-size:20px}.hgv-vital .hgv-trace{display:none}.hgv-system{min-height:65px;padding:8px 0;gap:5px}.hgv-system-foot{font-size:7px}.hgv-side-title{font-size:10px}.hgv-visor-bottom{left:9%;right:9%;bottom:5%;align-items:end}.hgv-bottom-center{width:58%}.hgv-review{width:28%}.hgv-review p{font-size:8px}.hgv-detail{width:43%}.hgv-footer{padding:0 10px}}
 @media(prefers-reduced-motion:reduce){.hgv-screen *, .hgv-screen *:before, .hgv-screen *:after{animation:none!important}}
+
+
+/* Photographic environment compositing. Scenery is never used as telemetry. */
+.hgv-photo-scene{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 50%;z-index:0;filter:saturate(.96) contrast(1.06) brightness(.87);pointer-events:none}
+.hgv-env-mars_base .hgv-photo-scene{object-position:center 60%;filter:saturate(1.18) sepia(.10) contrast(1.06) brightness(.85)}
+.hgv-env-rover .hgv-photo-scene{object-position:center 55%;filter:saturate(1.05) sepia(.09) brightness(.85)}
+.hgv-env-lunar_base .hgv-photo-scene{object-position:center 60%;filter:grayscale(.92) contrast(1.12) brightness(.78)}
+.hgv-env-spacecraft .hgv-photo-scene,.hgv-env-station .hgv-photo-scene{object-position:center 50%;filter:saturate(.83) contrast(1.06) brightness(.68)}
+.hgv-landscape:before{z-index:1;pointer-events:none}
+.hgv-landscape:after{opacity:.1;z-index:1;pointer-events:none}
+.hgv-env-spacecraft .hgv-landscape:after,.hgv-env-station .hgv-landscape:after{opacity:0}
+.hgv-ground,.hgv-ground-near{opacity:.12;z-index:1;pointer-events:none}
+.hgv-env-spacecraft .hgv-ground,.hgv-env-station .hgv-ground,.hgv-env-lunar_base .hgv-ground-near{opacity:0}
+.hgv-habitat{z-index:2;opacity:.62;top:53%;left:26%;height:19%;filter:drop-shadow(7px 12px 6px #100605bb)}
+.hgv-env-lunar_base .hgv-habitat{filter:grayscale(1) brightness(1.25) drop-shadow(9px 13px 5px #0009)}
+.hgv-rover-prop{position:absolute;z-index:2;top:48%;right:13%;width:32%;height:auto;opacity:.82;filter:drop-shadow(10px 15px 10px #190d0bc9)}
+.hgv-eva-figure{position:absolute;z-index:3;bottom:20%;left:19%;width:9%;height:38%;filter:drop-shadow(7px 9px 6px #0d0e10bb);opacity:.83}
+.hgv-env-lunar_base .hgv-eva-figure{filter:grayscale(.75) drop-shadow(7px 9px 6px #000)}
+.hgv-scene-focus{pointer-events:none}
+@media(max-width:700px){.hgv-habitat{top:40%;height:12%}.hgv-eva-figure{bottom:47%;height:19%;left:12%}.hgv-rover-prop{top:36%;right:10%;width:48%}}
