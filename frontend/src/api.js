@@ -1,6 +1,6 @@
 /** Read-only API client. No secrets, health claims, or fake fallback measurements. */
 const rawBase = typeof import.meta !== 'undefined' && import.meta.env?.VITE_PHYSIOGRAPH_API_BASE;
-export const API_BASE = (rawBase || 'https://physiograph-api-lurx.onrender.com').replace(/\/+$/, '');
+export const API_BASE = (rawBase || 'https://healthguard-api-19xg.onrender.com').replace(/\/+$/, '');
 
 export const METRICS = [
   { key: 'heart_rate_bpm', label: 'Heart rate', short: 'HEART RATE', unit: 'bpm', digits: 0, color: '#72dce4', glyph: 'heart' },
