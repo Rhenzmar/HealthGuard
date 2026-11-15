@@ -1,53 +1,109 @@
-# PhysioGraph v1.5: Backend Freeze Candidate
+# HealthGuard
 
-**Current version: v1.5.** Backend-first hackathon release for the NASA Space Apps astronaut-health-monitoring challenge. Includes frozen APDRA research analysis, two synthetic-trained live detectors, context-aware PhysioAlert, an internally generated public read-only simulation, and an OSD-575 historical-data API. **This is a research/demo prototype, not medically validated astronaut health software.**
+**AI-assisted astronaut health monitoring and mission-support research prototype**  
+NASA Space Apps Challenge 2026 · *Create Health Monitoring Software for Astronauts on Space Missions*
 
-- **Run locally (NumPy CPU, no PyTorch needed for inference):** `python -m pip install -r requirements-live-lite.txt`, then double-click `START_PUBLIC_DEMO_WINDOWS.bat` or run `python -m uvicorn physiograph.live_api:app --host 127.0.0.1 --port 8000`. Open `http://127.0.0.1:8000/live`.
-- **Run verification:** `python -m pip install -r requirements-deep-learning.txt` for the full research environment, then `python -m pytest -q` and `python -m tools.final_backend_audit_v15`. In this release, **192/192 software tests passed**.
-- **Deploy:** `Dockerfile` is configured for a lightweight **read-only fictional telemetry demo** and can run on a suitable free CPU service, subject to host limits. It doesn't require an ingest API key because the demo producer is internal.
-- **Frontend wiring:** follow `FRONTEND_API_CONTRACT_v1.5.md`; detailed limitations and audit evidence are in `RELEASE_NOTES_v1.5.md`.
-- **External BIDMC:** a separate 3-channel study script is provided but not yet completed on the official downloaded records. This is not validation of the deployed five-channel CNN or medical outcomes.
+[Live interactive demo](https://physiograph-dashboard.onrender.com/) · [Project page](https://www.spaceappschallenge.org/2026/find-a-team/cnhs-ste/?tab=project) · [Reviewer guide](docs/REVIEWER_GUIDE.md) · [Architecture](docs/ARCHITECTURE.md)
 
----
+> **Research demonstration, not operational healthcare.** All continually updating crew, spacesuit, and mission readings in the app are **fictional simulations**. HealthGuard is not connected to astronaut sensors, is not a medical device, and has not been validated to diagnose disease, predict health outcomes, or determine mission safety.
 
-# PhysioGraph v1.4 Context-Aware Backend
+## What HealthGuard does
 
-Backend v1.4 adds explicit activity declarations, measurement-integrity hints, a 60-second post-activity observation state, nonclinical two-model persistence reviews, deterministic explanation text, and a protected public-ingest configuration. Existing NASA research, APDRA, synthetic-trained CNN weights and covariance thresholds are preserved. **181 software tests pass**. See `RELEASE_NOTES_v1.4.md` and `research/context_v14_audit/behavioral_audit.json`.
+HealthGuard combines simulated physiological and spacecraft telemetry, an experimental anomaly-screening pipeline, context checks, and explainable alert **demonstrations** in an interactive web application. Users can switch among four fictional crew members, view changing signals, explore anatomy, and run scripted abnormal-condition scenarios. Separate research views present **historical NASA records** without portraying them as a live feed.
 
-The internal stress scenarios are synthetic demonstrations of software behavior, **not health risk classification or diagnostic accuracy**. External BIDMC evaluation is an optional separate 3-channel research task and remains pending.
+### Explore the app
 
-For free CPU hosting, use `Dockerfile` (NumPy inference; public ingest disabled until a private key is configured). Do not publish a secret to the browser.
+| Section | Purpose |
+| --- | --- |
+| **Mission Dashboard** | Crew overview, live-simulation summaries and PhysioAlert review |
+| **Crew Telemetry** | Trend charts and current simulated physiological/engineering values |
+| **Body Explorer** | Interactive anatomical reference for **three monitored systems**: cardiovascular, breathing/oxygen, and thermal regulation |
+| **Health Routine** | Check-ins, health-learning activities, and gamified tasks |
+| **Health Library** | Space-health context and explicitly labeled historical NASA evidence |
+| **Mission Control** | Simulated mission environment, engineering readings, and crew context |
+| **Mission HUD** | Prototype Moon/Mars suit-display interface, not a connected operational HUD |
+| **Scenario Lab** | Popup with **nine scripted events**, controls and nonclinical alerts |
+| **Guided tour** | Eight-step walkthrough with optional browser voice narration |
 
----
+The interface also includes four selectable fictional crew portraits, accessibility-oriented voice controls, a short critical training tone, and selectable ambient workspace backgrounds.
 
-# PhysioGraph v1.3 Computational Update
+## How the data work
 
-Backend-only v1.3 adds **frozen-CNN NumPy inference**, an **independent-code synthetic stress audit**, a **BIDMC three-channel external research evaluator**, and **159 passing tests**. Read `RELEASE_NOTES_v1.3.md` before interpreting any scores. Actual external BIDMC model evaluation is **pending** until the public numeric files are downloaded and the script completes.
+HealthGuard deliberately keeps distinct sources separate:
 
-Run `RUN_COMPUTATIONAL_AUDIT_WINDOWS.bat` for local model stress and benchmark; `RUN_EXTERNAL_VALIDATION_WINDOWS.bat` for the separate official-data experiment. The deployed five-channel CNN is still trained only on synthetic sequences.
+| Source | Role | Important boundary |
+| --- | --- | --- |
+| **Five-channel physiological simulator** | Heart rate, SpO₂, breathing rate, core temperature and HRV for the original novelty pipeline | Not measured from a person |
+| **Engineering/estimate simulator** | Fictional cabin, radiation, suit, and additional physiological estimates | Four extra displayed physiological estimates are **not** additional direct sensors |
+| **Experimental 17-input CNN candidate** | Numerical novelty screening over **5 physiological + 12 selected simulated engineering/estimate inputs** | Synthetic-trained, fixed input order; not externally validated on real 17-channel astronaut streams |
+| **Historical NASA OSDR datasets** | Sparse Inspiration4 laboratory assays and separate ISS environmental research | **Not** part of the fictional 1 Hz crew feed |
 
----
+Some HUD-only engineering values are outside the fixed 17-input model. The app's nine displayed physiological readings comprise five original simulator channels plus four separately scripted estimates. Do not equate the number of displayed readings with the CNN input partition.
 
-# PHYSIOGRAPH
+## Analysis and alert logic
 
-NASA Space Apps 2026: **Create Health Monitoring Software for Astronauts on Space Missions**.
+1. Accept source-labeled, per-crew simulated data.
+2. Apply the frozen **five-channel 1D-CNN autoencoder** and an independent shrinkage-covariance comparator to their respective simulated input.
+3. Score an **experimental 17-input CNN candidate** on its defined synthetic 5+12 feature schema.
+4. Consider declared activity, quality concerns, model agreement, and experimental live baseline checks.
+5. Present **PhysioAlert attention levels**: OPTIMAL, CHECK, WARNING, or CRITICAL. These are demonstration labels. CRITICAL is only escalated by predefined fictional engineering deviations, **not** by a validated clinical-risk prediction.
 
-Current release: **v1.4, dual-detector monitoring with context-aware verification**.
+**APDRA:** An earlier frozen baseline-stability analysis was evaluated retrospectively on real pre/postflight NASA laboratory records. The current simulated live APDRA component is experimental and distinct from that historical study. Neither should be described as a clinical diagnostic test.
 
-**Local quick start (Windows):** run `INSTALL_DEEP_LEARNING_WINDOWS.bat` once, then `START_LIVE_BACKEND_WINDOWS.bat`. Open `http://127.0.0.1:8000/live`. In a separate terminal run `RUN_LIVE_REPLAY_WINDOWS.bat` for an injected excursion or `RUN_LIVE_NORMAL_WINDOWS.bat` for normal simulated readings. Run `RUN_BACKEND_TESTS_WINDOWS.bat` for the full software test suite. On successive replays of the same subject, restart the backend or use a different subject ID.
+## Evaluation: what was actually demonstrated
 
-**APDRA/historical research app:** run `START_PHYSIOGRAPH_WINDOWS.bat`. OSD-575 measurements are historical, discrete pre/postflight assays. They are not the simulated 1 Hz live data. APDRA v0.7 remains frozen; the original historical PhysioAlert review logic is not changed.
+- **Functional synthetic integration:** seven audited scripted events × four fictional crew profiles = **28 combinations** and **168 backend/model checkpoint evaluations**. The deployed scenario catalog later expanded to nine; the 28-case report does **not** validate the two additional scenarios.
+- **NASA retrospective laboratory analysis:** 8,783 numerical measurements across OSD-569/OSD-575 assay tables, compared using exploratory screening and APDRA reference-stability rules. Of 829 median-only screening flags, 272 were not consistently retained under baseline omission (**32.8%**, not a false-positive rate).
+- **Separate ISS RR-1 environmental evaluation:** a three-channel historical data screen, not 17-input CNN validation.
 
-**Deep learning:** a 1D CNN autoencoder trained only on synthetic normal five-channel telemetry. **Comparison detector:** a shrinkage-covariance baseline trained/calibrated only on independent synthetic profiles. **PhysioAlert Live Review:** a deterministic evidence summary comparing the detectors; neither model determines clinical risk, diagnoses, or emergency status.
+See [software integration results](research/prototype_end_to_end/RESULTS_INTERPRETATION.md), [real NASA assay evaluation](research/nasa_real_data_evaluation/REPORT.md), and [ISS environmental evaluation](research/nasa_rr1_eda_evaluation/REPORT.md). None establishes medical sensitivity, specificity, independent astronaut anomaly detection accuracy, or flight readiness.
 
-See `RELEASE_NOTES_v1.4.md`, `RELEASE_NOTES_v1.2.md`, `RELEASE_NOTES_v1.1.md`, `FINAL_APDRA_VALIDATION_REPORT.md` and `models/deep_learning/*evaluation.json` for methodology, limitations, training provenance, and test results.
+## Local setup
 
-**Do not expose anonymous writes on a public URL.** The v1.4 Dockerfile selects `PHYSIOGRAPH_PUBLIC_MODE=1` to disable unauthenticated ingestion. Optional private ingest requires `PHYSIOGRAPH_INGEST_API_KEY`; this is a prototype guard and not production access control.
+**Backend** (Python 3.11 recommended):
 
----
+```bash
+python -m pip install -r requirements-live-lite.txt
+python -m uvicorn physiograph.live_api:app --host 127.0.0.1 --port 8000
+```
 
-## Use of Super Intelligence (SI) and audio disclosure
+**Frontend** (Node.js 22 recommended), in a second terminal:
 
-ChatGPT (OpenAI) assisted with HealthGuard's research planning, algorithm design, code generation and review, debugging, data analysis, software testing, UI design, and documentation. This included work on APDRA, the five-channel 1D-CNN autoencoder, the covariance detector, PhysioAlert, the FastAPI backend, the React frontend, and fictional scenario simulations. The team directed methodological and implementation decisions and is responsible for checking source provenance, executable behavior, evaluation claims, and submitted material. The historical NASA OSD-575 laboratory data are separate from the simulated live telemetry and synthetic model evaluations.
+```bash
+cd frontend
+npm install
+# Set VITE_PHYSIOGRAPH_API_BASE=http://127.0.0.1:8000 in frontend/.env.local
+npm run dev
+```
 
-**Audio implementation:** HealthGuard's spoken alerts use predetermined status- and scenario-specific text rendered by the user's browser through the Web Speech API (\`SpeechSynthesisUtterance\`). Its short alert tone is synthesized programmatically with Web Audio oscillators (640 Hz and 490 Hz). The application does not use ChatGPT to generate spoken alerts dynamically, and no prerecorded AI-generated voice files are used by this implementation. Alert speech and sounds are demonstration aids, not medical advice or certified alarms.
+For split-origin local usage, configure the backend's **exact** CORS origin, e.g. `PHYSIOGRAPH_CORS_ORIGINS=http://localhost:5173`, before launching it. The `PHYSIOGRAPH_*` environment variables and `physiograph/` Python package remain legacy **internal compatibility identifiers**; the product is named **HealthGuard**.
+
+**Checks:**
+
+```bash
+cd frontend && npm run build
+# From repository root, with backend test dependencies installed:
+python -m pytest -q tests/test_engineering_sim.py tests/test_physioalert_unified.py tests/test_scenario_engine.py
+```
+
+For the broader backend environment and audits, consult [backend release notes](RELEASE_NOTES_v1.5.md), [deployment notes](DEPLOY_ON_RENDER.md), and [current reviewer guide](docs/REVIEWER_GUIDE.md).
+
+## Repository layout
+
+- `frontend/` — React/Vite user interface, guided tour, anatomy, HUD and browser-side tests
+- `physiograph/` — FastAPI services, simulators, model inference, research routes and PhysioAlert
+- `models/` — retained experimental model artifacts and metadata
+- `data/` — source-labeled historical and synthetic datasets
+- `research/` — methods, evaluations, provenance and audit outputs
+- `tests/`, `tools/` — backend tests and reproducibility scripts
+- `docs/` — current architecture, reviewer guide and archived documentation
+
+The root `README.md` is the current product overview. The historical `RELEASE_NOTES_v*.md` files and archived v1.5 README document earlier development milestones, **not** current product status.
+
+## Credits, sources and AI assistance
+
+HealthGuard was developed by **CNHS-STE** for NASA Space Apps 2026. NASA data are used as historical research inputs with their original provenance; NASA does not endorse or validate this prototype. Data references and methods are documented in [research sources](research/sources.md) and the linked evaluation reports.
+
+The team used **ChatGPT (OpenAI)** as an AI-assisted collaborator for research planning, software design and implementation, code review, testing, documentation and demonstration preparation. The team remains responsible for the accuracy and interpretation of its work. Spoken alerts and tour narration use **predetermined scripts and browser text-to-speech**, not a dynamically conversing medical AI.
+
+The interactive anatomical components include third-party content with separate licenses; see the app's attribution and upstream dependencies. **No repository-wide open-source license is currently granted by this README.** Do not assume every bundled dataset or third-party asset is redistributable without its applicable terms.
