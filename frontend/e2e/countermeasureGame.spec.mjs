@@ -56,7 +56,7 @@ test('Countermeasure Reaction Arcade enforces randomized signal and three succes
   const arcade=page.getByRole('region',{name:'Reaction Arcade game'});
   await arcade.getByRole('button',{name:'Start reaction drill'}).click();
   await arcade.getByRole('button',{name:/Waiting for signal/}).click();
-  await expect(arcade.getByText('False start')).toBeVisible();
+  await expect(arcade.getByText('False start',{exact:true})).toBeVisible();
   for(let n=0;n<3;n++){
     await arcade.getByRole('button',{name:/Retry signal|Next round/}).click();
     await expect(arcade.getByRole('button',{name:'Tap now'})).toBeVisible({timeout:10000});
