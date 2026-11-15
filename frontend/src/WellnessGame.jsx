@@ -57,6 +57,10 @@ export default function WellnessGame({crewId='SIM_CREW_01',crewName='Crew member
     return()=>{window.removeEventListener('storage',refresh);window.removeEventListener('focus',refresh);window.clearInterval(timer)};
   },[]);
 
+  // Switching fictional astronauts returns to the first activity; the saved
+  // record for each astronaut remains independent.
+  useEffect(()=>{setActive('warmup');},[mountedCrew]);
+
   useEffect(()=>{
     setStage('ready');setElapsed(0);elapsedRef.current=0;
     setAck(false);setFeedback('');setMode('seated');
