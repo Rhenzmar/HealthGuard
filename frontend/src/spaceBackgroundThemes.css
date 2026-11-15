@@ -1,0 +1,129 @@
+/* HealthGuard workspace background: quiet, static lighting behind finished pages.
+   The default is ambient glow; planet themes are CSS art, not NASA photographs. */
+#main-content.hg-background-enabled{
+  position:relative;
+  isolation:isolate;
+  min-height:calc(100vh - 72px);
+  background:#061321;
+  --hg-backdrop-tint:rgba(25,94,124,.16);
+  --hg-backdrop-halo:rgba(39,154,174,.18);
+}
+#main-content.hg-background-enabled::before,
+#main-content.hg-background-enabled::after{
+  content:"";
+  position:fixed;
+  pointer-events:none;
+  z-index:-1;
+  display:block;
+}
+#main-content.hg-background-enabled::before{
+  inset:72px 0 0;
+  background:
+    radial-gradient(ellipse 56% 43% at 78% 18%,var(--hg-backdrop-halo),transparent 83%),
+    radial-gradient(ellipse 53% 62% at 9% 69%,var(--hg-backdrop-tint),transparent 82%),
+    linear-gradient(150deg,#071828 0%,#071724 47%,#06121e 100%);
+}
+#main-content.hg-background-enabled[data-bg-theme="glow"]::before{
+  background:
+    radial-gradient(ellipse 60% 48% at 63% 12%,rgba(35,123,157,.18),transparent 77%),
+    radial-gradient(ellipse 47% 54% at 11% 72%,rgba(18,78,115,.13),transparent 83%),
+    radial-gradient(ellipse 45% 48% at 88% 94%,rgba(11,95,105,.10),transparent 80%),
+    #061321;
+}
+#main-content.hg-background-enabled[data-bg-theme="glow"]::after{display:none}
+#main-content.hg-background-enabled[data-bg-theme="earth"]{
+  --hg-backdrop-tint:rgba(23,91,152,.16);
+  --hg-backdrop-halo:rgba(65,155,205,.16);
+}
+#main-content.hg-background-enabled[data-bg-theme="earth"]::after{
+  width:min(52vw,680px);height:min(52vw,680px);right:-13vw;top:5vh;
+  border-radius:50%;opacity:.36;
+  background:
+    radial-gradient(ellipse at 34% 29%,rgba(178,235,252,.76) 0%,transparent 23%),
+    radial-gradient(ellipse at 51% 61%,rgba(54,150,152,.48) 0%,transparent 36%),
+    radial-gradient(circle at 38% 36%,#427f9d 0%,#173e70 40%,#0a1a37 68%,#050e1b 74%);
+  box-shadow:inset -45px -30px 110px #000b,0 0 1px 2px rgba(99,172,206,.16),0 0 120px rgba(42,101,151,.13);
+}
+#main-content.hg-background-enabled[data-bg-theme="moon"]{
+  --hg-backdrop-tint:rgba(105,141,162,.11);
+  --hg-backdrop-halo:rgba(155,183,201,.12);
+}
+#main-content.hg-background-enabled[data-bg-theme="moon"]::after{
+  width:min(46vw,570px);height:min(46vw,570px);right:-10vw;top:8vh;
+  border-radius:50%;opacity:.29;
+  background:
+    radial-gradient(circle at 37% 39%,#293e4c 0 3%,transparent 3.5%),
+    radial-gradient(circle at 54% 32%,#223845 0 6%,transparent 6.6%),
+    radial-gradient(circle at 64% 62%,#3a4d55 0 8%,transparent 8.6%),
+    radial-gradient(circle at 32% 69%,#405864 0 5%,transparent 5.6%),
+    radial-gradient(circle at 32% 25%,#c5d9dc,#7b9ba9 34%,#435967 67%,#152736 79%);
+  box-shadow:inset -45px -40px 100px #07101eea,0 0 95px rgba(129,168,193,.12);
+}
+#main-content.hg-background-enabled[data-bg-theme="mars"]{
+  --hg-backdrop-tint:rgba(157,71,46,.12);
+  --hg-backdrop-halo:rgba(199,110,68,.14);
+}
+#main-content.hg-background-enabled[data-bg-theme="mars"]::after{
+  width:min(51vw,650px);height:min(51vw,650px);right:-13vw;top:7vh;
+  border-radius:50%;opacity:.31;
+  background:
+    radial-gradient(ellipse 47% 20% at 39% 43%,#c18b6b5e,transparent),
+    radial-gradient(circle at 50% 70%,#7346385a,transparent 45%),
+    radial-gradient(circle at 33% 29%,#c9906b,#95533e 43%,#422d35 71%,#111c2d 79%);
+  box-shadow:inset -48px -36px 110px #05111ee8,0 0 105px rgba(173,89,65,.12);
+}
+/* Existing panels and anatomy keep their own colors. Only broad page canvases
+   become transparent, revealing the noninteractive backdrop underneath. */
+#main-content.hg-background-enabled .hg6-shell,
+#main-content.hg-background-enabled .hgm-workstation,
+#main-content.hg-background-enabled .mg-page,
+#main-content.hg-background-enabled .hl-page,
+#main-content.hg-background-enabled .hgc-page{
+  background:transparent!important;
+}
+/* The dashboard photo, HUD scene and Scenario Lab overlay are intentionally not themed. */
+.hg-scene-toolbar{
+  position:relative;z-index:15;
+  display:flex;justify-content:flex-end;
+  padding:12px clamp(17px,2.7vw,42px) 0;
+  min-height:46px;
+}
+.hg-scene-picker{position:relative}
+.hg-scene-trigger{
+  display:flex;align-items:center;gap:9px;
+  border:1px solid #315c72;border-radius:10px;
+  padding:8px 11px;background:#0c273acb;color:#c9e6ed;
+  font-size:10px;font-weight:700;backdrop-filter:blur(12px);
+}
+.hg-scene-trigger:hover,.hg-scene-trigger:focus-visible{border-color:#69ccc9;background:#12364b}
+.hg-scene-chevron{font-size:13px;transform:rotate(180deg);color:#8dc9d0;margin-left:5px}
+.hg-scene-swatch{display:inline-block;width:19px;height:19px;flex:none;border-radius:50%;border:1px solid #88becd77}
+.hg-swatch-glow{background:radial-gradient(circle at 40% 35%,#72cad7,#1b5276 45%,#071927 88%)}
+.hg-swatch-earth{background:radial-gradient(circle at 28% 32%,#7fe4ee,#226ca8 40%,#0b2e58 75%)}
+.hg-swatch-moon{background:radial-gradient(circle at 28% 28%,#d4e1e4,#798d9d 49%,#243a48)}
+.hg-swatch-mars{background:radial-gradient(circle at 28% 28%,#e8a27c,#a55940 50%,#3b2b31)}
+.hg-scene-options{
+  position:absolute;top:calc(100% + 8px);right:0;
+  width:min(305px,calc(100vw - 28px));
+  border:1px solid #376f83;border-radius:12px;
+  padding:8px;background:#091c2df5;
+  box-shadow:0 20px 60px #020a1599;backdrop-filter:blur(18px);
+}
+.hg-scene-options-heading{color:#73d7d1;font-size:9px;letter-spacing:1.2px;font-weight:800;padding:8px 10px 11px}
+.hg-scene-options button{
+  display:flex;align-items:center;gap:11px;
+  width:100%;text-align:left;border:1px solid transparent;border-radius:8px;
+  background:none;color:#e0f2f5;padding:10px;cursor:pointer;
+}
+.hg-scene-options button:hover,.hg-scene-options button.active{background:#153b4f;border-color:#396d7f}
+.hg-scene-option-copy{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0}
+.hg-scene-option-copy strong{font-size:11px}
+.hg-scene-option-copy small{font-size:9px;color:#9cbbc8;line-height:1.4}
+.hg-scene-check{color:#77e1d5;font-size:14px}
+.hg-scene-picker button:focus-visible{outline:2px solid #84dfe2;outline-offset:2px}
+@media(max-width:650px){
+  #main-content.hg-background-enabled::after{width:70vw!important;height:70vw!important;right:-33vw!important;top:18vh!important}
+  .hg-scene-toolbar{padding:9px 12px 0;min-height:43px}
+  .hg-scene-trigger{font-size:9px;padding:7px 9px}
+}
+@media(prefers-reduced-motion:reduce){.hg-scene-picker *{transition:none!important}}
