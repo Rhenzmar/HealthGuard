@@ -13,6 +13,8 @@ import {liveVoiceAnnouncement,scenarioVoiceAnnouncement} from './healthguardVoic
 import {playScenarioAlarm} from './scenarioAlarm.js';
 import {verifiedScenarioFrame} from './scenarioAnatomy.js';
 import ScenarioPickerModal from './ScenarioPickerModal.jsx';
+import GuidedTour from './GuidedTour.jsx';
+import {TOUR_STEPS,TOUR_SEEN_KEY} from './tourConfig.js';
 import {SCENARIOS} from './scenarioSimulator.js';
 import {resolveScenarioNavigation} from './scenarioNavigation.js';
 import {unlockScenarioAlarm} from './scenarioAlarm.js';
@@ -31,12 +33,6 @@ const NAV = [
   { id: 'scenario', name: 'Scenario Lab', caption: 'Scripted training popup', icon: 'activity' },
 ];
 const DASHBOARD_VIEWS = new Set(['dashboard','telemetry','scenario']);
-const tourSteps = [
-  { title:'Welcome to HealthGuard', body:'This is an experimental mission-health research dashboard. The continuously updating vital signs are fictional simulator outputs, not measurements from astronauts.', page:'dashboard' },
-  { title:'Two independent detectors', body:'The CNN reconstruction error and covariance novelty score are separate synthetic-trained comparisons. PhysioAlert adds context and measurement-quality checks. No score predicts disease.', page:'dashboard' },
-  { title:'Explore the Health Library', body:'Learn what different health measurements mean and explore real historical NASA OSD-575 laboratory data. APDRA checks how sensitive some research screening flags are to sparse baseline measurements. This is separate from the simulated live stream.', page:'research' },
-  { title:'Mission systems are not invented', body:'Mission Systems distinguishes actual connected data feeds from unavailable values. Spacesuit oxygen, radiation, communications delay and navigation remain unconnected or unimplemented.', page:'mission' },
-];
 
 function Tag({ children, tone = 'default', dot = false, className = '' }) {
   return <span className={`tag tag-${tone} ${className}`}>{dot && <span className="tag-dot" />}{children}</span>;
@@ -217,6 +213,28 @@ export default function App() {
   const [environment,setEnvironment]=useState('lunar_base');
   const [sidebarOpen,setSidebarOpen]=useState(false);
   const [tour,setTour]=useState(-1);
+  const tourReturnPageRef=useRef('dashboard');
+  const startGuidedTour=()=>{
+    tourReturnPageRef.current=page;
+    setScenarioOpen(false);
+    setSidebarOpen(false);
+    setTour(0);
+    setPage(TOUR_STEPS[0].page);
+    window.scrollTo({top:0,behavior:'instant'});
+  };
+  const stopGuidedTour=()=>{
+    setTour(-1);
+    setPage(tourReturnPageRef.current);
+    try{window.localStorage.setItem(TOUR_SEEN_KEY,'1');}catch{/* Storage disabled */}
+    window.scrollTo({top:0,behavior:'instant'});
+  };
+  const moveGuidedTour=stepIndex=>{
+    if(stepIndex>=TOUR_STEPS.length){stopGuidedTour();return;}
+    const next=Math.max(0,stepIndex);
+    setTour(next);
+    setPage(TOUR_STEPS[next].page);
+    window.scrollTo({top:0,behavior:'instant'});
+  };
   const [readiness,setReadiness]=useState(null),[mission,setMission]=useState(null),[overview,setOverview]=useState(null),[method,setMethod]=useState(null);
   const [snapshot,setSnapshot]=useState(null),[selected,setSelected]=useState('SIM_CREW_01'),[samples,setSamples]=useState([]);
   const scenario=useScenarioPlayback(selected);
@@ -381,11 +399,11 @@ export default function App() {
   const selectedName=NAV.find(x=>x.id===page)?.name||'Overview';
   return <div className="app-shell">
     <aside className={`sidebar ${sidebarOpen?'sidebar-open':''}`}><div className="side-logo"><span className="brand-mark"><img src="/healthguard-logo-transparent.svg?v=official-20261115" alt="" /></span><div><strong>Health<span>Guard</span></strong><small>ASTRONAUT HEALTH MONITOR</small></div><button type="button" className="sidebar-close" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}><Icon name="x"/></button></div>
-      <div className="nav-wrapper"><span className="nav-heading">WORKSPACE</span><nav aria-label="Primary navigation">{NAV.map(item=><button type="button" key={item.id} title={item.caption} className={`nav-item ${item.id===page?'nav-active':''}`} onClick={()=>navTo(item.id)} aria-current={item.id===page?'page':undefined}><span className="nav-icon"><Icon name={item.icon} size={17}/></span><span><strong>{item.name}</strong><small>{item.caption}</small></span>{item.id===page&&<span className="nav-indicator"/>}</button>)}</nav></div>
+      <div className="nav-wrapper"><span className="nav-heading">WORKSPACE</span><nav aria-label="Primary navigation">{NAV.map(item=><button type="button" key={item.id} data-tour-anchor={item.id} title={item.caption} className={`nav-item ${item.id===page?'nav-active':''}`} onClick={()=>navTo(item.id)} aria-current={item.id===page?'page':undefined}><span className="nav-icon"><Icon name={item.icon} size={17}/></span><span><strong>{item.name}</strong><small>{item.caption}</small></span>{item.id===page&&<span className="nav-indicator"/>}</button>)}</nav></div>
 
     </aside>
     {sidebarOpen&&<button className="mobile-scrim" aria-label="Close menu" onClick={()=>setSidebarOpen(false)}/>}
-    <div className="work-area"><header className="topbar"><div className="topbar-start"><button type="button" className="menu-toggle" onClick={()=>setSidebarOpen(true)} aria-label="Open navigation"><Icon name="menu"/></button><span>MISSION CONTROL</span><Icon name="chevron" size={13}/><strong>{selectedName}</strong></div><div className="topbar-end"><span className="topbar-clock"><Icon name="clock" size={15}/>{new Date().getUTCFullYear()} · RESEARCH ENVIRONMENT</span><span className={`header-connection conn-${connection}`}><span/>{connection==='connected'?'BACKEND CONNECTED':'BACKEND CONNECTING'}</span><span className="topbar-avatar">HG</span></div></header>
+    <div className="work-area"><header className="topbar"><div className="topbar-start"><button type="button" className="menu-toggle" onClick={()=>setSidebarOpen(true)} aria-label="Open navigation"><Icon name="menu"/></button><span>MISSION CONTROL</span><Icon name="chevron" size={13}/><strong>{selectedName}</strong></div><div className="topbar-end"><button type="button" className="hg-tour-launch" onClick={startGuidedTour} title="Explore HealthGuard with a guided walkthrough"><Icon name="help-circle" size={15}/> Take a tour</button><span className="topbar-clock"><Icon name="clock" size={15}/>{new Date().getUTCFullYear()} · RESEARCH ENVIRONMENT</span><span className={`header-connection conn-${connection}`}><span/>{connection==='connected'?'BACKEND CONNECTED':'BACKEND CONNECTING'}</span><span className="topbar-avatar">HG</span></div></header>
       <main id="main-content" data-bg-theme={WORKSPACE_BACKGROUND_PAGES.includes(page)?backgroundTheme:undefined} className={WORKSPACE_BACKGROUND_PAGES.includes(page)?'hg-background-enabled':''}>
         {WORKSPACE_BACKGROUND_PAGES.includes(page)&&<div className="hg-scene-toolbar"><SpaceBackgroundPicker value={backgroundTheme} onChange={setBackgroundTheme}/></div>}
         {DASHBOARD_VIEWS.has(page)?<MissionDashboard scenario={scenario} view={page} onDashboard={()=>navTo('dashboard')} onTelemetryPage={()=>navTo('telemetry')} onScenarioPage={()=>navTo('scenario')} loading={!snapshot} error={error} readiness={readiness} snapshot={snapshot} selected={selected} setSelected={selectSubject} samples={samples.filter(x=>x.subject_id===selected)} review={review} cnn={cnn} comparison={comparison} unified={unified} voice={voice} speaking={speaking} speak={speak} connection={connection} contextHistory={contextHistory} onResearch={()=>navTo('research')} onBody={()=>navTo('body')} onRoutine={()=>navTo('routine')} onHUD={()=>navTo('hud')} onMission={()=>navTo('mission')} environment={environment} onEnvironment={setEnvironment}/>:page==='body'?<MedicalWorkstation scenario={scenario} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} onTelemetry={()=>navTo('telemetry')} onMission={()=>navTo('mission')}/>:page==='routine'?<MissionGame selected={selected} onNavigate={navTo} snapshot={snapshot}/>:page==='hud'?<MissionVisorHUD scenario={scenario} onOpenScenario={()=>navTo('scenario')} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} samples={samples.filter(x=>x.subject_id===selected)} review={review} unified={unified} connection={connection} environment={environment} onEnvironment={setEnvironment} onExit={()=>navTo('dashboard')}/>:page==='research'?<HealthLibrary liveAPDRA={unified?.explanation?.apdra_live} liveCrew={selected} overview={overview} method={method} selectedCrew={selectedCrew} setSelectedCrew={setSelectedCrew} assay={assay} setAssay={setAssay} biomarker={biomarker} setBiomarker={setBiomarker} biomarkers={biomarkers} measurements={measurements} reviews={reviews} loading={researchBusy} error={researchError}/>:page==='mission'?<MissionControl environment={environment} onEnvironment={setEnvironment} selected={selected} onSelectCrew={selectSubject} snapshot={snapshot} connection={connection} readiness={readiness} unified={unified} mission={mission} onTelemetry={()=>navTo('telemetry')} onScenario={()=>navTo('scenario')} onHUD={()=>navTo('hud')}/>:<Method readiness={readiness}/>}</main>
@@ -413,6 +431,7 @@ export default function App() {
       scenarioPending={scenario.pending}
       scenarioError={scenario.error}
     />}
-    {tour>=0 && <div className="tour-backdrop" role="dialog" aria-modal="true" aria-labelledby="tour-title"><div className="tour-modal"><div className="tour-step-mark">GUIDED TOUR <span>0{tour+1} / 0{tourSteps.length}</span></div><div className="tour-graphic"><div className="tour-core"><Icon name={['grid','pulse','flask','satellite'][tour]} size={42}/></div><span className="tour-ring tr1"/><span className="tour-ring tr2"/></div><h2 id="tour-title">{tourSteps[tour].title}</h2><p>{tourSteps[tour].body}</p><div className="tour-progress">{tourSteps.map((s,i)=><span key={i} className={i===tour?'active':''}/>)}</div><div className="tour-actions"><button className="text-btn" onClick={()=>setTour(-1)}>Skip tour</button><button className="primary-btn" onClick={()=>{if(tour===tourSteps.length-1){setTour(-1)}else{setTour(t=>t+1);navTo(tourSteps[tour+1].page)}}}>{tour===tourSteps.length-1?'Finish tour':'Continue'}<Icon name="arrow" size={17}/></button></div></div></div>}
+    {tour>=0&&<GuidedTour index={tour} onNext={()=>moveGuidedTour(tour+1)} onBack={()=>moveGuidedTour(tour-1)} onExit={stopGuidedTour}/>}
+
   </div>;
 }
