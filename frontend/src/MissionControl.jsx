@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ENVIRONMENTS } from './HealthGuardPages.jsx';
 import { METRICS, formatValue, friendlyStatus, readApi } from './api.js';
 import { Icon } from './viz.jsx';
-import MissionEnvironment3D from './MissionEnvironment3D.jsx';
 import './missionControl.css';
 
 const CREW = [
@@ -11,14 +9,6 @@ const CREW = [
   { id: 'SIM_CREW_03', name: 'Lt. Aisha Khan', role: 'Systems engineer', image: '/crew/aisha.svg' },
   { id: 'SIM_CREW_04', name: 'Spc. Daniel Cho', role: 'Mission specialist', image: '/crew/daniel.svg' }
 ];
-
-const SCENES = {
-  spacecraft: { icon: 'satellite', label: 'TRANSIT', title: 'Deep-space transit', subtitle: 'Spacecraft cabin', detail: 'In-transit operations and daily crew checks' },
-  station: { icon: 'radio', label: 'ORBIT', title: 'Orbital station', subtitle: 'Space station', detail: 'Long-duration orbital operations' },
-  rover: { icon: 'layers', label: 'EXCURSION', title: 'Surface exploration', subtitle: 'Surface rover', detail: 'Mobile expedition and crew check-ins' },
-  lunar_base: { icon: 'satellite', label: 'LUNAR', title: 'Moon surface habitat', subtitle: 'Lunar base', detail: 'Lunar surface operations and EVA context' },
-  mars_base: { icon: 'layers', label: 'MARTIAN', title: 'Mars surface habitat', subtitle: 'Mars habitat', detail: 'Long-duration surface operations' }
-};
 
 const ENGINEERING = [
   {key:'cabin_co2_ppm', label:'Cabin CO₂', unit:'ppm', digits:0, icon:'wind', group:'Atmosphere'},
@@ -44,30 +34,13 @@ function SourceTag({available}) {
   </span>;
 }
 
-function EnvironmentScene({environment}) {
-  const info=SCENES[environment]||SCENES.lunar_base;
-  return <div className={'hgc-scene hgc-scene-'+environment} aria-label={info.title+' illustrative mission context'}>
-    <div className="hgc-scene-stars" aria-hidden="true"/>
-    {['mars_base','lunar_base','rover'].includes(environment)
-      ? <div className="hgc-scene-model"><MissionEnvironment3D environment={environment}/></div>
-      : <div className="hgc-orbit-art" aria-hidden="true">
-          <span className="hgc-orbit-planet"/><span className="hgc-orbit-ring one"/><span className="hgc-orbit-ring two"/>
-          <span className="hgc-orbit-craft"><Icon name="satellite" size={60}/></span>
-        </div>}
-    <div className="hgc-scene-head"><span>MISSION ENVIRONMENT</span><strong>{info.label} / SIMULATED</strong></div>
-    <div className="hgc-scene-bottom"><div><small>{info.subtitle}</small><strong>{info.title}</strong></div><span>ILLUSTRATIVE 3D / CONCEPT</span></div>
-  </div>;
-}
-
 export default function MissionControl({
-  environment='lunar_base', onEnvironment=()=>{}, selected='SIM_CREW_01',
-  onSelectCrew=()=>{}, snapshot, connection, readiness, unified, mission,
-  onTelemetry=()=>{}, onScenario=()=>{}, onHUD=()=>{}
+  selected='SIM_CREW_01', onSelectCrew=()=>{}, snapshot, connection,
+  readiness, unified, onTelemetry=()=>{}, onScenario=()=>{}
 }) {
   const [engineering,setEngineering]=useState(null);
   const [engineeringError,setEngineeringError]=useState('');
   const [group,setGroup]=useState('All systems');
-  const location=SCENES[environment]||SCENES.lunar_base;
   const person=CREW.find(c=>c.id===selected)||CREW[0];
   const last=snapshot?.subjects?.[selected]?.latest;
   const packet=last&&(!last.subject_id||last.subject_id===selected)?last:null;
@@ -76,7 +49,6 @@ export default function MissionControl({
   const values=engineering?.values||{};
   const channels=engineering?.channels||{};
   const envAvailable=ENGINEERING.filter(m=>Number.isFinite(values[m.key])).length;
-  const showHUD=environment==='mars_base'||environment==='lunar_base';
   const reviewStatus=unified?.subject_id===selected ? unified.status : null;
 
   useEffect(()=>{
@@ -102,40 +74,23 @@ export default function MissionControl({
     <header className="hgc-header">
       <div><span className="hgc-kicker">HEALTHGUARD / FLIGHT OPERATIONS</span>
         <h1>Mission Control<span>.</span></h1>
-        <p>Explore mission settings, switch between astronauts, review simulated systems, and launch a training scenario.</p>
+        <p>Monitor the fictional crew and inspect simulated engineering systems. Mission environments and EVA visuals are available in Mission HUD.</p>
       </div>
-      <div className="hgc-header-flags">
-        <span className={connected?'hgc-flag is-on':'hgc-flag'}><i/>{connected?'SIMULATOR LINK ACTIVE':'SIMULATOR RECONNECTING'}</span>
-        <span className={readiness?.models_loaded?'hgc-flag is-on':'hgc-flag'}><Icon name="shield" size={13}/>{readiness?.models_loaded?'MODELS LOADED':'MODEL STATUS UNKNOWN'}</span>
+      <div className="hgc-header-actions" aria-label="Mission Control tools">
+        <button type="button" onClick={onScenario}><Icon name="activity" size={16}/> Open Scenario Lab</button>
+        <button type="button" onClick={onTelemetry}><Icon name="pulse" size={16}/> Crew telemetry</button>
       </div>
     </header>
 
-    <section className="hgc-environments" aria-label="Choose a fictional mission environment">
-      <div className="hgc-section-title"><div><small>01 / MISSION CONTEXT</small><h2>Select an environment</h2></div><span>Changing this view never changes the physiological model or measurements.</span></div>
-      <div className="hgc-environment-grid">{ENVIRONMENTS.map(e=>{
-        const item=SCENES[e.id];
-        return <button key={e.id} type="button" className={'hgc-environment '+(environment===e.id?'selected':'')} aria-pressed={environment===e.id} onClick={()=>onEnvironment(e.id)}>
-          <span className="hgc-environment-icon"><Icon name={item.icon} size={20}/></span>
-          <strong>{e.name}</strong><small>{item.label}</small>
-          <span className="hgc-environment-check"><Icon name={environment===e.id?'check':'arrow'} size={14}/></span>
-        </button>;
-      })}</div>
-    </section>
+    <div className="hgc-topline">
+      <span className={connected?'hgc-flag is-on':'hgc-flag'}><i/>{connected?'SIMULATOR LINK ACTIVE':'SIMULATOR RECONNECTING'}</span>
+      <span className={readiness?.models_loaded?'hgc-flag is-on':'hgc-flag'}><Icon name="shield" size={13}/>{readiness?.models_loaded?'MODELS LOADED':'MODEL STATUS UNKNOWN'}</span>
+    </div>
 
     <div className="hgc-primary-grid">
-      <div className="hgc-main-column">
-        <EnvironmentScene environment={environment}/>
-        <div className="hgc-action-strip" aria-label="Mission tools">
-          <div><span>ACTIVE MISSION</span><strong>{location.subtitle}</strong><small>{location.detail}</small></div>
-          <button type="button" onClick={onScenario}><Icon name="activity" size={16}/> Scenario Lab</button>
-          <button type="button" onClick={onTelemetry}><Icon name="pulse" size={16}/> Crew telemetry</button>
-          {showHUD&&<button type="button" className="hgc-action-primary" onClick={onHUD}><Icon name="radio" size={16}/> Enter suit HUD</button>}
-        </div>
-      </div>
-
-      <section className="hgc-crew-panel">
-        <div className="hgc-panel-heading"><div><small>02 / CREW OPERATIONS</small><h2>Active crew</h2></div><span>{availableCrew} / 4 with packets</span></div>
-        <div className="hgc-crew-choices">{CREW.map(c=>{
+      <section className="hgc-crew-panel hgc-crew-panel-wide">
+        <div className="hgc-panel-heading"><div><small>01 / CREW OPERATIONS</small><h2>Active crew</h2></div><span>{availableCrew} / 4 with packets</span></div>
+        <div className="hgc-crew-overview"><div className="hgc-crew-choices">{CREW.map(c=>{
           const hasData=Boolean(snapshot?.subjects?.[c.id]?.latest);
           return <button type="button" key={c.id} className={'hgc-crew-choice '+(selected===c.id?'selected':'')} aria-pressed={selected===c.id} onClick={()=>onSelectCrew(c.id)}>
             <img src={c.image} alt=""/><span><strong>{c.name}</strong><small>{c.role}</small></span><span className={'hgc-crew-dot '+(hasData?'has-data':'')} title={hasData?'Fictional packet available':'Awaiting simulator packet'}/>
@@ -146,12 +101,12 @@ export default function MissionControl({
           <div className="hgc-vital-pairs">{METRICS.map(m=><div key={m.key}><span>{m.short}</span><strong>{formatValue(packet?.values?.[m.key],m.digits)} <small>{m.unit}</small></strong></div>)}</div>
           <div className="hgc-review"><Icon name="shield" size={16}/><span>PhysioAlert</span><strong>{reviewStatus?friendlyStatus(reviewStatus):'Awaiting review'}</strong></div>
           <p>Fictional crew only. Status flags are research/training indicators, not medical diagnoses.</p>
-        </div>
+        </div></div>
       </section>
     </div>
 
     <section className="hgc-engineering">
-      <div className="hgc-section-title"><div><small>03 / SYSTEM TELEMETRY</small><h2>Engineering and environment</h2></div><span>{envAvailable} of 8 fictional engineering channels reporting for {person.name}</span></div>
+      <div className="hgc-section-title"><div><small>02 / SYSTEM TELEMETRY</small><h2>Engineering and environment</h2></div><span>{envAvailable} of 8 fictional engineering channels reporting for {person.name}</span></div>
       <div className="hgc-engineering-toolbar"><p>Scripted simulator estimates, not spacecraft measurements. These values are separate from the physiological CNN.</p>
         <div role="group" aria-label="Filter mission system channels">{['All systems','Atmosphere','Radiation','Suit'].map(item=><button key={item} type="button" aria-pressed={group===item} onClick={()=>setGroup(item)} className={group===item?'selected':''}>{item}</button>)}</div>
       </div>
@@ -169,7 +124,7 @@ export default function MissionControl({
     </section>
 
     <section className="hgc-bottom-grid">
-      <div className="hgc-boundary-panel"><div className="hgc-panel-heading"><div><small>04 / CONNECTION BOUNDARIES</small><h2>Not connected to flight hardware</h2></div><Icon name="shield" size={19}/></div>
+      <div className="hgc-boundary-panel"><div className="hgc-panel-heading"><div><small>03 / CONNECTION BOUNDARIES</small><h2>Not connected to flight hardware</h2></div><Icon name="shield" size={19}/></div>
         <p>No real suit-pressure, suit-battery, navigation, communications-delay, or mission dosimeter feed is connected. Illustrative engineering values must not be treated as measured flight conditions.</p>
         <div className="hgc-unconnected">{['Suit pressure sensor','Suit battery telemetry','Navigation and position','Communications delay','Real spacecraft data'].map(s=><span key={s}><i/>{s}<b>UNCONNECTED</b></span>)}</div>
       </div>
