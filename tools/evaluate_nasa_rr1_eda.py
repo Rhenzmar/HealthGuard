@@ -217,7 +217,7 @@ def evaluate(data_root:Path=DATA)->dict:
             "source":"NASA ISS RR-1 environmental measurements and ground-control telemetry",
             "n_records":len(telemetry),
             "start_utc":timeline[0].isoformat(),"end_utc":timeline[-1].isoformat(),
-            "interval_minutes_counts":dict(sorted(interval_minutes.items())),
+            "interval_minutes_counts":{str(k):v for k,v in sorted(interval_minutes.items())},
             "irregular_intervals_not_5min":sum(v for k,v in interval_minutes.items() if k!=5),
             "largest_observed_gap_minutes":max(interval_minutes),
             "missing_per_column":missing,
