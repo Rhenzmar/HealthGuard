@@ -17,7 +17,7 @@ import numpy as np
 
 from .numpy_inference import conv1d,conv_transpose1d,elu
 from .candidate_17ch import SCHEMA, VERSION, schema_digest, load_schema
-from .engineering_sim import ENGINEERING_SOURCE, SIGNALS, engineering_snapshot
+from .engineering_sim import ENGINEERING_SOURCE, SIGNALS, FROZEN_17CH_ENGINEERING_KEYS, engineering_snapshot
 from .live_telemetry import METRICS, SOURCE
 
 DEFAULT_EXPORT=Path(__file__).resolve().parent.parent / 'models/deep_learning/candidate_17ch/model_numpy.npz'
@@ -162,7 +162,7 @@ class Live17CandidateMonitor:
                 eng=engineering_snapshot(sid,sample.sequence)
                 if eng['source']!=ENGINEERING_SOURCE or set(eng['values'])!=set(SIGNALS):
                     raise ValueError('Engineering source mismatch')
-                vals={**sample.values,**eng['values']}
+                vals={**sample.values,**{key: eng['values'][key] for key in FROZEN_17CH_ENGINEERING_KEYS}}
                 x=np.asarray([vals[k] for k in load_schema()['feature_order']],dtype=np.float32)
                 if not np.isfinite(x).all():
                     raise ValueError('Nonfinite 17-channel signal')
