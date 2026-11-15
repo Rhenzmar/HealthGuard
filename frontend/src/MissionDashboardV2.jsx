@@ -110,12 +110,26 @@ function SelectedCrew({person,hasTelemetry,latest,review,unified,connection,onTe
     <div className="hg6-selected-foot"><span>{training?'Scripted scenario · No actual sensor feed.':'Experimental monitoring · Not a diagnosis.'}</span><div className="hg6-selected-actions"><button type="button" onClick={onBody}>Body Explorer <Icon name="arrow" size={14}/></button><button type="button" onClick={onTelemetry}>Telemetry details <Icon name="arrow" size={14}/></button></div></div>
   </section>;
 }
-function LiveVitals({hasTelemetry,latest,connection,onMetric,metricKey,training}){
-  if(!hasTelemetry)return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/> Live vitals</h2><span className="hg6-connection"><i/>Not connected</span></div><div className="hg6-empty-panel"><Icon name="radio" size={24}/><strong>No vital signs available</strong><p>Waiting for the selected crew member’s simulator data.</p></div></section>;
-  return <section className="hg6-card hg6-vitals"><div className="hg6-card-heading"><h2><Icon name="pulse" size={19}/>{training?'Scenario vitals':'Live vitals'}</h2><span className={'hg6-connection '+(connection==='connected'?'connected':'')}><i/>{training?'Scripted playback':connection==='connected'?'Simulated stream':'Reconnecting'}</span></div>
-    <div className="hg6-vital-lines">{METRICS.map(m=><button type="button" key={m.key} className={(training?.metric_levels?.[m.key]==="CRITICAL"?"hg6-vital-critical ":"")+(metricKey===m.key?"hg6-vital-selected":"")} aria-pressed={metricKey===m.key} onClick={()=>onMetric(m.key)} title={"View "+m.label+" trend"}>
-      <span style={{color:m.color}}><Icon name={m.glyph} size={18}/></span><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong>
+const AUXILIARY_VITALS=[
+  {key:'systolic_bp_mmhg',label:'Systolic blood pressure',unit:'mmHg',digits:1,glyph:'activity',color:'#85bdea'},
+  {key:'diastolic_bp_mmhg',label:'Diastolic blood pressure',unit:'mmHg',digits:1,glyph:'activity',color:'#85bdea'},
+  {key:'etco2_mmhg',label:'End-tidal CO₂',unit:'mmHg',digits:1,glyph:'wind',color:'#8bdad7'},
+  {key:'peripheral_temp_c',label:'Peripheral temperature',unit:'°C',digits:1,glyph:'thermometer',color:'#f2c28c'},
+];
+// These four quantities come from the separate engineering simulator.
+// They are not part of the real-time physiological sensor stream or frozen five-channel detector.
+function LiveVitals({hasTelemetry,latest,connection,onMetric,metricKey,training,engineeringValues,engineeringStatus}){
+  return <section className="hg6-card hg6-vitals" aria-label="Nine simulated physiological and estimated quantities">
+    <div className="hg6-card-heading"><h2><Icon name="activity" size={19}/>{training?'Scenario vitals':'Live vitals'}</h2><span className={'hg6-connection '+(connection==='connected'?'connected':'')}><i/>{training?'Scripted playback':connection==='connected'?'Simulated stream':'Reconnecting'}</span></div>
+    <div className="hg6-vital-section-label"><strong>PHYSIOLOGICAL STREAM</strong><span>5 simulated signals</span></div>
+    <div className="hg6-vital-lines">{METRICS.map(m=><button type="button" key={m.key} disabled={!hasTelemetry} className={(training?.metric_levels?.[m.key]==="CRITICAL"?"hg6-vital-critical ":"")+(metricKey===m.key?"hg6-vital-selected":"")} aria-pressed={metricKey===m.key} onClick={()=>onMetric(m.key)} title={"View "+m.label+" trend in Crew Telemetry"}>
+      <span style={{color:m.color}}><Icon name={m.glyph} size={17}/></span><span>{m.label}</span><strong>{metricValue(latest,m.key,m.digits,m.unit)}</strong>
     </button>)}</div>
+    <div className="hg6-vital-section-label hg6-vital-estimate-label"><strong>ADDITIONAL ESTIMATES</strong><span>4 scripted · not measured</span></div>
+    <div className="hg6-vital-lines hg6-vital-estimates">{AUXILIARY_VITALS.map(m=><div key={m.key} className="hg6-vital-estimate" title="Derived from a separate fictional engineering simulator; not a medical sensor reading or CNN input">
+      <span style={{color:m.color}}><Icon name={m.glyph} size={17}/></span><span>{m.label}</span><strong>{formatValue(engineeringValues?.[m.key],m.digits)} <small>{m.unit}</small></strong>
+    </div>)}</div>
+    <p className="hg6-vital-source-note">{engineeringStatus==='error'?'Engineering estimates unavailable; no replacement values are invented.':'Five simulated stream signals; four independent scripted estimates. None are real astronaut measurements.'}</p>
   </section>;
 }
 function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,onTrainingSpeak,liveAlertsEnabled,onToggleLiveAlerts}){
@@ -182,6 +196,20 @@ function CrewProfile({person,onClose,onMission,latest,training}){
 
 export default function MissionDashboard({view='dashboard',onDashboard=()=>{},onTelemetryPage=()=>{},onScenarioPage=()=>{},error,readiness,snapshot,selected,setSelected,samples=[],review,cnn,comparison,unified,voice,speaking,speak,connection,onBody,onRoutine,onHUD,onMission,environment,onEnvironment,contextHistory=[]}){
   const [metricKey,setMetricKey]=useState(METRICS[0].key);
+  const [auxiliaryTelemetry,setAuxiliaryTelemetry]=useState(null);
+  const [auxiliaryIssue,setAuxiliaryIssue]=useState(false);
+  useEffect(()=>{
+    if(!selected||!['dashboard','telemetry','scenario'].includes(view))return;
+    let disposed=false;
+    setAuxiliaryTelemetry(null);
+    setAuxiliaryIssue(false);
+    const load=()=>readApi('/api/simulation/engineering/'+encodeURIComponent(selected))
+      .then(payload=>{if(!disposed && payload?.subject_id===selected){setAuxiliaryTelemetry(payload);setAuxiliaryIssue(false);}})
+      .catch(()=>{if(!disposed){setAuxiliaryTelemetry(null);setAuxiliaryIssue(true);}});
+    load();
+    const timer=setInterval(load,4200);
+    return()=>{disposed=true;clearInterval(timer);};
+  },[selected,view]);
   const activeCrewIndex=crewIndexForSubject(selected);
   const activeCrew=CREW[activeCrewIndex];
   const selectedPacket=latestForSubject(snapshot,activeCrew.subjectId);
@@ -325,14 +353,14 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
         <div className="hg6-center-grid">
           <SelectedCrew person={activeCrew} hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} review={displayReview} training={training} connection={connection} onTelemetry={onTelemetryPage} onBody={onBody} onProfile={()=>setInfoProfile(activeCrew)} unified={training?null:unified}/>
-          <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={key=>{setMetricKey(key);onTelemetryPage();}} metricKey={metricKey}/>
+          <LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={key=>{setMetricKey(key);onTelemetryPage();}} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/>
           <PhysioAlert hasTelemetry={Boolean(training)||hasTelemetry} review={displayReview} unified={training?null:unified} voice={training?null:voice} training={training} onTrainingSpeak={speakScenario} speak={speak} speaking={speaking} liveAlertsEnabled={liveAlertsEnabled} onToggleLiveAlerts={toggleLiveAlerts}/>
         </div>
       </>:null}
       {view==='telemetry'?<>
         {pageHead('Crew Telemetry','Signal inspection, current measurements, historical research panels and trend analysis.')}
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
-        <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey}/><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/></div>
+        <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/></div>
         <details className="hg6-model-disclosure">
           <summary><Icon name="shield" size={17}/> Experimental model evidence and pattern reviews <Icon name="chevron" size={15}/></summary>
           <div className="hg6-analysis-grid">
