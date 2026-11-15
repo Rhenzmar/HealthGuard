@@ -296,3 +296,10 @@
 @media(prefers-reduced-motion:reduce){
  .hgm-section-card,.hgm-stage-tools button,.hgm-quick-reading{transition:none;transform:none!important}
 }
+
+
+/* Five-section layout: three on the left, two evenly centered on the right */
+.hgm-sections-workstation .hgm-systems-right{grid-template-rows:repeat(2,minmax(95px,115px));gap:clamp(28px,5vw,68px);align-content:center}
+@media(max-width:760px){
+ .hgm-sections-workstation .hgm-systems-right{grid-template-rows:repeat(2,minmax(78px,auto));gap:8px;align-content:center}
+}
