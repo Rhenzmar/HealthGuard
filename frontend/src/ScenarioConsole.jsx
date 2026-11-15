@@ -54,12 +54,14 @@ export default function ScenarioConsole({
           <em>{sample?.metric_levels?.[metric.key]||'OPTIMAL'} · SCRIPTED</em>
         </div>)}
       </div>
-      {sample?.engineering_values&&['co2','cabin_leak','radiation'].includes(scenarioId)&&<div className="hg6-scenario-env">
+      {sample?.engineering_values&&['co2','cabin_leak','radiation','suit_leak','suit_power'].includes(scenarioId)&&<div className="hg6-scenario-env">
         <strong>Scripted spacecraft environment · not actual instrument data</strong>
         <div className="hg6-scenario-env-grid">{[
           ['cabin_co2_ppm','Cabin CO₂','ppm'],
           ['cabin_pressure_kpa','Cabin pressure','kPa'],
-          ['radiation_rate_usv_h','Radiation rate','µSv/h']
+          ['radiation_rate_usv_h','Radiation rate','µSv/h'],
+          ['suit_pressure_psi','Suit pressure','psi'],
+          ['suit_battery_percent','Suit battery','%']
         ].map(([key,label,unit])=><div key={key} className={sample.engineering_flags?.[key]?'flagged':''}>
           <span>{label}</span><strong>{formatValue(sample.engineering_values[key],1)} <small>{unit}</small></strong>
           <em>{sample.engineering_flags?.[key]?'SCRIPTED DEVIATION':'ILLUSTRATIVE'}</em>
