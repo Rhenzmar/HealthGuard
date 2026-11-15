@@ -59,7 +59,7 @@ export default function ScenarioPickerModal({
   const level=selected && sample?.source==='SERVER_SCRIPTED_TRAINING_SCENARIO'
     ? sample.severity:null;
   const play=()=>{onStart();setShowDetails(true);};
-  return <div className="hg-scenario-backdrop" onMouseDown={event=>{if(event.target===event.currentTarget)onClose();}}>
+  return <div className="hg-scenario-backdrop" onMouseDown={event=>{if(!running&&event.target===event.currentTarget)onClose();}}>
     <section className="hg-scenario-modal" role="dialog" aria-modal="true" aria-label="Choose a training scenario" aria-labelledby="hg-scenario-title" ref={modalRef}>
       <header className="hg-scenario-modal-header">
         <div><span className="hg-scenario-kicker">HEALTHGUARD · TRAINING SIMULATION</span><h2 id="hg-scenario-title">Possible scenarios</h2><p>Choose a fictional event to demonstrate changing astronaut health indicators.</p></div>
