@@ -157,39 +157,29 @@ function PhysioAlert({hasTelemetry,review,unified,voice,speak,speaking,training,
     <div className="hg6-alert-bottom">{training?<button type="button" onClick={onTrainingSpeak}><Icon name="volume" size={15}/> Speak training guidance <Icon name="arrow" size={14}/></button>:voice?.text?<button type="button" onClick={speak}><Icon name={speaking?'mute':'volume'} size={15}/>{speaking?'Stop explanation':'Explain result'} <Icon name="arrow" size={14}/></button>:<span>Waiting for a review explanation</span>}<small>Not a diagnosis</small></div>
   </section>;
 }
-function AuxiliaryEstimateDetail({metricKey,engineeringValues,engineeringStatus,engineeringHistory=[]}){
-  const metric=AUXILIARY_VITALS.find(m=>m.key===metricKey);
-  if(!metric)return null;
-  const value=engineeringValues?.[metric.key];
-  const observations=engineeringHistory.filter(row=>Number.isFinite(row?.values?.[metric.key]));
-  const last=observations.at(-1);
-  const snapshotCurrent=Number.isFinite(value)?value:last?.values?.[metric.key];
-  return <section className="hg6-card hg6-trend hg6-auxiliary-detail" aria-label={metric.label+" simulator trend"}>
-    <div className="hg6-card-heading">
-      <h2><Icon name={metric.glyph} size={18}/> {metric.label} <span>· simulated trend</span></h2>
-      <span className="hg6-quiet-badge">SCRIPTED ESTIMATE</span>
+function Trend({hasTelemetry,samples,keyValue,onChange,training,engineeringValues,engineeringHistory=[],engineeringStatus}){
+  const metrics=[...METRICS,...AUXILIARY_VITALS];
+  const metric=metrics.find(m=>m.key===keyValue)||METRICS[0];
+  const estimate=AUXILIARY_VITALS.some(m=>m.key===metric.key);
+  const observations=estimate?engineeringHistory.filter(row=>Number.isFinite(row?.values?.[metric.key])):samples;
+  const value=estimate?engineeringValues?.[metric.key]:observations.at(-1)?.values?.[metric.key];
+  const title=training?'Scenario trend: ':'Live trend: ';
+  return <section className="hg6-card hg6-trend hg6-unified-trend" id="hg6-trend" aria-label={metric.label+" trend graph"}>
+    <div className="hg6-card-heading"><h2><Icon name="activity" size={18}/>{title}<span>{metric.label}</span></h2>
+      <label><span className="sr-only">Select chart measurement</span>
+        <select value={metric.key} onChange={e=>onChange(e.target.value)}>{metrics.map(m=><option key={m.key} value={m.key}>{m.label}</option>)}</select>
+      </label>
     </div>
-    <div className="hg6-auxiliary-chart-current">
-      <strong>{formatValue(snapshotCurrent,metric.digits)} <small>{metric.unit}</small></strong>
-      <span>{observations.length} recent simulator observations</span>
-    </div>
-    <div className="hg6-trend-plot hg6-auxiliary-chart">
-      <VitalChart data={observations} metric={metric} observationMode="engineering-poll"/>
+    <div className="hg6-trend-plot">
+      <VitalChart data={observations} metric={metric} observationMode={estimate?'engineering-poll':'simulated-second'}/>
     </div>
     <p className="hg6-trend-footer">
-      {engineeringStatus==='error'?'Simulator temporarily unavailable; previously received observations are retained. ':
-        observations.length<2?'Collecting simulator polls; the line appears after two readings. ':''}
-      Values come from independently polled engineering-simulator responses, typically about 4.2 seconds apart.
-      Not a measured vital sign or a 24-hour recording. No intermediate readings are interpolated.
+      {estimate
+        ? (engineeringStatus==='error'?'Engineering simulator temporarily unavailable · ':'')+
+          observations.length+' received simulator observations · Approx. 4.2 seconds between polls · Scripted estimate, not a sensor reading'
+        : (training?'Scripted scenario':'Latest '+observations.length+' received simulator samples')+' · 1 fictional second per sample'}
+      {' · Not a 24-hour recording'}
     </p>
-  </section>;
-}
-function Trend({hasTelemetry,samples,keyValue,onChange,training}){
-  if(!hasTelemetry)return <section className="hg6-card hg6-trend" id="hg6-trend"><div className="hg6-card-heading"><h2><Icon name="activity" size={18}/> Live trend: <span>Unavailable</span></h2></div><div className="hg6-trend-empty"><Icon name="activity" size={24}/><span>No trend data for this crew member. Waiting for this crew member’s simulated measurements.</span></div></section>;
-  const metric=METRICS.find(m=>m.key===keyValue)||METRICS[0];
-  return <section className="hg6-card hg6-trend" id="hg6-trend"><div className="hg6-card-heading"><h2><Icon name="activity" size={18}/> {training?"Scenario trend: ":"Live trend: "}<span>{metric.label}</span></h2><label><span className="sr-only">Select chart measurement</span><select value={metric.key} onChange={e=>onChange(e.target.value)}>{METRICS.map(m=><option key={m.key} value={m.key}>{m.label}</option>)}</select></label></div>
-    <div className="hg6-trend-plot"><VitalChart data={samples} metric={metric}/></div>
-    <p className="hg6-trend-footer">{training?"Scripted playback":"Latest "+samples.length+" received simulator samples"} · Not a 24-hour recording</p>
   </section>;
 }
 function Routine({progress,onOpen}){
@@ -349,9 +339,7 @@ export default function MissionDashboard({view='dashboard',onDashboard=()=>{},on
       {view==='telemetry'?<>
         {pageHead('Crew Telemetry','Explore simulated vital-sign trends and all 17 physiological and engineering model inputs.')}
         <CrewStrip activeCrewIndex={activeCrewIndex} connection={connection} availableSubjects={subjects} onSelect={selectCrew} onManage={onMission}/>
-        <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/>{AUXILIARY_VITALS.some(m=>m.key===metricKey)?
-  <AuxiliaryEstimateDetail metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'} engineeringHistory={engineeringHistory}/>:
-  <Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey}/>}</div>
+        <div className="hg6-telemetry-compact"><LiveVitals hasTelemetry={Boolean(training)||hasTelemetry} latest={latest} training={training} connection={training||streamConnected?"connected":"reconnecting"} onMetric={setMetricKey} metricKey={metricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringStatus={auxiliaryIssue?'error':'ready'}/><Trend hasTelemetry={Boolean(training)||hasTelemetry} samples={displaySamples} training={training} keyValue={metricKey} onChange={setMetricKey} engineeringValues={{...(auxiliaryTelemetry?.values||{}),...(training?.engineering_values||{})}} engineeringHistory={engineeringHistory} engineeringStatus={auxiliaryIssue?'error':'ready'}/></div>
         <LiveSubsystemExplorer person={activeCrew} latest={selectedPacket} training={training} engineering={auxiliaryTelemetry?.subject_id===activeCrew.subjectId?auxiliaryTelemetry:null} engineeringIssue={auxiliaryIssue}/>
       </>:null}
       {view==='scenario'&&<ScenarioPickerModal open onClose={onDashboard} onHUD={onHUD} person={activeCrew}
