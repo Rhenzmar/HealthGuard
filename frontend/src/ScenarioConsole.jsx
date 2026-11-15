@@ -31,7 +31,7 @@ export default function ScenarioConsole({
         <button type="button" onClick={running?onPause:onStart} disabled={!active||elapsed>=SCENARIO_LENGTH||(!running&&(!sample||scenarioPending||Boolean(scenarioError)))} className="hg6-scenario-primary"><Icon name={running?'check':'activity'} size={15}/>{running?'Pause playback':elapsed>0?'Resume playback':'Start simulation'}</button>
         <button type="button" onClick={onReset} disabled={!active} className="hg6-scenario-secondary">Restart</button>
         <button type="button" onClick={onExit} disabled={!active} className="hg6-scenario-secondary">Return to live</button>
-        <button type="button" onClick={onToggleSound} aria-pressed={soundEnabled} className="hg6-scenario-secondary"><Icon name={soundEnabled?'volume':'mute'} size={15}/>{soundEnabled?'Audio on':'Audio off'}</button>
+        <button type="button" onClick={onToggleSound} aria-pressed={soundEnabled} className="hg6-scenario-secondary"><Icon name={soundEnabled?'volume':'mute'} size={15}/>{soundEnabled?'Critical voice on':'Critical voice off'}</button>
       </div>
     </div>
     {active&&scenarioError&&<p role="alert" className="hg6-scenario-backend-error">Backend scenario unavailable: {scenarioError}. No local data or AI results are substituted.</p>}
