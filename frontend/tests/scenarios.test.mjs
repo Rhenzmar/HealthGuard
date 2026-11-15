@@ -20,14 +20,16 @@ test('All scenarios begin with no flags, activate their expected trigger and rec
     sensor:'spo2_percent',
     co2:'respiratory_rate_bpm',
     cabin_leak:'spo2_percent',
-    radiation:'radiation_rate_usv_h'
+    radiation:'radiation_rate_usv_h',
+    suit_leak:'suit_pressure_psi',
+    suit_power:'suit_battery_percent'
   };
   for(const s of SCENARIOS){
     const baseline=scenarioAt('SIM_CREW_01',s.id,0);
     const peak=scenarioAt('SIM_CREW_01',s.id,35);
     const recovery=scenarioAt('SIM_CREW_01',s.id,SCENARIO_LENGTH);
     assert.equal(baseline.alert,false,s.id);
-    assert.equal(s.id==='radiation'?peak.engineering_flags[keys[s.id]]:peak.flags[keys[s.id]],true,s.id);
+    assert.equal(['radiation','suit_leak','suit_power'].includes(s.id)?peak.engineering_flags[keys[s.id]]:peak.flags[keys[s.id]],true,s.id);
     assert.equal(recovery.alert,false,s.id);
     assert.equal(recovery.severity,'OPTIMAL',s.id);
     assert.equal(recovery.stage,'Complete',s.id);
@@ -68,4 +70,16 @@ test('Environmental disturbances change only scripted engineering values',()=>{
  assert(radiation.engineering_flags.radiation_rate_usv_h);
  assert.equal(radiation.flags.spo2_percent,false);
  assert.equal(radiation.source,'SCRIPTED_TRAINING_SCENARIO');
+});
+
+test('Suit pressure and battery simulations show separate scripted failures with recovery',()=>{
+  for(const [id,key] of [['suit_leak','suit_pressure_psi'],['suit_power','suit_battery_percent']]){
+    const start=scenarioAt('SIM_CREW_01',id,0);
+    const peak=scenarioAt('SIM_CREW_01',id,35);
+    const end=scenarioAt('SIM_CREW_01',id,64);
+    assert(peak.engineering_values[key]<start.engineering_values[key]);
+    assert.equal(peak.engineering_flags[key],true);
+    assert.equal(peak.severity,'CRITICAL');
+    assert.equal(end.engineering_flags[key],false);
+  }
 });
