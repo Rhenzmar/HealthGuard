@@ -72,7 +72,7 @@ function SectionHeading({ count, overline, title, description, aside }) {
 }
 
 export default function HealthLibrary({
-  overview, method, selectedCrew, setSelectedCrew, assay, setAssay,
+  overview, method, liveAPDRA, liveCrew, selectedCrew, setSelectedCrew, assay, setAssay,
   biomarker, setBiomarker, biomarkers = [], measurements, reviews, loading, error
 }) {
   const [activeTopic, setActiveTopic] = useState('cardio');
@@ -141,6 +141,16 @@ export default function HealthLibrary({
 
     <section className="hl-section" id="hl-apdra">
       <SectionHeading count="02" overline="RESEARCH METHOD" title="APDRA: Can we trust this flag?" description="APDRA checks if a lab result still looks unusual when one earlier sample is removed." aside={<Tag tone="cyan">FROZEN v0.7</Tag>}/>
+      <div className="hl-live-apdra">
+        <div className="hl-live-apdra-top"><div><p className="hl-kicker">LIVE SIMULATOR / APDRA ADAPTATION</p><h3>Current crew baseline</h3><p>Five simulated vital signs · {liveCrew || 'No crew selected'}</p></div><Tag tone="cyan">EXPERIMENTAL</Tag></div>
+        <div className="hl-live-apdra-content">
+          <div><span>Baseline check</span><strong>{liveAPDRA?.status ? liveAPDRA.status.replaceAll('_',' ') : 'Awaiting simulated data'}</strong></div>
+          <div><span>Baseline samples</span><strong>{liveAPDRA?.reference_points ?? 0}/45</strong></div>
+          <div><span>Steady changes</span><strong>{liveAPDRA?.stable_channels?.length ?? 0}</strong></div>
+        </div>
+        {liveAPDRA?.stable_channels?.length > 0 && <p>Changed signals: {liveAPDRA.stable_channels.map(key => key.replaceAll('_',' ')).join(', ')}.</p>}
+        <p>Uses 15-sample blocks and checks each astronaut's own baseline. This live adaptation is not clinically validated. It can request a simulated CHECK after repeated changes, but cannot trigger a WARNING or CRITICAL on its own.</p>
+      </div>
       <div className="hl-apdra-layout">
         <div className="hl-apdra-explainer">
           <div className="hl-apdra-heading"><div className="hl-apdra-symbol"><Icon name="flask" size={23}/></div><div><strong>Checking a personal baseline</strong><p>A baseline is your usual reading before flight.</p></div></div>
@@ -149,7 +159,7 @@ export default function HealthLibrary({
             <div className="hl-step"><span>02</span><div><strong>Remove one reading</strong><p>Remove each preflight sample, one at a time. Check if the unusual-result flag stays the same.</p></div></div>
             <div className="hl-step"><span>03</span><div><strong>Review changed flags</strong><p>If the flag changes, mark it for review.</p></div></div>
           </div>
-          <div className="hl-apdra-boundary"><Icon name="alert" size={18}/><span>APDRA checks past NASA lab data. It <strong>does not analyze live crew readings</strong>, diagnose illness or have proven better accuracy.</span></div>
+          <div className="hl-apdra-boundary"><Icon name="alert" size={18}/><span>Original APDRA v0.7 analyzes NASA lab data only. The new live adaptation above uses separate simulated data. Neither version diagnoses illness or has proven clinical accuracy.</span></div>
         </div>
         <div className="hl-apdra-findings">
           <p className="hl-kicker">NASA DATA / APDRA RESULT</p>
